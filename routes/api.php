@@ -1,0 +1,25 @@
+<?php
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PutDatabaseController;
+use App\Http\Controllers\SheetController;
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| is assigned the "api" middleware group. Enjoy building your API!
+|
+*/
+
+Route::middleware('auth:api')->get('/user', function (Request $request) {
+    return $request->user();
+});
+Route::prefix('person')->name('api.person.')->group(function () {
+    Route::get('/get-spreadsheet', [SheetController::class, 'getPerson'])->name('get');
+    Route::post('/put-person', [PutDatabaseController::class, 'putPerson'])->name('put');
+});
