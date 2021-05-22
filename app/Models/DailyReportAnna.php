@@ -4,13 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Person extends Model
+class DailyReportAnna extends Model
 {
     use HasFactory;
-    use SoftDeletes;
-
     protected $guarded = [];
-    protected $table = "person";
+    protected $table = 'daily_report_annas';
 }

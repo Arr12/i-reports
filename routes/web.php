@@ -15,6 +15,35 @@ use Symfony\Component\VarDumper\Cloner\Data;
 |
 */
 Route::get('/', [PageController::class, 'index']);
-Route::get('/person',[PageController::class, 'person']);
-Route::get('/data-person',[PageController::class, 'dataPerson'])->name('data.person');
-Route::get('/get-daily-reports-global', [SheetController::class, 'DailyReport']);
+Route::prefix('/daily-report-global/report')->name('daily-report-global.')->group(function(){
+    Route::get('ames',[PageController::class, 'DailyReportAmes'])->name('ames');
+    Route::get('ames-data',[PageController::class, 'getDailyReportAmes'])->name('ames.data');
+    Route::get('annas',[PageController::class, 'DailyReportAnnas'])->name('annas');
+    Route::get('annas-data',[PageController::class, 'getDailyReportAnnas'])->name('annas.data');
+    Route::get('carols',[PageController::class, 'DailyReportCarols'])->name('carols');
+    Route::get('carols-data',[PageController::class, 'getDailyReportCarols'])->name('carols.data');
+    Route::get('erics',[PageController::class, 'DailyReportErics'])->name('erics');
+    Route::get('erics-data',[PageController::class, 'getDailyReportErics'])->name('erics.data');
+    Route::get('ichas',[PageController::class, 'DailyReportIchas'])->name('ichas');
+    Route::get('ichas-data',[PageController::class, 'getDailyReportIchas'])->name('ichas.data');
+    Route::get('lilies',[PageController::class, 'DailyReportLilies'])->name('lilies');
+    Route::get('lilies-data',[PageController::class, 'getDailyReportLilies'])->name('lilies.data');
+    Route::get('maydewis',[PageController::class, 'DailyReportMayDewis'])->name('maydewis');
+    Route::get('maydewis-data',[PageController::class, 'getDailyReportMayDewis'])->name('maydewis.data');
+    Route::get('ranis',[PageController::class, 'DailyReportRanis'])->name('ranis');
+    Route::get('ranis-data',[PageController::class, 'getDailyReportRanis'])->name('ranis.data');
+});
+Route::prefix('/daily-report-indo/report')->name('daily-report-indo.')->group(function(){
+    Route::get('icha-nurs',[PageController::class, 'DailyReportIndoIchaNurs'])->name('icha-nurs');
+    Route::get('icha-nurs-data',[PageController::class, 'getDailyReportIndoIchaNurs'])->name('icha-nurs.data');
+    Route::get('irels',[PageController::class, 'DailyReportIndoIrels'])->name('irels');
+    Route::get('irels-data',[PageController::class, 'getDailyReportIndoIrels'])->name('irels.data');
+});
+Route::prefix('/team-monitoring')->name('team-monitoring.')->group(function(){
+    Route::get('global',[PageController::class, 'GlobalTeamMonitoring'])->name('global');
+    Route::get('indo',[PageController::class, 'IndoTeamMonitoring'])->name('indo');
+});
+Route::prefix('/all-report')->name('all-report.')->group(function(){
+    Route::get('weekly',[PageController::class, 'WeeklyReport'])->name('weekly');
+    Route::get('monthly',[PageController::class, 'MonthlyReport'])->name('monthly');
+});

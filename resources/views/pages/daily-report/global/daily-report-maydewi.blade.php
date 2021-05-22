@@ -4,7 +4,7 @@
 @endpush
 @push('after-style')
 <!-- JQuery DataTable Css -->
-<link href="../../plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
+<link href="/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
 @endpush
 @push('before-script')
 @endpush
@@ -22,13 +22,14 @@
 
 {{-- <script src="/js/pages/tables/jquery-datatable.js"></script> --}}
 <script>
-let TabelIndoTeam = function(url){
+let TabelGlobalDaily = function(url){
+    $('#FormTabelGlobalDaily').html(createSkeleton(1));
     $.ajax( {
         url: url,
         dataType: "json",
         success:function(json) {
-            $('#FormTabelIndoTeam').html("<table id='TabelIndoTeam' class='table table-bordered table-striped table-hover'></table>");
-            $('#TabelIndoTeam').DataTable(json);
+            $('#FormTabelGlobalDaily').html("<table id='TabelGlobalDaily' class='table table-bordered table-striped table-hover'></table>");
+            $('#TabelGlobalDaily').DataTable(json);
             let arr = [];
             for(let i=0;i<json.columns.length;i++){
                 let title = json.columns[i].title;
@@ -37,12 +38,13 @@ let TabelIndoTeam = function(url){
             let combine = arr.join();
             let fix = combine.replace(/,/g, '');
             $("#data-column").html(fix);
-            let table = $('#TabelIndoTeam').DataTable({
+            let table = $('#TabelGlobalDaily').DataTable({
                 dom: 'Bfrtip',
                 responsive: true,
                 buttons: ['copy', 'excel'],
                 destroy: true,
                 searching: true,
+                order: [[0,'desc']]
             });
             $('a.toggle-vis').on( 'click', function (e) {
                 e.preventDefault();
@@ -52,13 +54,33 @@ let TabelIndoTeam = function(url){
 
                 // Toggle the visibility
                 column.visible( ! column.visible() );
-            } );
+            });
         },
     });
 }
 $(document).ready(function(){
-    let url = "{{route('data.person')}}";
-    TabelIndoTeam(url);
+    let url = "{{route('daily-report-global.maydewis.data')}}";
+    TabelGlobalDaily(url);
+    $(document).on('click','#getDataDaily',function(){
+        $('#FormTabelGlobalDaily').html(createSkeleton(1));
+        let url_dx = $(this).attr('data-href');
+        $.ajax({
+            url: url_dx,
+            success:function(json) {
+                if(json == "200"){
+                    $("#alert_success").show();
+                    $("#alert_danger").hide();
+                }else if(json == "400"){
+                    $("#alert_success").hide();
+                    $("#alert_danger").show();
+                }else{
+                    $("#alert_success").show();
+                    $("#alert_danger").hide();
+                }
+                TabelGlobalDaily(url);
+            }
+        });
+    });
 });
 </script>
 @endpush
@@ -70,17 +92,32 @@ $(document).ready(function(){
         <div class="card">
             <div class="header">
                 <h2>
-                    INDO TEAM
+                    Global Daily Report Maydewi
                 </h2>
+                <ul class="header-dropdown m-r--5">
+                    <li class="dropdown">
+                        <button id='getDataDaily' data-href="{{route('api.dailyReport.get')}}?d=ame" role="button" aria-haspopup="true" aria-expanded="false">
+                            <i class="material-icons">sync</i> Get Data Daily
+                        </button>
+                    </li>
+                </ul>
             </div>
             <div class="body">
+                <div class="alert alert-success alert-dismissible" role="alert" id="alert_success" style="display: none;">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>Success!</strong> Data has been updated!
+                </div>
+                <div class="alert alert-danger alert-dismissible" role="alert" id="alert_danger" style="display: none;">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>Oh snap!</strong> Can't get data, check your internet connection or contact the creator!.
+                </div>
                 <div class="row">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        Hide column:
+                        <p>Hide column:</p>
                         <div id="data-column"></div>
                     </div>
                 </div>
-                <div class="table-responsive" id="FormTabelIndoTeam"></div>
+                <div class="table-responsive" id="FormTabelGlobalDaily"></div>
             </div>
         </div>
     </div>

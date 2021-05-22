@@ -7,7 +7,7 @@
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <title>Welcome To | Global All Team Internal Report</title>
     <!-- Favicon-->
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
@@ -25,6 +25,9 @@
 
     <!-- Morris Chart Css-->
     <link href="/plugins/morrisjs/morris.css" rel="stylesheet" />
+
+    {{-- Skeleton Load --}}
+    <link rel="stylesheet" href="/css/skeleton.css" rel="stylesheet" />
 
     <!-- Custom Css -->
     <link href="/css/style.css" rel="stylesheet">
@@ -85,6 +88,22 @@
 
     @stack('after-script')
 
+    <script>
+        function createSkeleton(limit){
+            var skeletonHTML = '';
+            for(var i = 0; i < limit; i++){
+                skeletonHTML += '<div class="skeletonWrapper">';
+                skeletonHTML += '<span class="react-skeleton-load animated">&zwnj;</span>';
+                skeletonHTML += '<span class="react-skeleton-load animated">&zwnj;</span>';
+                skeletonHTML += '<span class="react-skeleton-load animated">&zwnj;</span>';
+                skeletonHTML += '<span class="react-skeleton-load animated">&zwnj;</span>';
+                skeletonHTML += '<span class="react-skeleton-load animated">&zwnj;</span>';
+                skeletonHTML += '<span class="react-skeleton-load animated">&zwnj;</span>';
+                skeletonHTML += '</div>';
+            }
+            return skeletonHTML;
+        }
+    </script>
     <!-- Custom Js -->
     <script src="/js/admin.js"></script>
 

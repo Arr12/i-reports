@@ -29,31 +29,73 @@
             <ul class="list">
                 <li class="header">MAIN NAVIGATION</li>
                 <li>
-                    <a href="index.html">
+                    <a href="/">
                         <i class="material-icons">home</i>
                         <span>Home</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/person">
-                        <i class="material-icons">group</i>
-                        <span>Person</span>
+                    <a href="javascript:void(0);" class="menu-toggle">
+                        <i class="material-icons">import_contacts</i>
+                        <span>Lv.0 Daily Reports Global</span>
                     </a>
+                    <ul class="ml-menu">
+                        <li>
+                            <a href="{{route('daily-report-global.ames')}}">
+                                <span>Daily Report Ame</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{route('daily-report-global.annas')}}">
+                                <span>Daily Report Anna</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{route('daily-report-global.carols')}}">
+                                <span>Daily Report Carol</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{route('daily-report-global.erics')}}">
+                                <span>Daily Report Eric</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{route('daily-report-global.ichas')}}">
+                                <span>Daily Report Ichas</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{route('daily-report-global.lilies')}}">
+                                <span>Daily Report Lily</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{route('daily-report-global.maydewis')}}">
+                                <span>Daily Report Maydewi</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{route('daily-report-global.ranis')}}">
+                                <span>Daily Report Rani</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li>
                     <a href="javascript:void(0);" class="menu-toggle">
                         <i class="material-icons">import_contacts</i>
-                        <span>Lv.0 Daily Reports</span>
+                        <span>Lv.0 Daily Reports Indo</span>
                     </a>
                     <ul class="ml-menu">
                         <li>
-                            <a href="/lv0/global-daily-report">
-                                <span>Global Daily Report</span>
+                            <a href="{{route('daily-report-indo.icha-nurs')}}">
+                                <span>Daily Report Indo Icha Nurs</span>
                             </a>
                         </li>
                         <li>
-                            <a href="/lv0/indo-daily-report">
-                                <span>Indo Daily Report</span>
+                            <a href="{{route('daily-report-indo.irels')}}">
+                                <span>Daily Report Indo Irels</span>
                             </a>
                         </li>
                     </ul>
@@ -65,13 +107,31 @@
                     </a>
                     <ul class="ml-menu">
                         <li>
-                            <a href="/lv1/global-team-monitoring">
+                            <a href="{{route('team-monitoring.global')}}">
                                 <span>Global Team Monitoring</span>
                             </a>
                         </li>
                         <li>
-                            <a href="/lv1/indo-team-monitoring">
+                            <a href="{{route('team-monitoring.indo')}}">
                                 <span>Indo Team Monitoring</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:void(0);" class="menu-toggle">
+                        <i class="material-icons">import_contacts</i>
+                        <span>Lv.2 All Reports</span>
+                    </a>
+                    <ul class="ml-menu">
+                        <li>
+                            <a href="{{route('all-report.weekly')}}">
+                                <span>Weekly Report</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{route('all-report.monthly')}}">
+                                <span>Monthly Report</span>
                             </a>
                         </li>
                     </ul>

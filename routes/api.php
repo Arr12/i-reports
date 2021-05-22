@@ -19,7 +19,6 @@ use App\Http\Controllers\SheetController;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::prefix('person')->name('api.person.')->group(function () {
-    Route::get('/get-spreadsheet', [SheetController::class, 'getPerson'])->name('get');
-    Route::post('/put-person', [PutDatabaseController::class, 'putPerson'])->name('put');
+Route::prefix('/daily-report')->name('api.dailyReport.')->group(function(){
+    Route::get('/get-spreadsheet', [SheetController::class, 'GetDailyReport'])->name('get');
 });
