@@ -46,7 +46,7 @@ let Tabel = function(url){
                 buttons: ['copy', 'excel'],
                 destroy: true,
                 searching: true,
-                // order: [[0,'desc']]
+                order: [[0,'desc']]
             });
             $('a.toggle-vis').on( 'click', function (e) {
                 e.preventDefault();
@@ -66,7 +66,7 @@ $(document).ready(function(){
         let a = $('#SPerson').val();
         let b = $('#SMonth').val();
         let c = $('#SYear').val();
-        let url_dx = "{{route('team-monitoring.global.data')}}?mod="+a+"&mon="+b+"&y="+c;
+        let url_dx = "{{route('team-monitoring.indo.data')}}?mod="+a+"&mon="+b+"&y="+c;
         $.ajax({
             url: url_dx,
             success:function(json) {
@@ -85,7 +85,7 @@ $(document).ready(function(){
         <div class="card">
             <div class="header">
                 <h2>
-                    Lv.1 Global Team Monitoring
+                    Lv.1 Indo Team Monitoring
                 </h2>
             </div>
             <div class="body">
@@ -105,13 +105,13 @@ $(document).ready(function(){
                             @foreach ($month as $key => $ditems)
                                 <option value="{{$key+1}}">{{$ditems}}</option>
                             @endforeach
-                        </select> 
+                        </select>
                     </div>
                     <div class="col-sm-6">
                         <select class="form-control show-tick" id="SYear" name="year">
                             <option value="">Select Year</option>
                             @foreach ($year as $key => $ditems)
-                                <option value="{{$ditems}}">{{$ditems}}</option>
+                                <option value= "{{$ditems}}">{{$ditems}}</option>
                             @endforeach
                         </select>
                     </div>

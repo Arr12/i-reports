@@ -41,7 +41,9 @@ Route::prefix('/daily-report-indo/report')->name('daily-report-indo.')->group(fu
 });
 Route::prefix('/team-monitoring')->name('team-monitoring.')->group(function(){
     Route::get('global',[PageController::class, 'GlobalTeamMonitoring'])->name('global');
+    Route::get('global-data',[PageController::class, 'getGlobalTeamMonitoring'])->name('global.data');
     Route::get('indo',[PageController::class, 'IndoTeamMonitoring'])->name('indo');
+    Route::get('indo-data',[PageController::class, 'getIndoTeamMonitoring'])->name('indo.data');
 });
 Route::prefix('/all-report')->name('all-report.')->group(function(){
     Route::get('weekly',[PageController::class, 'WeeklyReport'])->name('weekly');
