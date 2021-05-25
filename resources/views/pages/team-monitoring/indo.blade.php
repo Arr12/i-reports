@@ -46,7 +46,7 @@ let Tabel = function(url){
                 buttons: ['copy', 'excel'],
                 destroy: true,
                 searching: true,
-                order: [[0,'desc']]
+                // order: [[0,'desc']]
             });
             $('a.toggle-vis').on( 'click', function (e) {
                 e.preventDefault();
@@ -65,8 +65,7 @@ $(document).ready(function(){
         $('#FormTabel').html(createSkeleton(1));
         let a = $('#SPerson').val();
         let b = $('#SMonth').val();
-        let c = $('#SYear').val();
-        let url_dx = "{{route('team-monitoring.indo.data')}}?mod="+a+"&mon="+b+"&y="+c;
+        let url_dx = "{{route('team-monitoring.indo.data')}}?mod="+a+"&mon="+b;
         $.ajax({
             url: url_dx,
             success:function(json) {
@@ -90,7 +89,7 @@ $(document).ready(function(){
             </div>
             <div class="body">
                 <div class="row clearfix">
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <select class="form-control show-tick" id="SPerson" name="person">
                             <option value="">Select person</option>
                             @foreach ($person as $key => $ditems)
@@ -98,22 +97,8 @@ $(document).ready(function(){
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-sm-6">
-                        <select class="form-control show-tick" id="SMonth" name="month">
-                            <option value="">Select month</option>
-                            <option value="0">All</option>
-                            @foreach ($month as $key => $ditems)
-                                <option value="{{$key+1}}">{{$ditems}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-sm-6">
-                        <select class="form-control show-tick" id="SYear" name="year">
-                            <option value="">Select Year</option>
-                            @foreach ($year as $key => $ditems)
-                                <option value= "{{$ditems}}">{{$ditems}}</option>
-                            @endforeach
-                        </select>
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                        <input type="month" id="SMonth" class="form-control" />
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <button class="btn btn-primary btn-block waves-effect" id="ShowData">

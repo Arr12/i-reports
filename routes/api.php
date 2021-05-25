@@ -22,3 +22,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::prefix('/daily-report')->name('api.dailyReport.')->group(function(){
     Route::get('/get-spreadsheet', [SheetController::class, 'GetDailyReport'])->name('get');
 });
+Route::get('/non-exclusive',[SheetController::class, 'getNonExReport'])->name('non-exclusive');

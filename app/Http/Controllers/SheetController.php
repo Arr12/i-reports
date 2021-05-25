@@ -12,6 +12,7 @@ use App\Models\DailyReportIndoIrel;
 use App\Models\DailyReportLily;
 use App\Models\DailyReportMaydewi;
 use App\Models\DailyReportRani;
+use App\Models\NonExclusiveReport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
@@ -78,6 +79,12 @@ class SheetController extends Controller
         else if($request->input('d') == 'indo-irel'){
             $this->getDailyReportIndoIrel();
         }
+        /*-----------
+        / EXCLUSIVE
+        --------------*/
+        else if($request->input('d') == 'non-exclusive'){
+            $this->getNonExReport();
+        }
         else if($request->input('d') == 'all'){
             $this->getDailyReportAme();
             $this->getDailyReportAnna();
@@ -89,6 +96,7 @@ class SheetController extends Controller
             $this->getDailyReportRani();
             $this->getDailyReportIndoIchaNur();
             $this->getDailyReportIndoIrel();
+            $this->getNonExReport();
         }
         else{
             $p = 400;
@@ -389,6 +397,7 @@ class SheetController extends Controller
         foreach($cached as $key => $keyDaily){
             $cachedDaily = Cache::get($keyDaily, []);
             $savedData = [];
+            $now = date('Y-m-d H:i:s');
             foreach ($cachedDaily as $key => $data) {
                 // dump($data);
                 if(!$data[0]){continue;}
@@ -440,7 +449,8 @@ class SheetController extends Controller
                     'sent_royalty' => $sent_royalty,
                     'sent_non_exclusive' => $sent_non_exclusive,
                     'marker' => $marker,
-                    'old_new_book' => $old_new_book
+                    'old_new_book' => $old_new_book,
+                    'created_at' => $now
                 ]);
             }
             DailyReportIcha::insert($savedData);
@@ -781,6 +791,86 @@ class SheetController extends Controller
                 ]);
             }
             DailyReportIndoIrel::insert($savedData);
+        }
+        return true;
+    }
+    public function getNonExReport(){
+        $sId = "1C_FHAsaNX4lbeQjfMP0i3piXCzIVtHalgFYk5wWJph4";
+        $keyMaster = date('Y-m-d')."_daily_report_NonExclusive";
+        $sheets = "Daily Report Master";
+        $alphaX = "A";
+        $alphaY = "AC";
+        $this->getDailyReportData($sId,$keyMaster,$sheets,$alphaX,$alphaY);
+        $cached = Cache::get($keyMaster, []);
+        NonExclusiveReport::truncate();
+        foreach($cached as $key => $keyDaily){
+            $cachedDaily = Cache::get($keyDaily, []);
+            $savedData = [];
+            // dump($cachedDaily);
+            foreach ($cachedDaily as $key => $data) {
+                if(!$data[0]){continue;}
+                $date = isset($data[0]) ? $this->FormatDateTime($data[0]) : null;
+                $global_editor = isset($data[1]) ? $data[1] : null;
+                $author_contact = isset($data[2]) ? $data[2] : null;
+                $platform = isset($data[3]) ? $data[3] : null;
+                $username = isset($data[4]) ? $data[4] : null;
+                $title = isset($data[5]) ? $data[5] : null;
+                $book_status = isset($data[6]) ? $data[6] : null;
+                $latest_update = isset($data[7]) ? $data[7] : null;
+                $first_touch = isset($data[8]) ? $this->FormatDateTime($data[8]) : null;
+                $book_id = isset($data[9]) ? $data[9] : null;
+                $sent_e_contract = isset($data[10]) ? $this->FormatDateTime($data[10]) : null;
+                $officer = isset($data[11]) ? $data[11] : null;
+                $date_sent = isset($data[12]) ? $this->FormatDateTime($data[12]) : null;
+                $and_notes = isset($data[13]) ? $data[13] : null;
+                $global_editor_notes = isset($data[14]) ? $data[14] : null;
+                $solved_date = isset($data[15]) ? $this->FormatDateTime($data[15]) : null;
+                $pdf_evidence = isset($data[16]) ? $data[16] : null;
+                $rec_e_contract = isset($data[17]) ? $this->FormatDateTime($data[17]) : null;
+                $fu_1 = isset($data[18]) ? $this->FormatDateTime($data[18]) : null;
+                $fu_2 = isset($data[19]) ? $this->FormatDateTime($data[19]) : null;
+                $fu_3 = isset($data[20]) ? $this->FormatDateTime($data[20]) : null;
+                $fu_4 = isset($data[21]) ? $this->FormatDateTime($data[21]) : null;
+                $fu_5 = isset($data[22]) ? $this->FormatDateTime($data[22]) : null;
+                $marker_for_global = isset($data[23]) ? $data[23] : null;
+                $marker_for_and = isset($data[24]) ? $data[24] : null;
+                $email_sent = isset($data[25]) ? $this->FormatDateTime($data[25]) : null;
+                $batch_date = isset($data[26]) ? $this->FormatDateTime($data[26]) : null;
+                $and_evidence = isset($data[27]) ? $this->FormatDateTime($data[27]) : null;
+                $global_evidence = isset($data[28]) ? $this->FormatDateTime($data[28]) : null;
+                array_push($savedData, [
+                    'date' => $date,
+                    'global_editor' => $global_editor,
+                    'author_contact' => $author_contact,
+                    'platform' => $platform,
+                    'username' => $username,
+                    'title' => $title,
+                    'book_status' => $book_status,
+                    'latest_update' => $latest_update,
+                    'first_touch' => $first_touch,
+                    'book_id' => $book_id,
+                    'sent_e_contract' => $sent_e_contract,
+                    'officer' => $officer,
+                    'date_sent' => $date_sent,
+                    'and_notes' => $and_notes,
+                    'global_editor_notes' => $global_editor_notes,
+                    'solved_date' => $solved_date,
+                    'pdf_evidence' => $pdf_evidence,
+                    'rec_e_contract' => $rec_e_contract,
+                    'fu_1' => $fu_1,
+                    'fu_2' => $fu_2,
+                    'fu_3' => $fu_3,
+                    'fu_4' => $fu_4,
+                    'fu_5' => $fu_5,
+                    'marker_for_global' => $marker_for_global,
+                    'marker_for_and' => $marker_for_and,
+                    'email_sent' => $email_sent,
+                    'batch_date' => $batch_date,
+                    'and_evidence' => $and_evidence,
+                    'global_evidence' => $global_evidence,
+                ]);
+            }
+            NonExclusiveReport::insert($savedData);
         }
         return true;
     }
