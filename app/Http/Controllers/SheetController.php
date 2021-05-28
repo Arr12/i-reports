@@ -42,50 +42,51 @@ class SheetController extends Controller
         $values = $response->getValues();
         return $values;
     }
-    public function GetDailyReport(Request $request){
+    public function GetDailyReport($request = false){
         /*----------
         / GLOBAL
         --------------*/
-        if($request->input('d') == 'ame'){
+        $daily = $request ?: request()->input('d');
+        if($daily == 'ame'){
             $this->getDailyReportAme();
         }
-        else if($request->input('d') == 'anna'){
+        else if($daily == 'anna'){
             $this->getDailyReportAnna();
         }
-        else if($request->input('d') == 'carol'){
+        else if($daily == 'carol'){
             $this->getDailyReportCarol();
         }
-        else if($request->input('d') == 'eric'){
+        else if($daily == 'eric'){
             $this->getDailyReportEric();
         }
-        else if($request->input('d') == 'icha'){
+        else if($daily == 'icha'){
             $this->getDailyReportIcha();
         }
-        else if($request->input('d') == 'lily'){
+        else if($daily == 'lily'){
             $this->getDailyReportLily();
         }
-        else if($request->input('d') == 'maydewi'){
+        else if($daily == 'maydewi'){
             $this->getDailyReportMayDewi();
         }
-        else if($request->input('d') == 'rani'){
+        else if($daily == 'rani'){
             $this->getDailyReportRani();
         }
         /*-----------
         / INDO
         --------------*/
-        else if($request->input('d') == 'indo-ichanur'){
+        else if($daily == 'indo-ichanur'){
             $this->getDailyReportIndoIchaNur();
         }
-        else if($request->input('d') == 'indo-irel'){
+        else if($daily == 'indo-irel'){
             $this->getDailyReportIndoIrel();
         }
         /*-----------
         / EXCLUSIVE
         --------------*/
-        else if($request->input('d') == 'non-exclusive'){
+        else if($daily == 'non-exclusive'){
             $this->getNonExReport();
         }
-        else if($request->input('d') == 'all'){
+        else if($daily == 'all'){
             $this->getDailyReportAme();
             $this->getDailyReportAnna();
             $this->getDailyReportCarol();

@@ -3,6 +3,8 @@
 @push('before-style')
 @endpush
 @push('after-style')
+<!-- Bootstrap Select Css -->
+<link href="/plugins/bootstrap-select/css/bootstrap-select.css" rel="stylesheet" />
 <!-- JQuery DataTable Css -->
 <link href="/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
 @endpush
@@ -22,14 +24,14 @@
 
 {{-- <script src="/js/pages/tables/jquery-datatable.js"></script> --}}
 <script>
-let TabelGlobalDaily = function(url){
-    $('#FormTabelGlobalDaily').html(createSkeleton(1));
+let Tabel = function(url){
+    $('#FormTabel').html(createSkeleton(1));
     $.ajax( {
         url: url,
         dataType: "json",
         success:function(json) {
-            $('#FormTabelGlobalDaily').html("<table id='TabelGlobalDaily' class='table table-bordered table-striped table-hover'></table>");
-            $('#TabelGlobalDaily').DataTable(json);
+            $('#FormTabel').html("<table id='Tabel' class='table table-bordered table-striped table-hover'></table>");
+            $('#Tabel').DataTable(json);
             let arr = [];
             for(let i=0;i<json.columns.length;i++){
                 let title = json.columns[i].title;
@@ -38,13 +40,13 @@ let TabelGlobalDaily = function(url){
             let combine = arr.join();
             let fix = combine.replace(/,/g, '');
             $("#data-column").html(fix);
-            let table = $('#TabelGlobalDaily').DataTable({
+            let table = $('#Tabel').DataTable({
                 dom: 'Bfrtip',
                 responsive: true,
                 buttons: ['copy', 'excel'],
                 destroy: true,
                 searching: true,
-                order: [[0,'desc']]
+                // order: [[0,'desc']]
             });
             $('a.toggle-vis').on( 'click', function (e) {
                 e.preventDefault();
@@ -59,25 +61,27 @@ let TabelGlobalDaily = function(url){
     });
 }
 $(document).ready(function(){
-    let url = "{{route('daily-report-global.lilies.data')}}";
-    TabelGlobalDaily(url);
-    $(document).on('click','#getDataDaily',function(){
-        $('#FormTabelGlobalDaily').html(createSkeleton(1));
-        let url_dx = $(this).attr('data-href');
+    $(document).on('change','#SMonth',function(){
         $.ajax({
-            url: url_dx,
+            url:"{{route('all-report.date-weekly')}}?m="+$(this).val(),
+            type:'GET',
             success:function(json) {
-                if(json == "200"){
-                    $("#alert_success").show();
-                    $("#alert_danger").hide();
-                }else if(json == "400"){
-                    $("#alert_success").hide();
-                    $("#alert_danger").show();
-                }else{
-                    $("#alert_success").show();
-                    $("#alert_danger").hide();
-                }
-                TabelGlobalDaily(url);
+                $("#SWeekForm").html("<select class='form-control show-tick' id='SWeek' name='week'><option value=''>Select Weeks</option>"+json.option+"</select>");
+                $(document).on('click','#ShowData',function(){
+                    if($("#SWeekForm").val()!=null&&$("#SReport").val()!=null){
+                        $('#FormTabel').html(createSkeleton(1));
+                        let a = $('#SReport').val();
+                        let b = $('#SMonth').val();
+                        let c = $('#SWeek').val();
+                        let url_dx = "{{route('all-report.weekly.data')}}?r="+a+"&mon="+b+"&w="+c;
+                        $.ajax({
+                            url: url_dx,
+                            success:function(json) {
+                                Tabel(url_dx);
+                            }
+                        });
+                    }
+                });
             }
         });
     });
@@ -91,25 +95,27 @@ $(document).ready(function(){
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="card">
             <div class="header">
-                <h2>
-                    Global Daily Report Lily
-                </h2>
-                <ul class="header-dropdown m-r--5">
-                    <li class="dropdown">
-                        <button id='getDataDaily' data-href="{{route('api.dailyReport.get')}}?d=ame" role="button" aria-haspopup="true" aria-expanded="false">
-                            <i class="material-icons">sync</i> Get Data Daily
-                        </button>
-                    </li>
-                </ul>
+                <h2>Lv.2 Weekly Report</h2>
             </div>
             <div class="body">
-                <div class="alert alert-success alert-dismissible" role="alert" id="alert_success" style="display: none;">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <strong>Success!</strong> Data has been updated!
-                </div>
-                <div class="alert alert-danger alert-dismissible" role="alert" id="alert_danger" style="display: none;">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <strong>Oh snap!</strong> Can't get data, check your internet connection or contact the creator!.
+                <div class="row clearfix">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                        <select class="form-control show-tick" id="SReport" name="person">
+                            <option value="">Select Reports</option>
+                            <option value="global">Global</option>
+                            <option value="indo">Indo</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                        <input type="month" id="SMonth" class="form-control" />
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="SWeekForm">
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <button class="btn btn-primary btn-block waves-effect" id="ShowData">
+                            <i class="material-icons">done</i> Show Data
+                        </button>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -117,7 +123,7 @@ $(document).ready(function(){
                         <div id="data-column"></div>
                     </div>
                 </div>
-                <div class="table-responsive" id="FormTabelGlobalDaily"></div>
+                <div class="table-responsive" id="FormTabel"></div>
             </div>
         </div>
     </div>

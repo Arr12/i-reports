@@ -46,6 +46,9 @@ Route::prefix('/team-monitoring')->name('team-monitoring.')->group(function(){
     Route::get('indo-data',[PageController::class, 'getIndoTeamMonitoring'])->name('indo.data');
 });
 Route::prefix('/all-report')->name('all-report.')->group(function(){
+    Route::get('get-date',[PageController::class, 'GetDateWeekly'])->name('date-weekly');
     Route::get('weekly',[PageController::class, 'WeeklyReport'])->name('weekly');
+    Route::get('weekly-data',[PageController::class, 'getWeeklyReport'])->name('weekly.data');
     Route::get('monthly',[PageController::class, 'MonthlyReport'])->name('monthly');
+    Route::get('monthly-data',[PageController::class, 'getMonthlyReport'])->name('monthly.data');
 });
