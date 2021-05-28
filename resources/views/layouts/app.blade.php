@@ -1,113 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <title>Welcome To | Global All Team Internal Report</title>
-    <!-- Favicon-->
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+        <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
 
-    @stack('before-stack')
-    <!-- Bootstrap Core Css -->
-    <link href="/plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
+        <!-- Styles -->
+        <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 
-    <!-- Waves Effect Css -->
-    <link href="/plugins/node-waves/waves.css" rel="stylesheet" />
+        @livewireStyles
 
-    <!-- Animation Css -->
-    <link href="/plugins/animate-css/animate.css" rel="stylesheet" />
+        <!-- Scripts -->
+        <script src="{{ mix('js/app.js') }}" defer></script>
+    </head>
+    <body class="font-sans antialiased">
+        <x-jet-banner />
 
-    <!-- Morris Chart Css-->
-    <link href="/plugins/morrisjs/morris.css" rel="stylesheet" />
+        <div class="min-h-screen bg-gray-100">
+            @livewire('navigation-menu')
 
-    {{-- Skeleton Load --}}
-    <link rel="stylesheet" href="/css/skeleton.css" rel="stylesheet" />
-
-    <!-- Custom Css -->
-    <link href="/css/style.css" rel="stylesheet">
-
-    <!-- Customize themes -->
-    <link href="/css/themes/all-themes.css" rel="stylesheet" />
-    @stack('after-style')
-</head>
-<body class="theme-red">
-    <!-- Page Loader -->
-    <div class="page-loader-wrapper">
-        <div class="loader">
-            <div class="preloader">
-                <div class="spinner-layer pl-red">
-                    <div class="circle-clipper left">
-                        <div class="circle"></div>
+            <!-- Page Heading -->
+            @if (isset($header))
+                <header class="bg-white shadow">
+                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                        {{ $header }}
                     </div>
-                    <div class="circle-clipper right">
-                        <div class="circle"></div>
-                    </div>
-                </div>
-            </div>
-            <p>Please wait...</p>
+                </header>
+            @endif
+
+            <!-- Page Content -->
+            <main>
+                {{ $slot }}
+            </main>
         </div>
-    </div>
-    <!-- #END# Page Loader -->
-    @include('components.header')
-    @include('components.navbar')
 
-    <section class="content">
-        <div class="container-fluid">
-            @yield('content')
-        </div>
-    </section>
+        @stack('modals')
 
-    @stack('before-script')
-    <!-- Jquery Core Js -->
-    <script src="/plugins/jquery/jquery.min.js"></script>
-
-    <!-- Bootstrap Core Js -->
-    <script src="/plugins/bootstrap/js/bootstrap.js"></script>
-
-    <!-- Select Plugin Js -->
-    <script src="/plugins/bootstrap-select/js/bootstrap-select.js"></script>
-
-    <!-- Slimscroll Plugin Js -->
-    <script src="/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
-
-    <!-- Waves Effect Plugin Js -->
-    <script src="/plugins/node-waves/waves.js"></script>
-
-    <!-- Jquery CountTo Plugin Js -->
-    <script src="/plugins/jquery-countto/jquery.countTo.js"></script>
-
-    <!-- Morris Plugin Js -->
-    <script src="/plugins/raphael/raphael.min.js"></script>
-    <script src="/plugins/morrisjs/morris.js"></script>
-
-    @stack('after-script')
-
-    <script>
-        function createSkeleton(limit){
-            var skeletonHTML = '';
-            for(var i = 0; i < limit; i++){
-                skeletonHTML += '<div class="skeletonWrapper">';
-                skeletonHTML += '<span class="react-skeleton-load animated">&zwnj;</span>';
-                skeletonHTML += '<span class="react-skeleton-load animated">&zwnj;</span>';
-                skeletonHTML += '<span class="react-skeleton-load animated">&zwnj;</span>';
-                skeletonHTML += '<span class="react-skeleton-load animated">&zwnj;</span>';
-                skeletonHTML += '<span class="react-skeleton-load animated">&zwnj;</span>';
-                skeletonHTML += '<span class="react-skeleton-load animated">&zwnj;</span>';
-                skeletonHTML += '</div>';
-            }
-            return skeletonHTML;
-        }
-    </script>
-    <!-- Custom Js -->
-    <script src="/js/admin.js"></script>
-
-    <!-- Demo Js -->
-    <script src="/js/demo.js"></script>
-</body>
+        @livewireScripts
+    </body>
 </html>

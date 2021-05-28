@@ -13,9 +13,6 @@ use App\Models\DailyReportLily;
 use App\Models\DailyReportMaydewi;
 use App\Models\DailyReportRani;
 use App\Models\NonExclusiveReport;
-use DateInterval;
-use DatePeriod;
-use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
@@ -91,55 +88,55 @@ class PageController extends Controller
         return $date;
     }
     public function index(){
-        return view('pages.home');
+        return view('admin.pages.home');
     }
     public function DailyReportAmes(){
-        return view('pages.daily-report.global.daily-report-ames');
+        return view('admin.pages.daily-report.global.daily-report-ames');
     }
     public function DailyReportAnnas(){
-        return view('pages.daily-report.global.daily-report-anna');
+        return view('admin.pages.daily-report.global.daily-report-anna');
     }
     public function DailyReportCarols(){
-        return view('pages.daily-report.global.daily-report-carol');
+        return view('admin.pages.daily-report.global.daily-report-carol');
     }
     public function DailyReportErics(){
-        return view('pages.daily-report.global.daily-report-eric');
+        return view('admin.pages.daily-report.global.daily-report-eric');
     }
     public function DailyReportIchas(){
-        return view('pages.daily-report.global.daily-report-icha');
+        return view('admin.pages.daily-report.global.daily-report-icha');
     }
     public function DailyReportLilies(){
-        return view('pages.daily-report.global.daily-report-lily');
+        return view('admin.pages.daily-report.global.daily-report-lily');
     }
     public function DailyReportMayDewis(){
-        return view('pages.daily-report.global.daily-report-maydewi');
+        return view('admin.pages.daily-report.global.daily-report-maydewi');
     }
     public function DailyReportRanis(){
-        return view('pages.daily-report.global.daily-report-rani');
+        return view('admin.pages.daily-report.global.daily-report-rani');
     }
     public function DailyReportIndoIchaNurs(){
-        return view('pages.daily-report.indo.daily-report-indo-icha-nur');
+        return view('admin.pages.daily-report.indo.daily-report-indo-icha-nur');
     }
     public function DailyReportIndoIrels(){
-        return view('pages.daily-report.indo.daily-report-indo-irel');
+        return view('admin.pages.daily-report.indo.daily-report-indo-irel');
     }
     public function GlobalTeamMonitoring(){
         $person = $this->personGlobal;
-        return view('pages.team-monitoring.global',[
+        return view('admin.pages.team-monitoring.global',[
             'person' => $person
         ]);
     }
     public function IndoTeamMonitoring(){
         $person = $this->personIndo;
-        return view('pages.team-monitoring.indo',[
+        return view('admin.pages.team-monitoring.indo',[
             'person' => $person
         ]);
     }
     public function MonthlyReport(){
-        return view('pages.all-report.monthly');
+        return view('admin.pages.all-report.monthly');
     }
     public function WeeklyReport(){
-        return view('pages.all-report.weekly');
+        return view('admin.pages.all-report.weekly');
     }
 
     /*---------------------------------------
