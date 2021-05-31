@@ -62,8 +62,7 @@ class PageController extends Controller
             'startdate' => [],
             'enddate' => []
         ];
-        do
-        {
+        do{
             $weekday= date("w",$currdt);
             $nextday=7-$weekday;
             $endday=abs($weekday-6);
@@ -77,8 +76,8 @@ class PageController extends Controller
         }while($endarr[$i-1]<$nextmonth);
         return $date;
     }
-    public function GetDateWeekly(Request $request){
-        $date_i = $request->input('m');
+    public function GetDateWeekly($request = false){
+        $date_i = $request ?: request()->input('m');
         $yd = $this->WeekFromDate($date_i);
         foreach($yd['c_week'] as $key => $data){
             $startdate = $yd['startdate'][$key];
@@ -150,31 +149,32 @@ class PageController extends Controller
         --------------- */
         $data_array['columns'] = [];
         $data_array['data'] = [];
-        $title = ["No.",
-        "Date",
-        "Status",
-        "Media",
-        "Author Contact",
-        "Inquiries",
-        "Platform",
-        "Username",
-        "Title",
-        "Webnovel Username",
-        "CBID/Book ID",
-        "Title",
-        "Genre",
-        "Plot",
-        "4K+?",
-        "Maintain Account",
-        "Follow up 1",
-        "Follow up 2",
-        "Follow up 3",
-        "Follow up 4",
-        "Follow up 5",
-        "Data Sent Royalty",
-        "Data Sent Non Exclusive",
-        "Marker",
-        "Old/New Book"
+        $title = [
+            "No.",
+            "Date",
+            "Status",
+            "Media",
+            "Author Contact",
+            "Inquiries",
+            "Platform",
+            "Username",
+            "Title",
+            "Webnovel Username",
+            "CBID/Book ID",
+            "Title",
+            "Genre",
+            "Plot",
+            "4K+?",
+            "Maintain Account",
+            "Follow up 1",
+            "Follow up 2",
+            "Follow up 3",
+            "Follow up 4",
+            "Follow up 5",
+            "Data Sent Royalty",
+            "Data Sent Non Exclusive",
+            "Marker",
+            "Old/New Book"
         ];
         foreach ($title as $key => $value) {
             array_push($data_array['columns'], ["title" => $value]);
@@ -805,6 +805,76 @@ class PageController extends Controller
     /*---------------------------------------
     | LV 1 ALL TEAM REPORT
     -----------------------------------------*/
+    public function DataAme($startdate, $enddate){
+        $d['daily'] = DailyReportAme::whereBetween('date', [$startdate,$enddate])
+            ->orderBy('id','DESC')
+            ->get();
+        $editor = 'Ashley';
+        $d['non_ex'] = $this->DataNonExclusive($startdate,$enddate,$editor);
+        return $d;
+    }
+    public function DataAnna($startdate, $enddate){
+        $d['daily'] = DailyReportAnna::whereBetween('date', [$startdate,$enddate])
+            ->orderBy('id','DESC')
+            ->get();
+        $editor = 'Erica';
+        $d['non_ex'] = $this->DataNonExclusive($startdate,$enddate,$editor);
+        return $d;
+    }
+    public function DataCarol($startdate, $enddate){
+        $d['daily'] = DailyReportCarol::whereBetween('date', [$startdate,$enddate])
+            ->orderBy('id','DESC')
+            ->get();
+        $editor = 'Destiny';
+        $d['non_ex'] = $this->DataNonExclusive($startdate,$enddate,$editor);
+        return $d;
+    }
+    public function DataEric($startdate, $enddate){
+        $d['daily'] = DailyReportEric::whereBetween('date', [$startdate,$enddate])
+            ->orderBy('id','DESC')
+            ->get();
+        $editor = 'Cornelia';
+        $d['non_ex'] = $this->DataNonExclusive($startdate,$enddate,$editor);
+        return $d;
+    }
+    public function DataIcha($startdate, $enddate){
+        $d['daily'] = DailyReportIcha::whereBetween('date', [$startdate,$enddate])
+            ->orderBy('id','DESC')
+            ->get();
+        $editor = 'Claire';
+        $d['non_ex'] = $this->DataNonExclusive($startdate,$enddate,$editor);
+        return $d;
+    }
+    public function DataLily($startdate, $enddate){
+        $d['daily'] = DailyReportLily::whereBetween('date', [$startdate,$enddate])
+            ->orderBy('id','DESC')
+            ->get();
+        $editor = 'Ensia';
+        $d['non_ex'] = $this->DataNonExclusive($startdate,$enddate,$editor);
+        return $d;
+    }
+    public function DataMaydewi($startdate, $enddate){
+        $d['daily'] = DailyReportMaydewi::whereBetween('date', [$startdate,$enddate])
+            ->orderBy('id','DESC')
+            ->get();
+        $editor = 'Serena';
+        $d['non_ex'] = $this->DataNonExclusive($startdate,$enddate,$editor);
+        return $d;
+    }
+    public function DataRani($startdate, $enddate){
+        $d['daily'] = DailyReportRani::whereBetween('date', [$startdate,$enddate])
+            ->orderBy('id','DESC')
+            ->get();
+        $editor = 'Aurora';
+        $d['non_ex'] = $this->DataNonExclusive($startdate,$enddate,$editor);
+        return $d;
+    }
+    public function DataNonExclusive($startdate, $enddate, $editor){
+        $dn = NonExclusiveReport::where('global_editor', '=', $editor)
+            ->whereBetween('date', [$startdate,$enddate])->orderBy('id','DESC')
+            ->get();
+        return $dn;
+    }
     public function getGlobalTeamMonitoring(Request $request){
         $person = Str::slug($request->input('mod'));
         $month = $request->input('mon');
@@ -862,17 +932,21 @@ class PageController extends Controller
             array_push($data_array['columns'], ["title" => $value]);
         }
         $xdate = explode(",", $date);
-        $d = DailyReportAme::whereBetween('date', [$xdate[0],$xdate[1]])
-            ->orderBy('id','DESC')
-            ->get();
-        $dn = NonExclusiveReport::where('global_editor','=','Ashley')
-        ->whereBetween('date', [$xdate[0],$xdate[1]])->orderBy('id','DESC')
-        ->get();
+        $d = $this->DataAme($xdate[0], $xdate[1]);
         // dd($d);
         $dateRange = $this->dateRange($xdate[0],$xdate[1]);
         $no = 1;
         array_push($data_array['data'], [
-            $no++,"Monthly Total",$d->whereNotNull('date')->count(),$d->whereNotNull('fu_1')->count()+$d->whereNotNull('fu_2')->count()+$d->whereNotNull('fu_3')->count()+$d->whereNotNull('fu_4')->count()+$d->whereNotNull('fu_5')->count(),$dn->whereNotNull('fu_1')->count()+$dn->whereNotNull('fu_2')->count()+$dn->whereNotNull('fu_3')->count()+$dn->whereNotNull('fu_4')->count()+$dn->whereNotNull('fu_5')->count(),$dn->whereNotNull('sent_e_contract')->count(),$dn->whereNotNull('rec_e_contract')->count(),$dn->whereNotNull('email_sent')->count(),$d->whereNotNull('sent_royalty')->count()
+            $no++,
+            "Monthly Total",
+            $d['daily']->whereNotNull('date')->count(),
+            $d['non_ex']->whereNotNull('first_touch')->count(),
+            $d['daily']->whereNotNull('fu_1')->count()+$d['daily']->whereNotNull('fu_2')->count()+$d['daily']->whereNotNull('fu_3')->count()+$d['daily']->whereNotNull('fu_4')->count()+$d['daily']->whereNotNull('fu_5')->count(),
+            $d['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+            $d['non_ex']->whereNotNull('sent_e_contract')->count(),
+            $d['non_ex']->whereNotNull('rec_e_contract')->count(),
+            $d['non_ex']->whereNotNull('email_sent')->count(),
+            $d['daily']->whereNotNull('sent_royalty')->count()
         ]);
         foreach($dateRange as $key => $date){
             $answer = [];
@@ -891,7 +965,7 @@ class PageController extends Controller
             $sent_e = [];
             $rec_e = [];
             $non_ex = [];
-            foreach ($d->where('date','=',$date) as $key => $dv) {
+            foreach ($d['daily']->where('date','=',$date) as $key => $dv) {
                 $dv->date!=null ? array_push($answer, $dv->date) : null;
                 $dv->fu_1!=null ? array_push($fu_1, $dv->fu_1) : null;
                 $dv->fu_2!=null ? array_push($fu_2, $dv->fu_2) : null;
@@ -900,7 +974,7 @@ class PageController extends Controller
                 $dv->fu_5!=null ? array_push($fu_5, $dv->fu_5) : null;
                 $dv->sent_royalty!=null ? array_push($royalty, $dv->sent_royalty) : null;
             }
-            foreach ($dn->where('date','=',$date) as $key => $dv) {
+            foreach ($d['non_ex']->where('date','=',$date) as $key => $dv) {
                 // dump($dv);
                 $dv->first_touch!=null ? array_push($n_auth_non_ex, $dv->first_touch) : null;
                 $dv->fu_non_ex_1!=null ? array_push($fu_non_ex_1, $dv->fu_non_ex_1) : null;
@@ -948,17 +1022,21 @@ class PageController extends Controller
             array_push($data_array['columns'], ["title" => $value]);
         }
         $xdate = explode(",", $date);
-        $d = DailyReportAnna::whereBetween('date', [$xdate[0],$xdate[1]])
-            ->orderBy('id','DESC')
-            ->get();
-        $dn = NonExclusiveReport::where('global_editor','=','Erica')
-        ->whereBetween('date', [$xdate[0],$xdate[1]])->orderBy('id','DESC')
-        ->get();
+        $d = $this->DataAnna($xdate[0], $xdate[1]);
         // dd($d);
         $dateRange = $this->dateRange($xdate[0],$xdate[1]);
         $no = 1;
         array_push($data_array['data'], [
-            $no++,"Monthly Total",$d->whereNotNull('date')->count(),$d->whereNotNull('fu_1')->count()+$d->whereNotNull('fu_2')->count()+$d->whereNotNull('fu_3')->count()+$d->whereNotNull('fu_4')->count()+$d->whereNotNull('fu_5')->count(),$dn->whereNotNull('fu_1')->count()+$dn->whereNotNull('fu_2')->count()+$dn->whereNotNull('fu_3')->count()+$dn->whereNotNull('fu_4')->count()+$dn->whereNotNull('fu_5')->count(),$dn->whereNotNull('sent_e_contract')->count(),$dn->whereNotNull('rec_e_contract')->count(),$dn->whereNotNull('email_sent')->count(),$d->whereNotNull('sent_royalty')->count()
+            $no++,
+            "Monthly Total",
+            $d['daily']->whereNotNull('date')->count(),
+            $d['non_ex']->whereNotNull('first_touch')->count(),
+            $d['daily']->whereNotNull('fu_1')->count()+$d['daily']->whereNotNull('fu_2')->count()+$d['daily']->whereNotNull('fu_3')->count()+$d['daily']->whereNotNull('fu_4')->count()+$d['daily']->whereNotNull('fu_5')->count(),
+            $d['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+            $d['non_ex']->whereNotNull('sent_e_contract')->count(),
+            $d['non_ex']->whereNotNull('rec_e_contract')->count(),
+            $d['non_ex']->whereNotNull('email_sent')->count(),
+            $d['daily']->whereNotNull('sent_royalty')->count()
         ]);
         foreach($dateRange as $key => $date){
             $answer = [];
@@ -977,7 +1055,7 @@ class PageController extends Controller
             $sent_e = [];
             $rec_e = [];
             $non_ex = [];
-            foreach ($d->where('date','=',$date) as $key => $dv) {
+            foreach ($d['daily']->where('date','=',$date) as $key => $dv) {
                 $dv->date!=null ? array_push($answer, $dv->date) : null;
                 $dv->fu_1!=null ? array_push($fu_1, $dv->fu_1) : null;
                 $dv->fu_2!=null ? array_push($fu_2, $dv->fu_2) : null;
@@ -986,7 +1064,7 @@ class PageController extends Controller
                 $dv->fu_5!=null ? array_push($fu_5, $dv->fu_5) : null;
                 $dv->sent_royalty!=null ? array_push($royalty, $dv->sent_royalty) : null;
             }
-            foreach ($dn->where('date','=',$date) as $key => $dv) {
+            foreach ($d['non_ex']->where('date','=',$date) as $key => $dv) {
                 // dump($dv);
                 $dv->first_touch!=null ? array_push($n_auth_non_ex, $dv->first_touch) : null;
                 $dv->fu_non_ex_1!=null ? array_push($fu_non_ex_1, $dv->fu_non_ex_1) : null;
@@ -1034,17 +1112,21 @@ class PageController extends Controller
             array_push($data_array['columns'], ["title" => $value]);
         }
         $xdate = explode(",", $date);
-        $d = DailyReportCarol::whereBetween('date', [$xdate[0],$xdate[1]])
-            ->orderBy('id','DESC')
-            ->get();
-        $dn = NonExclusiveReport::where('global_editor','=','Destiny')
-        ->whereBetween('date', [$xdate[0],$xdate[1]])->orderBy('id','DESC')
-        ->get();
+        $d = $this->DataCarol($xdate[0], $xdate[1]);
         // dd($d);
         $dateRange = $this->dateRange($xdate[0],$xdate[1]);
         $no = 1;
         array_push($data_array['data'], [
-            $no++,"Monthly Total",$d->whereNotNull('date')->count(),$d->whereNotNull('fu_1')->count()+$d->whereNotNull('fu_2')->count()+$d->whereNotNull('fu_3')->count()+$d->whereNotNull('fu_4')->count()+$d->whereNotNull('fu_5')->count(),$dn->whereNotNull('fu_1')->count()+$dn->whereNotNull('fu_2')->count()+$dn->whereNotNull('fu_3')->count()+$dn->whereNotNull('fu_4')->count()+$dn->whereNotNull('fu_5')->count(),$dn->whereNotNull('sent_e_contract')->count(),$dn->whereNotNull('rec_e_contract')->count(),$dn->whereNotNull('email_sent')->count(),$d->whereNotNull('sent_royalty')->count()
+            $no++,
+            "Monthly Total",
+            $d['daily']->whereNotNull('date')->count(),
+            $d['non_ex']->whereNotNull('first_touch')->count(),
+            $d['daily']->whereNotNull('fu_1')->count()+$d['daily']->whereNotNull('fu_2')->count()+$d['daily']->whereNotNull('fu_3')->count()+$d['daily']->whereNotNull('fu_4')->count()+$d['daily']->whereNotNull('fu_5')->count(),
+            $d['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+            $d['non_ex']->whereNotNull('sent_e_contract')->count(),
+            $d['non_ex']->whereNotNull('rec_e_contract')->count(),
+            $d['non_ex']->whereNotNull('email_sent')->count(),
+            $d['daily']->whereNotNull('sent_royalty')->count()
         ]);
         foreach($dateRange as $key => $date){
             $answer = [];
@@ -1063,7 +1145,7 @@ class PageController extends Controller
             $sent_e = [];
             $rec_e = [];
             $non_ex = [];
-            foreach ($d->where('date','=',$date) as $key => $dv) {
+            foreach ($d['daily']->where('date','=',$date) as $key => $dv) {
                 $dv->date!=null ? array_push($answer, $dv->date) : null;
                 $dv->fu_1!=null ? array_push($fu_1, $dv->fu_1) : null;
                 $dv->fu_2!=null ? array_push($fu_2, $dv->fu_2) : null;
@@ -1072,7 +1154,7 @@ class PageController extends Controller
                 $dv->fu_5!=null ? array_push($fu_5, $dv->fu_5) : null;
                 $dv->sent_royalty!=null ? array_push($royalty, $dv->sent_royalty) : null;
             }
-            foreach ($dn->where('date','=',$date) as $key => $dv) {
+            foreach ($d['non_ex']->where('date','=',$date) as $key => $dv) {
                 // dump($dv);
                 $dv->first_touch!=null ? array_push($n_auth_non_ex, $dv->first_touch) : null;
                 $dv->fu_non_ex_1!=null ? array_push($fu_non_ex_1, $dv->fu_non_ex_1) : null;
@@ -1120,17 +1202,20 @@ class PageController extends Controller
             array_push($data_array['columns'], ["title" => $value]);
         }
         $xdate = explode(",", $date);
-        $d = DailyReportEric::whereBetween('date', [$xdate[0],$xdate[1]])
-            ->orderBy('id','DESC')
-            ->get();
-        $dn = NonExclusiveReport::where('global_editor','=','Cornelia')
-        ->whereBetween('date', [$xdate[0],$xdate[1]])->orderBy('id','DESC')
-        ->get();
+        $d = $this->DataEric($xdate[0], $xdate[1]);
         // dd($d);
         $dateRange = $this->dateRange($xdate[0],$xdate[1]);
         $no = 1;
         array_push($data_array['data'], [
-            $no++,"Monthly Total",$d->whereNotNull('date')->count(),$d->whereNotNull('fu_1')->count()+$d->whereNotNull('fu_2')->count()+$d->whereNotNull('fu_3')->count()+$d->whereNotNull('fu_4')->count()+$d->whereNotNull('fu_5')->count(),$dn->whereNotNull('fu_1')->count()+$dn->whereNotNull('fu_2')->count()+$dn->whereNotNull('fu_3')->count()+$dn->whereNotNull('fu_4')->count()+$dn->whereNotNull('fu_5')->count(),$dn->whereNotNull('sent_e_contract')->count(),$dn->whereNotNull('rec_e_contract')->count(),$dn->whereNotNull('email_sent')->count(),$d->whereNotNull('sent_royalty')->count()
+            $no++,"Monthly Total",
+            $d['daily']->whereNotNull('date')->count(),
+            $d['non_ex']->whereNotNull('first_touch')->count(),
+            $d['daily']->whereNotNull('fu_1')->count()+$d['daily']->whereNotNull('fu_2')->count()+$d['daily']->whereNotNull('fu_3')->count()+$d['daily']->whereNotNull('fu_4')->count()+$d['daily']->whereNotNull('fu_5')->count(),
+            $d['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+            $d['non_ex']->whereNotNull('sent_e_contract')->count(),
+            $d['non_ex']->whereNotNull('rec_e_contract')->count(),
+            $d['non_ex']->whereNotNull('email_sent')->count(),
+            $d['daily']->whereNotNull('sent_royalty')->count()
         ]);
         foreach($dateRange as $key => $date){
             $answer = [];
@@ -1149,7 +1234,7 @@ class PageController extends Controller
             $sent_e = [];
             $rec_e = [];
             $non_ex = [];
-            foreach ($d->where('date','=',$date) as $key => $dv) {
+            foreach ($d['daily']->where('date','=',$date) as $key => $dv) {
                 $dv->date!=null ? array_push($answer, $dv->date) : null;
                 $dv->fu_1!=null ? array_push($fu_1, $dv->fu_1) : null;
                 $dv->fu_2!=null ? array_push($fu_2, $dv->fu_2) : null;
@@ -1158,7 +1243,7 @@ class PageController extends Controller
                 $dv->fu_5!=null ? array_push($fu_5, $dv->fu_5) : null;
                 $dv->sent_royalty!=null ? array_push($royalty, $dv->sent_royalty) : null;
             }
-            foreach ($dn->where('date','=',$date) as $key => $dv) {
+            foreach ($d['non_ex']->where('date','=',$date) as $key => $dv) {
                 // dump($dv);
                 $dv->first_touch!=null ? array_push($n_auth_non_ex, $dv->first_touch) : null;
                 $dv->fu_non_ex_1!=null ? array_push($fu_non_ex_1, $dv->fu_non_ex_1) : null;
@@ -1206,17 +1291,20 @@ class PageController extends Controller
             array_push($data_array['columns'], ["title" => $value]);
         }
         $xdate = explode(",", $date);
-        $d = DailyReportIcha::whereBetween('date', [$xdate[0],$xdate[1]])
-            ->orderBy('id','DESC')
-            ->get();
-        $dn = NonExclusiveReport::where('global_editor','=','Claire')
-        ->whereBetween('date', [$xdate[0],$xdate[1]])->orderBy('id','DESC')
-        ->get();
+        $d = $this->DataIcha($xdate[0], $xdate[1]);
         // dd($d);
         $dateRange = $this->dateRange($xdate[0],$xdate[1]);
         $no = 1;
         array_push($data_array['data'], [
-            $no++,"Monthly Total",$d->whereNotNull('date')->count(),$d->whereNotNull('fu_1')->count()+$d->whereNotNull('fu_2')->count()+$d->whereNotNull('fu_3')->count()+$d->whereNotNull('fu_4')->count()+$d->whereNotNull('fu_5')->count(),$dn->whereNotNull('fu_1')->count()+$dn->whereNotNull('fu_2')->count()+$dn->whereNotNull('fu_3')->count()+$dn->whereNotNull('fu_4')->count()+$dn->whereNotNull('fu_5')->count(),$dn->whereNotNull('sent_e_contract')->count(),$dn->whereNotNull('rec_e_contract')->count(),$dn->whereNotNull('email_sent')->count(),$d->whereNotNull('sent_royalty')->count()
+            $no++,"Monthly Total",
+            $d['daily']->whereNotNull('date')->count(),
+            $d['non_ex']->whereNotNull('first_touch')->count(),
+            $d['daily']->whereNotNull('fu_1')->count()+$d['daily']->whereNotNull('fu_2')->count()+$d['daily']->whereNotNull('fu_3')->count()+$d['daily']->whereNotNull('fu_4')->count()+$d['daily']->whereNotNull('fu_5')->count(),
+            $d['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+            $d['non_ex']->whereNotNull('sent_e_contract')->count(),
+            $d['non_ex']->whereNotNull('rec_e_contract')->count(),
+            $d['non_ex']->whereNotNull('email_sent')->count(),
+            $d['daily']->whereNotNull('sent_royalty')->count()
         ]);
         foreach($dateRange as $key => $date){
             $answer = [];
@@ -1235,7 +1323,7 @@ class PageController extends Controller
             $sent_e = [];
             $rec_e = [];
             $non_ex = [];
-            foreach ($d->where('date','=',$date) as $key => $dv) {
+            foreach ($d['daily']->where('date','=',$date) as $key => $dv) {
                 $dv->date!=null ? array_push($answer, $dv->date) : null;
                 $dv->fu_1!=null ? array_push($fu_1, $dv->fu_1) : null;
                 $dv->fu_2!=null ? array_push($fu_2, $dv->fu_2) : null;
@@ -1244,7 +1332,7 @@ class PageController extends Controller
                 $dv->fu_5!=null ? array_push($fu_5, $dv->fu_5) : null;
                 $dv->sent_royalty!=null ? array_push($royalty, $dv->sent_royalty) : null;
             }
-            foreach ($dn->where('date','=',$date) as $key => $dv) {
+            foreach ($d['non_ex']->where('date','=',$date) as $key => $dv) {
                 // dump($dv);
                 $dv->first_touch!=null ? array_push($n_auth_non_ex, $dv->first_touch) : null;
                 $dv->fu_non_ex_1!=null ? array_push($fu_non_ex_1, $dv->fu_non_ex_1) : null;
@@ -1292,17 +1380,20 @@ class PageController extends Controller
             array_push($data_array['columns'], ["title" => $value]);
         }
         $xdate = explode(",", $date);
-        $d = DailyReportLily::whereBetween('date', [$xdate[0],$xdate[1]])
-            ->orderBy('id','DESC')
-            ->get();
-        $dn = NonExclusiveReport::where('global_editor','=','Ensia')
-        ->whereBetween('date', [$xdate[0],$xdate[1]])->orderBy('id','DESC')
-        ->get();
+        $d = $this->DataLily($xdate[0], $xdate[1]);
         // dd($d);
         $dateRange = $this->dateRange($xdate[0],$xdate[1]);
         $no = 1;
         array_push($data_array['data'], [
-            $no++,"Monthly Total",$d->whereNotNull('date')->count(),$d->whereNotNull('fu_1')->count()+$d->whereNotNull('fu_2')->count()+$d->whereNotNull('fu_3')->count()+$d->whereNotNull('fu_4')->count()+$d->whereNotNull('fu_5')->count(),$dn->whereNotNull('fu_1')->count()+$dn->whereNotNull('fu_2')->count()+$dn->whereNotNull('fu_3')->count()+$dn->whereNotNull('fu_4')->count()+$dn->whereNotNull('fu_5')->count(),$dn->whereNotNull('sent_e_contract')->count(),$dn->whereNotNull('rec_e_contract')->count(),$dn->whereNotNull('email_sent')->count(),$d->whereNotNull('sent_royalty')->count()
+            $no++,"Monthly Total",
+            $d['daily']->whereNotNull('date')->count(),
+            $d['non_ex']->whereNotNull('first_touch')->count(),
+            $d['daily']->whereNotNull('fu_1')->count()+$d['daily']->whereNotNull('fu_2')->count()+$d['daily']->whereNotNull('fu_3')->count()+$d['daily']->whereNotNull('fu_4')->count()+$d['daily']->whereNotNull('fu_5')->count(),
+            $d['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+            $d['non_ex']->whereNotNull('sent_e_contract')->count(),
+            $d['non_ex']->whereNotNull('rec_e_contract')->count(),
+            $d['non_ex']->whereNotNull('email_sent')->count(),
+            $d['daily']->whereNotNull('sent_royalty')->count()
         ]);
         foreach($dateRange as $key => $date){
             $answer = [];
@@ -1321,7 +1412,7 @@ class PageController extends Controller
             $sent_e = [];
             $rec_e = [];
             $non_ex = [];
-            foreach ($d->where('date','=',$date) as $key => $dv) {
+            foreach ($d['daily']->where('date','=',$date) as $key => $dv) {
                 $dv->date!=null ? array_push($answer, $dv->date) : null;
                 $dv->fu_1!=null ? array_push($fu_1, $dv->fu_1) : null;
                 $dv->fu_2!=null ? array_push($fu_2, $dv->fu_2) : null;
@@ -1330,7 +1421,7 @@ class PageController extends Controller
                 $dv->fu_5!=null ? array_push($fu_5, $dv->fu_5) : null;
                 $dv->sent_royalty!=null ? array_push($royalty, $dv->sent_royalty) : null;
             }
-            foreach ($dn->where('date','=',$date) as $key => $dv) {
+            foreach ($d['non_ex']->where('date','=',$date) as $key => $dv) {
                 // dump($dv);
                 $dv->first_touch!=null ? array_push($n_auth_non_ex, $dv->first_touch) : null;
                 $dv->fu_non_ex_1!=null ? array_push($fu_non_ex_1, $dv->fu_non_ex_1) : null;
@@ -1378,17 +1469,20 @@ class PageController extends Controller
             array_push($data_array['columns'], ["title" => $value]);
         }
         $xdate = explode(",", $date);
-        $d = DailyReportMaydewi::whereBetween('date', [$xdate[0],$xdate[1]])
-            ->orderBy('id','DESC')
-            ->get();
-        $dn = NonExclusiveReport::where('global_editor','=','Serena')
-        ->whereBetween('date', [$xdate[0],$xdate[1]])->orderBy('id','DESC')
-        ->get();
+        $d = $this->DataMaydewi($xdate[0], $xdate[1]);
         // dd($d);
         $dateRange = $this->dateRange($xdate[0],$xdate[1]);
         $no = 1;
         array_push($data_array['data'], [
-            $no++,"Monthly Total",$d->whereNotNull('date')->count(),$d->whereNotNull('fu_1')->count()+$d->whereNotNull('fu_2')->count()+$d->whereNotNull('fu_3')->count()+$d->whereNotNull('fu_4')->count()+$d->whereNotNull('fu_5')->count(),$dn->whereNotNull('fu_1')->count()+$dn->whereNotNull('fu_2')->count()+$dn->whereNotNull('fu_3')->count()+$dn->whereNotNull('fu_4')->count()+$dn->whereNotNull('fu_5')->count(),$dn->whereNotNull('sent_e_contract')->count(),$dn->whereNotNull('rec_e_contract')->count(),$dn->whereNotNull('email_sent')->count(),$d->whereNotNull('sent_royalty')->count()
+            $no++,"Monthly Total",
+            $d['daily']->whereNotNull('date')->count(),
+            $d['non_ex']->whereNotNull('first_touch')->count(),
+            $d['daily']->whereNotNull('fu_1')->count()+$d['daily']->whereNotNull('fu_2')->count()+$d['daily']->whereNotNull('fu_3')->count()+$d['daily']->whereNotNull('fu_4')->count()+$d['daily']->whereNotNull('fu_5')->count(),
+            $d['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+            $d['non_ex']->whereNotNull('sent_e_contract')->count(),
+            $d['non_ex']->whereNotNull('rec_e_contract')->count(),
+            $d['non_ex']->whereNotNull('email_sent')->count(),
+            $d['daily']->whereNotNull('sent_royalty')->count()
         ]);
         foreach($dateRange as $key => $date){
             $answer = [];
@@ -1407,7 +1501,7 @@ class PageController extends Controller
             $sent_e = [];
             $rec_e = [];
             $non_ex = [];
-            foreach ($d->where('date','=',$date) as $key => $dv) {
+            foreach ($d['daily']->where('date','=',$date) as $key => $dv) {
                 $dv->date!=null ? array_push($answer, $dv->date) : null;
                 $dv->fu_1!=null ? array_push($fu_1, $dv->fu_1) : null;
                 $dv->fu_2!=null ? array_push($fu_2, $dv->fu_2) : null;
@@ -1416,7 +1510,7 @@ class PageController extends Controller
                 $dv->fu_5!=null ? array_push($fu_5, $dv->fu_5) : null;
                 $dv->sent_royalty!=null ? array_push($royalty, $dv->sent_royalty) : null;
             }
-            foreach ($dn->where('date','=',$date) as $key => $dv) {
+            foreach ($d['non_ex']->where('date','=',$date) as $key => $dv) {
                 // dump($dv);
                 $dv->first_touch!=null ? array_push($n_auth_non_ex, $dv->first_touch) : null;
                 $dv->fu_non_ex_1!=null ? array_push($fu_non_ex_1, $dv->fu_non_ex_1) : null;
@@ -1461,17 +1555,20 @@ class PageController extends Controller
             "Royalty"
         ];
         $xdate = explode(",", $date);
-        $d = DailyReportRani::whereBetween('date', [$xdate[0],$xdate[1]])
-            ->orderBy('id','DESC')
-            ->get();
-        $dn = NonExclusiveReport::where('global_editor','=','Aurora')
-        ->whereBetween('date', [$xdate[0],$xdate[1]])->orderBy('id','DESC')
-        ->get();
+        $d = $this->DataRani($xdate[0], $xdate[1]);
         // dd($d);
         $dateRange = $this->dateRange($xdate[0],$xdate[1]);
         $no = 1;
         array_push($data_array['data'], [
-            $no++,"Monthly Total",$d->whereNotNull('date')->count(),$d->whereNotNull('fu_1')->count()+$d->whereNotNull('fu_2')->count()+$d->whereNotNull('fu_3')->count()+$d->whereNotNull('fu_4')->count()+$d->whereNotNull('fu_5')->count(),$dn->whereNotNull('fu_1')->count()+$dn->whereNotNull('fu_2')->count()+$dn->whereNotNull('fu_3')->count()+$dn->whereNotNull('fu_4')->count()+$dn->whereNotNull('fu_5')->count(),$dn->whereNotNull('sent_e_contract')->count(),$dn->whereNotNull('rec_e_contract')->count(),$dn->whereNotNull('email_sent')->count(),$d->whereNotNull('sent_royalty')->count()
+            $no++,"Monthly Total",
+            $d['daily']->whereNotNull('date')->count(),
+            $d['non_ex']->whereNotNull('first_touch')->count(),
+            $d['daily']->whereNotNull('fu_1')->count()+$d['daily']->whereNotNull('fu_2')->count()+$d['daily']->whereNotNull('fu_3')->count()+$d['daily']->whereNotNull('fu_4')->count()+$d['daily']->whereNotNull('fu_5')->count(),
+            $d['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+            $d['non_ex']->whereNotNull('sent_e_contract')->count(),
+            $d['non_ex']->whereNotNull('rec_e_contract')->count(),
+            $d['non_ex']->whereNotNull('email_sent')->count(),
+            $d['daily']->whereNotNull('sent_royalty')->count()
         ]);
         foreach($dateRange as $key => $date){
             $answer = [];
@@ -1490,7 +1587,7 @@ class PageController extends Controller
             $sent_e = [];
             $rec_e = [];
             $non_ex = [];
-            foreach ($d->where('date','=',$date) as $key => $dv) {
+            foreach ($d['daily']->where('date','=',$date) as $key => $dv) {
                 $dv->date!=null ? array_push($answer, $dv->date) : null;
                 $dv->fu_1!=null ? array_push($fu_1, $dv->fu_1) : null;
                 $dv->fu_2!=null ? array_push($fu_2, $dv->fu_2) : null;
@@ -1499,7 +1596,7 @@ class PageController extends Controller
                 $dv->fu_5!=null ? array_push($fu_5, $dv->fu_5) : null;
                 $dv->sent_royalty!=null ? array_push($royalty, $dv->sent_royalty) : null;
             }
-            foreach ($dn->where('date','=',$date) as $key => $dv) {
+            foreach ($d['non_ex']->where('date','=',$date) as $key => $dv) {
                 // dump($dv);
                 $dv->first_touch!=null ? array_push($n_auth_non_ex, $dv->first_touch) : null;
                 $dv->fu_non_ex_1!=null ? array_push($fu_non_ex_1, $dv->fu_non_ex_1) : null;

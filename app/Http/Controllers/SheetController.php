@@ -13,6 +13,11 @@ use App\Models\DailyReportLily;
 use App\Models\DailyReportMaydewi;
 use App\Models\DailyReportRani;
 use App\Models\NonExclusiveReport;
+use Google_Service_Sheets_BatchUpdateSpreadsheetRequest;
+use Google_Service_Sheets_Request;
+use Google_Service_Sheets_Spreadsheet;
+use Google_Service_Sheets_UpdateSheetPropertiesRequest;
+use Google_Service_Sheets_ValueRange;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
@@ -29,14 +34,81 @@ class SheetController extends Controller
         }
         return $date;
     }
-    public static function getApiSpreadsheet($spreadsheetId, $get_range){
+    public static function ApiSpreadsheet(){
         $client = new \Google_Client();
         $client->setApplicationName('Google Sheets and PHP');
         $client->setScopes([\Google_Service_Sheets::SPREADSHEETS]);
         $client->setAccessType('offline');
         $client->setAuthConfig(public_path('credentials/credentials.json'));
         $service = new \Google_Service_Sheets($client);
+        return $service;
+    }
+    /*--------------------------
+    | CREATE NEW SPREADSHEET
+    ----------------------------*/
+    public function CreateNewSpreadsheet($title){
+        $service = self::ApiSpreadsheet();
+        $spreadsheet = new Google_Service_Sheets_Spreadsheet([
+            'properties' => [
+                'title' => $title
+            ]
+        ]);
+        $spreadsheet = $service->spreadsheets->create($spreadsheet, [
+            'fields' => 'spreadsheetId'
+        ]);
+        return $spreadsheet->spreadsheetId;
+    }
+    public function CreateNewWorksheet($spreadsheetId,$title){
+        $service = self::ApiSpreadsheet();
+        $body = new Google_Service_Sheets_BatchUpdateSpreadsheetRequest([
+            'requests' => [
+                'addSheet' => [
+                    'properties' => [
+                        'title' => $title
+                    ]
+                ]
+            ]
+        ]);
 
+        $result = $service->spreadsheets->batchUpdate($spreadsheetId,$body);
+        return true;
+    }
+    public function UpdateSheetProperties($spreadsheetId, $update_sheet){
+        $service = self::ApiSpreadsheet();
+
+        // Get our spreadsheet
+        $spreadsheets = $service->spreadsheets->get($spreadsheetId);
+
+        // We get the current properties of the previously created sheet, indicating its identifier - 1
+        $SheetProperties = $spreadsheets->getSheets()[0]->getProperties();
+
+        // Set new name
+        $SheetProperties->setTitle($update_sheet);
+
+        // Object - request to update sheet properties
+        $UpdateSheetRequests = new Google_Service_Sheets_UpdateSheetPropertiesRequest();
+        $UpdateSheetRequests->setProperties($SheetProperties);
+
+        // We indicate which property we want to update
+        $UpdateSheetRequests->setFields('title');
+
+        // Object - sheet request
+        $SheetRequests = new Google_Service_Sheets_Request();
+        $SheetRequests->setUpdateSheetProperties($UpdateSheetRequests);
+
+        $requests = new Google_Service_Sheets_BatchUpdateSpreadsheetRequest();
+        $requests->setRequests($SheetRequests);
+
+        // Execute the request
+        $response = $service->spreadsheets->BatchUpdate($spreadsheetId, $requests);
+        return true;
+    }
+
+    /*----------------------------
+    | GET DATA SPREADSHEET
+    -------------------------------*/
+    public static function getApiSpreadsheet($spreadsheetId, $get_range){
+        $service = self::ApiSpreadsheet();
         //Request to get data from spreadsheet.
         $response = $service->spreadsheets_values->get($spreadsheetId, $get_range);
         $values = $response->getValues();
@@ -903,5 +975,270 @@ class SheetController extends Controller
             }
         }
         Cache::put($keyMaster, $master);
+    }
+
+    /*--------------------------
+    | UPDATE VALUE SPREADSHEETS
+    -----------------------------*/
+    private $month = false;
+    private $month_name = false;
+    private $month_now = false;
+    private $date_start = false;
+    private $date_end = false;
+    private $page = false;
+    public function __construct() {
+        $this->month = date('Y-m');
+        $this->month_name = date('F Y');
+        $this->month_name_now = date('F');
+        $this->date_start = date($this->month."-d", strtotime("first day of this month"));
+        $this->date_end = date($this->month."-d", strtotime("last day of this month"));
+        $this->page = new PageController();
+    }
+    public function setTeamMonitoringGlobal(){
+        $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
+        // $title = "Bot-Try Lv. 1 Global Monitoring - ".$this->month_name;
+        // $spreadsheetId = $this->CreateNewSpreadsheet($title);
+
+        $n_ame = ["Ame"];
+        $n_anna = ["Anna"];
+        $n_Carol = ["Carol"];
+        $n_Eric = ["Eric"];
+        $n_Icha = ["Icha"];
+        $n_Lily = ["Lily"];
+        $n_Maydewi = ["Maydewi"];
+        $n_Rani = ["Rani"];
+
+        try {
+            $new_worksheet = "Weekly Report";
+            $this->CreateNewWorksheet($spreadsheetId,$new_worksheet);
+        } catch (\Throwable $th) {
+            $new_worksheet = "Weekly Report";
+        }
+
+        $page = $this->page;
+        $date = $this->date_start.",".$this->date_end;
+        $head = [
+            "Global Team",
+            "Answer New Authors",
+            "N. Auth Non Ex",
+            "Follow Up",
+            "Follow Up Non Ex",
+            "Sent E Contract",
+            "Rec. E Contract",
+            "Done Non Ex",
+            "Royalty"
+        ];
+
+        $update_range = $new_worksheet;
+
+        $DateWeekly = $page->WeekFromDate(date('Y-m'));
+        foreach($DateWeekly['c_week'] as $key => $v_weekly){
+            $values = [];
+            $startdate = $DateWeekly['startdate'][$key];
+            $enddate = $DateWeekly['enddate'][$key];
+            $f_head = [
+                $v_weekly." ".$this->month_name_now,
+                $startdate,
+                $enddate
+            ];
+            $d_ame = $page->DataAme($startdate,$enddate);
+            $d_anna = $page->DataAnna($startdate,$enddate);
+            $d_carol = $page->DataCarol($startdate,$enddate);
+            $d_eric = $page->DataEric($startdate,$enddate);
+            $d_icha = $page->DataIcha($startdate,$enddate);
+            $d_lily = $page->DataLily($startdate,$enddate);
+            $d_maydewi = $page->DataMaydewi($startdate,$enddate);
+            $d_rani = $page->DataRani($startdate,$enddate);
+            array_push($values,$f_head);
+            array_push($values,$head);
+            $v_ame = [
+                $n_ame[0],
+                $d_ame['daily']->whereNotNull('date')->count(),
+                $d_ame['non_ex']->whereNotNull('first_touch')->count(),
+                $d_ame['daily']->whereNotNull('fu_1')->count()+$d_ame['daily']->whereNotNull('fu_2')->count()+$d_ame['daily']->whereNotNull('fu_3')->count()+$d_ame['daily']->whereNotNull('fu_4')->count()+$d_ame['daily']->whereNotNull('fu_5')->count(),
+                $d_ame['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_ame['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_ame['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_ame['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_ame['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+                $d_ame['non_ex']->whereNotNull('sent_e_contract')->count(),
+                $d_ame['non_ex']->whereNotNull('rec_e_contract')->count(),
+                $d_ame['non_ex']->whereNotNull('email_sent')->count(),
+                $d_ame['non_ex']->whereNotNull('sent_royalty')->count()
+            ];
+            array_push($values, $v_ame);
+            $v_anna = [
+                $n_anna[0],
+                $d_anna['daily']->whereNotNull('date')->count(),
+                $d_anna['non_ex']->whereNotNull('first_touch')->count(),
+                $d_anna['daily']->whereNotNull('fu_1')->count()+$d_anna['daily']->whereNotNull('fu_2')->count()+$d_anna['daily']->whereNotNull('fu_3')->count()+$d_anna['daily']->whereNotNull('fu_4')->count()+$d_anna['daily']->whereNotNull('fu_5')->count(),
+                $d_anna['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_anna['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_anna['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_anna['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_anna['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+                $d_anna['non_ex']->whereNotNull('sent_e_contract')->count(),
+                $d_anna['non_ex']->whereNotNull('rec_e_contract')->count(),
+                $d_anna['non_ex']->whereNotNull('email_sent')->count(),
+                $d_anna['non_ex']->whereNotNull('sent_royalty')->count()
+            ];
+            array_push($values, $v_anna);
+            $v_carol = [
+                $n_Carol[0],
+                $d_carol['daily']->whereNotNull('date')->count(),
+                $d_carol['non_ex']->whereNotNull('first_touch')->count(),
+                $d_carol['daily']->whereNotNull('fu_1')->count()+$d_carol['daily']->whereNotNull('fu_2')->count()+$d_carol['daily']->whereNotNull('fu_3')->count()+$d_carol['daily']->whereNotNull('fu_4')->count()+$d_carol['daily']->whereNotNull('fu_5')->count(),
+                $d_carol['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_carol['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_carol['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_carol['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_carol['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+                $d_carol['non_ex']->whereNotNull('sent_e_contract')->count(),
+                $d_carol['non_ex']->whereNotNull('rec_e_contract')->count(),
+                $d_carol['non_ex']->whereNotNull('email_sent')->count(),
+                $d_carol['non_ex']->whereNotNull('sent_royalty')->count()
+            ];
+            array_push($values, $v_carol);
+            $v_eric = [
+                $n_Eric[0],
+                $d_eric['daily']->whereNotNull('date')->count(),
+                $d_eric['non_ex']->whereNotNull('first_touch')->count(),
+                $d_eric['daily']->whereNotNull('fu_1')->count()+$d_eric['daily']->whereNotNull('fu_2')->count()+$d_eric['daily']->whereNotNull('fu_3')->count()+$d_eric['daily']->whereNotNull('fu_4')->count()+$d_eric['daily']->whereNotNull('fu_5')->count(),
+                $d_eric['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_eric['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_eric['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_eric['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_eric['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+                $d_eric['non_ex']->whereNotNull('sent_e_contract')->count(),
+                $d_eric['non_ex']->whereNotNull('rec_e_contract')->count(),
+                $d_eric['non_ex']->whereNotNull('email_sent')->count(),
+                $d_eric['non_ex']->whereNotNull('sent_royalty')->count()
+            ];
+            array_push($values, $v_eric);
+            $v_icha = [
+                $n_Icha[0],
+                $d_icha['daily']->whereNotNull('date')->count(),
+                $d_icha['non_ex']->whereNotNull('first_touch')->count(),
+                $d_icha['daily']->whereNotNull('fu_1')->count()+$d_icha['daily']->whereNotNull('fu_2')->count()+$d_icha['daily']->whereNotNull('fu_3')->count()+$d_icha['daily']->whereNotNull('fu_4')->count()+$d_icha['daily']->whereNotNull('fu_5')->count(),
+                $d_icha['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_icha['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_icha['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_icha['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_icha['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+                $d_icha['non_ex']->whereNotNull('sent_e_contract')->count(),
+                $d_icha['non_ex']->whereNotNull('rec_e_contract')->count(),
+                $d_icha['non_ex']->whereNotNull('email_sent')->count(),
+                $d_icha['non_ex']->whereNotNull('sent_royalty')->count()
+            ];
+            array_push($values, $v_icha);
+            $v_lily = [
+                $n_Lily[0],
+                $d_lily['daily']->whereNotNull('date')->count(),
+                $d_lily['non_ex']->whereNotNull('first_touch')->count(),
+                $d_lily['daily']->whereNotNull('fu_1')->count()+$d_lily['daily']->whereNotNull('fu_2')->count()+$d_lily['daily']->whereNotNull('fu_3')->count()+$d_lily['daily']->whereNotNull('fu_4')->count()+$d_lily['daily']->whereNotNull('fu_5')->count(),
+                $d_lily['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_lily['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_lily['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_lily['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_lily['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+                $d_lily['non_ex']->whereNotNull('sent_e_contract')->count(),
+                $d_lily['non_ex']->whereNotNull('rec_e_contract')->count(),
+                $d_lily['non_ex']->whereNotNull('email_sent')->count(),
+                $d_lily['non_ex']->whereNotNull('sent_royalty')->count()
+            ];
+            array_push($values, $v_lily);
+            $v_maydewi = [
+                $n_Maydewi[0],
+                $d_maydewi['daily']->whereNotNull('date')->count(),
+                $d_maydewi['non_ex']->whereNotNull('first_touch')->count(),
+                $d_maydewi['daily']->whereNotNull('fu_1')->count()+$d_maydewi['daily']->whereNotNull('fu_2')->count()+$d_maydewi['daily']->whereNotNull('fu_3')->count()+$d_maydewi['daily']->whereNotNull('fu_4')->count()+$d_maydewi['daily']->whereNotNull('fu_5')->count(),
+                $d_maydewi['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_maydewi['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_maydewi['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_maydewi['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_maydewi['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+                $d_maydewi['non_ex']->whereNotNull('sent_e_contract')->count(),
+                $d_maydewi['non_ex']->whereNotNull('rec_e_contract')->count(),
+                $d_maydewi['non_ex']->whereNotNull('email_sent')->count(),
+                $d_maydewi['non_ex']->whereNotNull('sent_royalty')->count()
+            ];
+            array_push($values, $v_maydewi);
+            $v_rani = [
+                $n_Rani[0],
+                $d_rani['daily']->whereNotNull('date')->count(),
+                $d_rani['non_ex']->whereNotNull('first_touch')->count(),
+                $d_rani['daily']->whereNotNull('fu_1')->count()+$d_rani['daily']->whereNotNull('fu_2')->count()+$d_rani['daily']->whereNotNull('fu_3')->count()+$d_rani['daily']->whereNotNull('fu_4')->count()+$d_rani['daily']->whereNotNull('fu_5')->count(),
+                $d_rani['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_rani['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_rani['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_rani['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_rani['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+                $d_rani['non_ex']->whereNotNull('sent_e_contract')->count(),
+                $d_rani['non_ex']->whereNotNull('rec_e_contract')->count(),
+                $d_rani['non_ex']->whereNotNull('email_sent')->count(),
+                $d_rani['non_ex']->whereNotNull('sent_royalty')->count()
+            ];
+            array_push($values, $v_rani);
+            // dump($values);
+            $this->updateTeamMonitoring($spreadsheetId,$values,$update_range);
+        }
+
+        try{
+            $update_worksheet = "Lv 1 Monitoring";
+            $this->UpdateSheetProperties($spreadsheetId, $update_worksheet);
+        } catch (\Throwable $th){
+            $update_worksheet = "Lv 1 Monitoring";
+        }
+
+        $ame = $page->dataGlobalTeamMonitoringAme($date);
+        $anna = $page->dataGlobalTeamMonitoringAnna($date);
+        $Carol = $page->dataGlobalTeamMonitoringCarol($date);
+        $Eric = $page->dataGlobalTeamMonitoringEric($date);
+        $Icha = $page->dataGlobalTeamMonitoringIcha($date);
+        $Lily = $page->dataGlobalTeamMonitoringLily($date);
+        $Maydewi = $page->dataGlobalTeamMonitoringMaydewi($date);
+        $Rani = $page->dataGlobalTeamMonitoringRani($date);
+
+        $v_ame = [];
+        $v_ame = $this->dataTeamGlobalMonitoring($v_ame,$n_ame,$head,$ame['data']);
+        $update_range = $update_worksheet."!A:I";
+        $this->updateTeamMonitoring($spreadsheetId,$v_ame,$update_range);
+
+        $v_anna = [];
+        $v_anna = $this->dataTeamGlobalMonitoring($v_anna,$n_anna,$head,$anna['data']);
+        $update_range = $update_worksheet."!J:R";
+        $this->updateTeamMonitoring($spreadsheetId,$v_anna,$update_range);
+
+        $v_Carol = [];
+        $v_Carol = $this->dataTeamGlobalMonitoring($v_Carol,$n_Carol,$head,$Carol['data']);
+        $update_range = $update_worksheet."!S:AA";
+        $this->updateTeamMonitoring($spreadsheetId,$v_Carol,$update_range);
+
+        $v_Eric = [];
+        $v_Eric = $this->dataTeamGlobalMonitoring($v_Eric,$n_Eric,$head,$Eric['data']);
+        $update_range = $update_worksheet."!AB:AJ";
+        $this->updateTeamMonitoring($spreadsheetId,$v_Eric,$update_range);
+
+        $v_Icha = [];
+        $v_Icha = $this->dataTeamGlobalMonitoring($v_Icha,$n_Icha,$head,$Icha['data']);
+        $update_range = $update_worksheet."!AK:AS";
+        $this->updateTeamMonitoring($spreadsheetId,$v_Icha,$update_range);
+
+        $v_Lily = [];
+        $v_Lily = $this->dataTeamGlobalMonitoring($v_Lily,$n_Lily,$head,$Lily['data']);
+        $update_range = $update_worksheet."!AT:BB";
+        $this->updateTeamMonitoring($spreadsheetId,$v_Lily,$update_range);
+
+        $v_Maydewi = [];
+        $v_Maydewi = $this->dataTeamGlobalMonitoring($v_Maydewi,$n_Maydewi,$head,$Maydewi['data']);
+        $update_range = $update_worksheet."!BC:BK";
+        $this->updateTeamMonitoring($spreadsheetId,$v_Maydewi,$update_range);
+
+        $v_Rani = [];
+        $v_Rani = $this->dataTeamGlobalMonitoring($v_Rani,$n_Rani,$head,$Rani['data']);
+        $update_range = $update_worksheet."!BL:BT";
+        $this->updateTeamMonitoring($spreadsheetId,$v_Rani,$update_range);
+
+        return 200;
+    }
+    public function setTeamMonitoringIndo(){
+        $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
+    }
+    public function dataTeamGlobalMonitoring($values,$name,$head,$person_data){
+        array_push($values,$name);
+        array_push($values,$head);
+        for($i=0;$i<count($person_data);$i++){
+            unset($person_data[$i][0]);
+            $x = explode('/',$person_data[$i][1]);
+            try {
+                $date_format = $x[1]."/".$x[0]."/".$x[2];
+                $person_data[$i][1] = date('d/m/Y', strtotime($date_format));
+                $val = array_values($person_data[$i]);
+                array_push($values, $val);
+            } catch (\Throwable $th) {
+                $val = array_values($person_data[$i]);
+                array_push($values, $val);
+            }
+        }
+        return $values;
+    }
+    public function updateTeamMonitoring($spreadsheetId,$values,$update_range){
+        $service = self::ApiSpreadsheet();
+        $body = new Google_Service_Sheets_ValueRange([
+            'values' => $values
+        ]);
+        $params = [
+            'valueInputOption' => 'RAW'
+        ];
+        $update_sheet = $service->spreadsheets_values->append($spreadsheetId, $update_range, $body, $params);
+        return $update_sheet;
     }
 }
