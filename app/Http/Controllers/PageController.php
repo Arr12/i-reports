@@ -19,7 +19,7 @@ use Illuminate\Support\Str;
 
 class PageController extends Controller
 {
-    private $personGlobal = [
+    public $personGlobal = [
         'Ame',
         'Anna',
         'Carol',
@@ -29,7 +29,7 @@ class PageController extends Controller
         'Maydewi',
         'Rani'
     ];
-    private $personIndo = [
+    public $personIndo = [
         'Icha Nur',
         'Irel'
     ];
@@ -118,6 +118,9 @@ class PageController extends Controller
     }
     public function DailyReportIndoIrels(){
         return view('admin.pages.daily-report.indo.daily-report-indo-irel');
+    }
+    public function NonExclusiveReport(){
+        return view('admin.pages.non-exclusive-report.non-exclusive');
     }
     public function GlobalTeamMonitoring(){
         $person = $this->personGlobal;
@@ -797,6 +800,88 @@ class PageController extends Controller
                 $data->fu_8,
                 $data->fu_9,
                 $data->fu_10,
+            ]);
+        }
+        return $data_array;
+    }
+
+    /*---------------------------------------
+    | NON EXCLUSIVE REPORT
+    -----------------------------------------*/
+    public function getNonExclusiveReport(){
+        $query = NonExclusiveReport::orderBy('id','DESC')->limit(10000)->get();
+        /* --------------
+        / HEAD DATA
+        --------------- */
+        $data_array['columns'] = [];
+        $data_array['data'] = [];
+        $title = [
+            "No.",
+            "Date",
+            "Global Editor",
+            "Author Contact",
+            "Platform",
+            "Username",
+            "Title",
+            "Book Status",
+            "Latest Chapter",
+            "First Touch",
+            "Book ID",
+            "Sent E-Cont",
+            "Officer",
+            "Date",
+            "AnD Notes",
+            "Global Editor Notes",
+            "Solved Date",
+            "PDF Evidence",
+            "Rec. E-cont",
+            "Follow up 1",
+            "Follow up 2",
+            "Follow up 3",
+            "Follow up 4",
+            "Follow up 5",
+            "Marker for Global",
+            "Marker for AnD",
+            "Email Sent",
+            "Batch Date",
+            "AnD Evidence",
+            "Global Evidence"
+        ];
+        foreach ($title as $key => $value) {
+            array_push($data_array['columns'], ["title" => $value]);
+        }
+        foreach($query as $key => $data){
+            array_push($data_array['data'], [
+                $data->id,
+                $data->date,
+                $data->global_editor,
+                $data->author_contact,
+                $data->platform,
+                $data->username,
+                $data->title,
+                $data->book_status,
+                $data->latest_update,
+                $data->first_touch,
+                $data->book_id,
+                $data->sent_e_contract,
+                $data->officer,
+                $data->date_sent,
+                $data->and_notes,
+                $data->global_editor_notes,
+                $data->solved_date,
+                $data->pdf_evidence,
+                $data->rec_e_contract,
+                $data->fu_1,
+                $data->fu_2,
+                $data->fu_3,
+                $data->fu_4,
+                $data->fu_5,
+                $data->marker_for_global,
+                $data->marker_for_and,
+                $data->email_sent,
+                $data->batch_date,
+                $data->and_evidence,
+                $data->global_evidence,
             ]);
         }
         return $data_array;
@@ -1639,6 +1724,18 @@ class PageController extends Controller
         }
         return $data_array;
     }
+    public function DataIndoIchaNur($startdate, $enddate){
+        $d = DailyReportIndoIchaNur::whereBetween('date', [$startdate,$enddate])
+            ->orderBy('id','DESC')
+            ->get();
+        return $d;
+    }
+    public function DataIndoIrel($startdate,$enddate){
+        $d = DailyReportIndoIrel::whereBetween('date', [$startdate,$enddate])
+            ->orderBy('id','DESC')
+            ->get();
+        return $d;
+    }
     public function dataIndoTeamMonitoringIchaNur($date){
         /* --------------
         / HEAD DATA
@@ -1646,9 +1743,7 @@ class PageController extends Controller
         $data_array['columns'] = [];
         $data_array['data'] = [];
         $xdate = explode(",", $date);
-        $d = DailyReportIndoIchaNur::whereBetween('date', [$xdate[0],$xdate[1]])
-            ->orderBy('id','DESC')
-            ->get();
+        $d = $this->DataIndoIchaNur($xdate[0],$xdate[1]);
         $title = [
             "No.",
             "Date",
@@ -1685,7 +1780,7 @@ class PageController extends Controller
             $answer = count($answer);
             $fu = count($fu_1)+count($fu_2)+count($fu_3)+count($fu_4)+count($fu_5);
             $royalty = count($royalty);
-            $non_ex = "-";
+            $non_ex = "";
                 array_push($data_array['data'], [
                 $no++,date('d/m/Y',strtotime($date)),$answer,$fu,$royalty,$non_ex
             ]);
@@ -1709,9 +1804,7 @@ class PageController extends Controller
             array_push($data_array['columns'], ["title" => $value]);
         }
         $xdate = explode(",", $date);
-        $d = DailyReportIndoIrel::whereBetween('date', [$xdate[0],$xdate[1]])
-            ->orderBy('id','DESC')
-            ->get();
+        $d = $this->DataIndoIrel($xdate[0],$xdate[1]);
         $dateRange = $this->dateRange($xdate[0],$xdate[1]);
         $no = 1;
         array_push($data_array['data'], [

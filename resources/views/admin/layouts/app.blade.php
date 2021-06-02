@@ -35,6 +35,21 @@
     <!-- Customize themes -->
     <link href="/css/themes/all-themes.css" rel="stylesheet" />
     @stack('after-style')
+
+    <style>
+    #data-column .btn-primary{
+        margin: 0.5rem;
+    }
+    .btn-primary .material-icons{
+        color: #fff !important;
+    }
+    @media only screen and (max-width: 998px) {
+        .ls-closed section.content{
+            margin-left:0;
+            margin-right:0;
+        }
+    }
+    </style>
 </head>
 <body class="theme-red">
     <!-- Page Loader -->

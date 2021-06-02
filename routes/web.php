@@ -40,6 +40,10 @@ Route::middleware(['auth:sanctum'])->group(function(){
         Route::get('irels',[PageController::class, 'DailyReportIndoIrels'])->name('irels');
         Route::get('irels-data',[PageController::class, 'getDailyReportIndoIrels'])->name('irels.data');
     });
+    Route::prefix('/daily-report/report')->name('non-exclusive-report.')->group(function(){
+        Route::get('non-exclusive',[PageController::class, 'NonExclusiveReport'])->name('non-exclusive');
+        Route::get('non-exclusive-data',[PageController::class, 'getNonExclusiveReport'])->name('non-exclusive.data');
+    });
     Route::prefix('/team-monitoring')->name('team-monitoring.')->group(function(){
         Route::get('global',[PageController::class, 'GlobalTeamMonitoring'])->name('global');
         Route::get('global-data',[PageController::class, 'getGlobalTeamMonitoring'])->name('global.data');

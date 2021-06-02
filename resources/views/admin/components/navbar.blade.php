@@ -109,6 +109,30 @@
                 <li>
                     <a href="javascript:void(0);" class="menu-toggle">
                         <i class="material-icons">import_contacts</i>
+                        <span>Lv.0 Spam</span>
+                    </a>
+                    <ul class="ml-menu">
+                        <li>
+                            <a href="{{route('team-monitoring.global')}}">
+                                <span>Mangatoon</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{route('team-monitoring.indo')}}">
+                                <span>WN Uncontracted</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="{{route('non-exclusive-report.non-exclusive')}}">
+                        <i class="material-icons">import_contacts</i>
+                        <span>Non Exclusive Report</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:void(0);" class="menu-toggle">
+                        <i class="material-icons">import_contacts</i>
                         <span>Lv.1 Team Monitoring</span>
                     </a>
                     <ul class="ml-menu">

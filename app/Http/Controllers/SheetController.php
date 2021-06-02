@@ -13,6 +13,9 @@ use App\Models\DailyReportLily;
 use App\Models\DailyReportMaydewi;
 use App\Models\DailyReportRani;
 use App\Models\NonExclusiveReport;
+use App\Models\ReportSpamMangatoonNovelList;
+use App\Models\ReportSpamNovelListFromRanking as ModelsReportSpamNovelListFromRanking;
+use App\Models\ReportSpamWNUncoractedNovelList;
 use Google_Service_Sheets_BatchUpdateSpreadsheetRequest;
 use Google_Service_Sheets_Request;
 use Google_Service_Sheets_Spreadsheet;
@@ -34,6 +37,9 @@ class SheetController extends Controller
         }
         return $date;
     }
+    /*--------------------------
+    | CONFIG SPREADSHEET
+    ----------------------------*/
     public static function ApiSpreadsheet(){
         $client = new \Google_Client();
         $client->setApplicationName('Google Sheets and PHP');
@@ -43,9 +49,13 @@ class SheetController extends Controller
         $service = new \Google_Service_Sheets($client);
         return $service;
     }
-    /*--------------------------
-    | CREATE NEW SPREADSHEET
-    ----------------------------*/
+    public static function getApiSpreadsheet($spreadsheetId, $get_range){
+        $service = self::ApiSpreadsheet();
+        //Request to get data from spreadsheet.
+        $response = $service->spreadsheets_values->get($spreadsheetId, $get_range);
+        $values = $response->getValues();
+        return $values;
+    }
     public function CreateNewSpreadsheet($title){
         $service = self::ApiSpreadsheet();
         $spreadsheet = new Google_Service_Sheets_Spreadsheet([
@@ -103,17 +113,34 @@ class SheetController extends Controller
         $response = $service->spreadsheets->BatchUpdate($spreadsheetId, $requests);
         return true;
     }
+    public function insertValuesIntoFirstRow($spreadsheetId,$values,$update_range,$endindex,$sheetId){
+        $service = self::ApiSpreadsheet();
+        $request = new Google_Service_Sheets_BatchUpdateSpreadsheetRequest([
+            'requests' => [
+                'insertDimension' => [
+                    'range' => [
+                        "sheetId" => $sheetId,
+                        "startIndex" => 0,
+                        "endIndex" => $endindex,
+                        "dimension" => "ROWS"
+                    ]
+                ]
+            ]
+        ]);
+        $service->spreadsheets->batchUpdate($spreadsheetId, $request);
+        $body = new Google_Service_Sheets_ValueRange([
+            'values' => $values
+        ]);
+        $params = [
+            'valueInputOption' => 'RAW'
+        ];
+        $service->spreadsheets_values->append($spreadsheetId, $update_range, $body, $params);
+        return true;
+    }
 
     /*----------------------------
     | GET DATA SPREADSHEET
     -------------------------------*/
-    public static function getApiSpreadsheet($spreadsheetId, $get_range){
-        $service = self::ApiSpreadsheet();
-        //Request to get data from spreadsheet.
-        $response = $service->spreadsheets_values->get($spreadsheetId, $get_range);
-        $values = $response->getValues();
-        return $values;
-    }
     public function GetDailyReport($request = false){
         /*----------
         / GLOBAL
@@ -153,6 +180,15 @@ class SheetController extends Controller
             $this->getDailyReportIndoIrel();
         }
         /*-----------
+        / SPAM
+        --------------*/
+        else if($daily == 'mangatoon'){
+            $this->getSpamMangatoonNovelList();
+        }
+        else if($daily == 'wn_uncontracted'){
+            $this->getSpamWNUncontractedNovelList();
+        }
+        /*-----------
         / EXCLUSIVE
         --------------*/
         else if($daily == 'non-exclusive'){
@@ -170,6 +206,8 @@ class SheetController extends Controller
             $this->getDailyReportIndoIchaNur();
             $this->getDailyReportIndoIrel();
             $this->getNonExReport();
+            $this->getSpamMangatoonNovelList();
+            $this->getSpamWNUncontractedNovelList();
         }
         else{
             $p = 400;
@@ -313,7 +351,6 @@ class SheetController extends Controller
                     'old_new_book' => $old_new_book
                 ]);
             }
-
             DailyReportAnna::insert($savedData);
         }
         return true;
@@ -947,6 +984,153 @@ class SheetController extends Controller
         }
         return true;
     }
+    public function getSpamMangatoonNovelList(){
+        $sId = "1Y7i5p0iuRI3NU374Z3w0j0Ow8w3Wg5hdkaUccpRgKbE";
+        $keyMaster = date('Y-m-d')."_daily_report_SpamMangatoon";
+        $sheets = "books(1)";
+        $alphaX = "A";
+        $alphaY = "N";
+        $this->getReportSpamData($sId,$keyMaster,$sheets,$alphaX,$alphaY);
+        $cached = Cache::get($keyMaster, []);
+        ReportSpamMangatoonNovelList::truncate();
+        foreach($cached as $key => $keyDaily){
+            $cachedDaily = Cache::get($keyDaily, []);
+            $savedData = [];
+            foreach ($cachedDaily as $key => $data) {
+                // dump($data);
+                $date = isset($data[0]) ? $this->FormatDateTime($data[0]) : null;
+                $book_name = isset($data[1]) ? $data[1] : null;
+                $author_name = isset($data[2]) ? $data[2] : null;
+                $views = isset($data[3]) ? $data[3] : null;
+                $likes = isset($data[4]) ? $data[4] : null;
+                $ratings = isset($data[5]) ? $data[5] : null;
+                $update_status = isset($data[6]) ? $data[6] : null;
+                $tags = isset($data[7]) ? $data[7] : null;
+                $episodes = isset($data[8]) ? $data[8] : null;
+                $link = isset($data[9]) ? $data[9] : null;
+                $screenshot_from_wave = isset($data[10]) ? $data[10] : null;
+                $date_feedback_received = isset($data[11]) ? $data[11] : null;
+                $author_feedback = isset($data[12]) ? $data[12] : null;
+                $comment_from_wave = isset($data[13]) ? $data[13] : null;
+                array_push($savedData, [
+                    'date' => $date,
+                    'book_name' => $book_name,
+                    'author_name' => $author_name,
+                    'views' => $views,
+                    'likes' => $likes,
+                    'ratings' => $ratings,
+                    'update_status' => $update_status,
+                    'tags' => $tags,
+                    'episodes' => $episodes,
+                    'link'  => $link,
+                    'screenshot_from_wave' => $screenshot_from_wave,
+                    'date_feedback_received' => $date_feedback_received,
+                    'author_feedback' => $author_feedback,
+                    'comment_from_wave' => $comment_from_wave
+                ]);
+            }
+            ReportSpamMangatoonNovelList::insert($savedData);
+        }
+        return true;
+    }
+    public function getSpamWNUncontractedNovelList(){
+        $sId = "1c7ib7eh9KvT-GhAAFAgSUPyKlnzxK_cGvFe8UhPSkJA";
+        $keyMaster = date('Y-m-d')."_daily_report_SpamWNUncontracted";
+        $sheets = "books(1)";
+        $alphaX = "A";
+        $alphaY = "P";
+        $this->getReportSpamData($sId,$keyMaster,$sheets,$alphaX,$alphaY);
+        $cached = Cache::get($keyMaster, []);
+        ReportSpamWNUncoractedNovelList::truncate();
+        foreach($cached as $key => $keyDaily){
+            $cachedDaily = Cache::get($keyDaily, []);
+            $savedData = [];
+            foreach ($cachedDaily as $key => $data) {
+                // dump($data);
+                $date = isset($data[0]) ? $this->FormatDateTime($data[0]) : null;
+                $editor = isset($data[1]) ? $data[1] : null;
+                $cbid = isset($data[2]) ? $data[2] : null;
+                $book_title = isset($data[3]) ? $data[3] : null;
+                $author_name = isset($data[4]) ? $data[4] : null;
+                $discord_contact = isset($data[5]) ? $data[5] : null;
+                $other_contact_way = isset($data[6]) ? $data[6] : null;
+                $genre = isset($data[7]) ? $data[7] : null;
+                $total_chapter = isset($data[8]) ? $data[8] : null;
+                $chapter_within_7_days = isset($data[9]) ? $data[9] : null;
+                $collection = isset($data[10]) ? $data[10] : null;
+                $status_ongoing = isset($data[11]) ? $data[11] : null;
+                $FL_ML = isset($data[12]) ? $data[12] : null;
+                $date_feedback_received = isset($data[13]) ? $data[13] : null;
+                $feedback_from_author = isset($data[14]) ? $data[14] : null;
+                $note = isset($data[15]) ? $data[15] : null;
+                array_push($savedData, [
+                    'date' => $date,
+                    'editor' => $editor,
+                    'cbid' => $cbid,
+                    'book_title' => $book_title,
+                    'author_name' => $author_name,
+                    'discord_contact' => $discord_contact,
+                    'other_contact_way' => $other_contact_way,
+                    'genre' => $genre,
+                    'total_chapter' => $total_chapter,
+                    'chapter_within_7_days'  => $chapter_within_7_days,
+                    'collection' => $collection,
+                    'status_ongoing' => $status_ongoing,
+                    'FL_ML' => $FL_ML,
+                    'date_feedback_received' => $date_feedback_received,
+                    'feedback_from_author' => $feedback_from_author,
+                    'note' => $note
+                ]);
+            }
+            ReportSpamWNUncoractedNovelList::insert($savedData);
+        }
+        return true;
+    }
+    public function getSpamNovelListFromRanking(){
+        $sId = "1c7ib7eh9KvT-GhAAFAgSUPyKlnzxK_cGvFe8UhPSkJA";
+        $keyMaster = date('Y-m-d')."_daily_report_SpamNovelListFromRanking";
+        $sheets = "Novel List from Ranking";
+        $alphaX = "A";
+        $alphaY = "L";
+        $this->getReportSpamData($sId,$keyMaster,$sheets,$alphaX,$alphaY);
+        $cached = Cache::get($keyMaster, []);
+        ModelsReportSpamNovelListFromRanking::truncate();
+        foreach($cached as $key => $keyDaily){
+            $cachedDaily = Cache::get($keyDaily, []);
+            $savedData = [];
+            foreach ($cachedDaily as $key => $data) {
+                // dump($data);
+                $cbid = isset($data[0]) ? $this->FormatDateTime($data[0]) : null;
+                $book_title = isset($data[1]) ? $data[1] : null;
+                $author_name = isset($data[2]) ? $data[2] : null;
+                $author_contact = isset($data[3]) ? $data[3] : null;
+                $genre = isset($data[4]) ? $data[4] : null;
+                $total_chapter = isset($data[5]) ? $data[5] : null;
+                $chapter_within_7_days = isset($data[6]) ? $data[6] : null;
+                $collection = isset($data[7]) ? $data[7] : null;
+                $status_ongoing = isset($data[8]) ? $data[8] : null;
+                $FL_ML = isset($data[9]) ? $data[9] : null;
+                $editor = isset($data[10]) ? $data[10] : null;
+                $note = isset($data[11]) ? $data[11] : null;
+                array_push($savedData, [
+                    'cbid' => $cbid,
+                    'book_title' => $book_title,
+                    'author_name' => $author_name,
+                    'author_contact' => $author_contact,
+                    'genre' => $genre,
+                    'total_chapter' => $total_chapter,
+                    'chapter_within_7_days' => $chapter_within_7_days,
+                    'collection' => $collection,
+                    'status_ongoing' => $status_ongoing,
+                    'FL_ML'  => $FL_ML,
+                    'editor' => $editor,
+                    'note' => $note
+                ]);
+            }
+            ModelsReportSpamNovelListFromRanking::insert($savedData);
+        }
+        return true;
+    }
     public function getDailyReportData($sId,$keyMaster,$sheets,$alphaX,$alphaY){
         $master = [];
         Cache::forget($keyMaster);
@@ -961,6 +1145,35 @@ class SheetController extends Controller
                 // dump($keyDaily);
                 $result = self::getApiSpreadsheet($sId, $get_range);
                 if(!$result[0][0]){
+                    break;
+                }
+                Cache::put($keyDaily, $result);
+                array_push($master, $keyDaily);
+                // dump(["A{$start}", $result[0][3]]);
+                $start += self::$limit-1;
+                $end += self::$limit;
+                $counter++;
+                // dump(Cache::get($keyDaily));
+            } catch (\Throwable $th) {
+                break;
+            }
+        }
+        Cache::put($keyMaster, $master);
+    }
+    public function getReportSpamData($sId,$keyMaster,$sheets,$alphaX,$alphaY){
+        $master = [];
+        Cache::forget($keyMaster);
+        $start = 2;
+        $end = $start+self::$limit;
+        $counter = 0;
+        while(true){
+            $get_range = $sheets."!".$alphaX.($start).":".$alphaY.$end;
+            try {
+                $keyDaily = $keyMaster . "_" . $counter;
+                Cache::forget($keyDaily);
+                // dump($keyDaily);
+                $result = self::getApiSpreadsheet($sId, $get_range);
+                if(!$result[0][2]){
                     break;
                 }
                 Cache::put($keyDaily, $result);
@@ -994,6 +1207,9 @@ class SheetController extends Controller
         $this->date_end = date($this->month."-d", strtotime("last day of this month"));
         $this->page = new PageController();
     }
+    /*--------------------------
+    | Lv 1 REPORT TEAM MONITORING
+    -----------------------------*/
     public function setTeamMonitoringGlobal(){
         $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
         // $title = "Bot-Try Lv. 1 Global Monitoring - ".$this->month_name;
@@ -1168,42 +1384,42 @@ class SheetController extends Controller
         $Rani = $page->dataGlobalTeamMonitoringRani($date);
 
         $v_ame = [];
-        $v_ame = $this->dataTeamGlobalMonitoring($v_ame,$n_ame,$head,$ame['data']);
+        $v_ame = $this->dataSanitizerTeamMonitoring($v_ame,$n_ame,$head,$ame['data']);
         $update_range = $update_worksheet."!A:I";
         $this->updateTeamMonitoring($spreadsheetId,$v_ame,$update_range);
 
         $v_anna = [];
-        $v_anna = $this->dataTeamGlobalMonitoring($v_anna,$n_anna,$head,$anna['data']);
+        $v_anna = $this->dataSanitizerTeamMonitoring($v_anna,$n_anna,$head,$anna['data']);
         $update_range = $update_worksheet."!J:R";
         $this->updateTeamMonitoring($spreadsheetId,$v_anna,$update_range);
 
         $v_Carol = [];
-        $v_Carol = $this->dataTeamGlobalMonitoring($v_Carol,$n_Carol,$head,$Carol['data']);
+        $v_Carol = $this->dataSanitizerTeamMonitoring($v_Carol,$n_Carol,$head,$Carol['data']);
         $update_range = $update_worksheet."!S:AA";
         $this->updateTeamMonitoring($spreadsheetId,$v_Carol,$update_range);
 
         $v_Eric = [];
-        $v_Eric = $this->dataTeamGlobalMonitoring($v_Eric,$n_Eric,$head,$Eric['data']);
+        $v_Eric = $this->dataSanitizerTeamMonitoring($v_Eric,$n_Eric,$head,$Eric['data']);
         $update_range = $update_worksheet."!AB:AJ";
         $this->updateTeamMonitoring($spreadsheetId,$v_Eric,$update_range);
 
         $v_Icha = [];
-        $v_Icha = $this->dataTeamGlobalMonitoring($v_Icha,$n_Icha,$head,$Icha['data']);
+        $v_Icha = $this->dataSanitizerTeamMonitoring($v_Icha,$n_Icha,$head,$Icha['data']);
         $update_range = $update_worksheet."!AK:AS";
         $this->updateTeamMonitoring($spreadsheetId,$v_Icha,$update_range);
 
         $v_Lily = [];
-        $v_Lily = $this->dataTeamGlobalMonitoring($v_Lily,$n_Lily,$head,$Lily['data']);
+        $v_Lily = $this->dataSanitizerTeamMonitoring($v_Lily,$n_Lily,$head,$Lily['data']);
         $update_range = $update_worksheet."!AT:BB";
         $this->updateTeamMonitoring($spreadsheetId,$v_Lily,$update_range);
 
         $v_Maydewi = [];
-        $v_Maydewi = $this->dataTeamGlobalMonitoring($v_Maydewi,$n_Maydewi,$head,$Maydewi['data']);
+        $v_Maydewi = $this->dataSanitizerTeamMonitoring($v_Maydewi,$n_Maydewi,$head,$Maydewi['data']);
         $update_range = $update_worksheet."!BC:BK";
         $this->updateTeamMonitoring($spreadsheetId,$v_Maydewi,$update_range);
 
         $v_Rani = [];
-        $v_Rani = $this->dataTeamGlobalMonitoring($v_Rani,$n_Rani,$head,$Rani['data']);
+        $v_Rani = $this->dataSanitizerTeamMonitoring($v_Rani,$n_Rani,$head,$Rani['data']);
         $update_range = $update_worksheet."!BL:BT";
         $this->updateTeamMonitoring($spreadsheetId,$v_Rani,$update_range);
 
@@ -1211,8 +1427,90 @@ class SheetController extends Controller
     }
     public function setTeamMonitoringIndo(){
         $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
+        // $title = "Bot-Try Lv. 1 Global Monitoring - ".$this->month_name;
+        // $spreadsheetId = $this->CreateNewSpreadsheet($title);
+        $page = $this->page;
+        $date = $this->date_start.",".$this->date_end;
+
+        $n_indo_icha = ['Icha Nur'];
+        $n_indo_irel = ['Irelda'];
+
+        $head = [
+            "Indo Team",
+            "Answer New Authors",
+            "Follow Up Authors",
+            "Royalty",
+            "Non Exclusive"
+        ];
+        $head_b = [
+            "",
+            "Help Authors",
+            "Follow Up Authors",
+            "Solved Problems"
+        ];
+
+        try {
+            $update_worksheet = "Lv 1 Monitoring Indo";
+            $this->CreateNewWorksheet($spreadsheetId,$update_worksheet);
+        } catch (\Throwable $th) {
+            $update_worksheet = "Lv 1 Monitoring Indo";
+        }
+
+        $indo_ichanur = $page->dataIndoTeamMonitoringIchaNur($date);
+        $v_indo_ichanur = [];
+        $v_indo_ichanur = $this->dataSanitizerTeamMonitoring($v_indo_ichanur,$n_indo_icha,$head,$indo_ichanur['data']);
+        $update_range = $update_worksheet."!A:E";
+        $this->updateTeamMonitoring($spreadsheetId,$v_indo_ichanur,$update_range);
+
+        $indo_irel = $page->dataIndoTeamMonitoringIrel($date);
+        $v_indo_irel = [];
+        $v_indo_irel = $this->dataSanitizerTeamMonitoring($v_indo_irel,$n_indo_irel,$head_b,$indo_irel['data']);
+        $update_range = $update_worksheet."!F:I";
+        $this->updateTeamMonitoring($spreadsheetId,$v_indo_irel,$update_range);
+
+        try {
+            $new_worksheet = "Weekly Report Indo";
+            $this->CreateNewWorksheet($spreadsheetId,$new_worksheet);
+        } catch (\Throwable $th) {
+            $new_worksheet = "Weekly Report Indo";
+        }
+        $update_range = $new_worksheet;
+        $DateWeekly = $page->WeekFromDate(date('Y-m'));
+        foreach($DateWeekly['c_week'] as $key => $v_weekly){
+            $values = [];
+            $startdate = $DateWeekly['startdate'][$key];
+            $enddate = $DateWeekly['enddate'][$key];
+            $f_head = [
+                $v_weekly." ".$this->month_name_now,
+                $startdate,
+                $enddate
+            ];
+            $d_ichanur = $page->DataIndoIchaNur($startdate,$enddate);
+            array_push($values, $f_head);
+            array_push($values, $head);
+            $v_indo_icha = [
+                $n_indo_icha[0],
+                $d_ichanur->whereNotNull('date')->count(),
+                $d_ichanur->whereNotNull('fu_1')->count()+$d_ichanur->whereNotNull('fu_2')->count()+$d_ichanur->whereNotNull('fu_3')->count()+$d_ichanur->whereNotNull('fu_4')->count()+$d_ichanur->whereNotNull('fu_5')->count(),
+                $d_ichanur->whereNotNull('sent_royalty')->count(),
+                "0"
+            ];
+            array_push($values, $v_indo_icha);
+
+            $d_irel = $page->DataIndoIrel($startdate,$enddate);
+            array_push($values, $head_b);
+            $v_indo_irel = [
+                $n_indo_irel[0],
+                $d_irel->whereNotNull('date')->count(),
+                $d_irel->whereNotNull('fu_1')->count()+$d_irel->whereNotNull('fu_2')->count()+$d_irel->whereNotNull('fu_3')->count()+$d_irel->whereNotNull('fu_4')->count()+$d_irel->whereNotNull('fu_5')->count(),
+                $d_irel->whereNotNull('date_solved')->count(),
+            ];
+            array_push($values, $v_indo_irel);
+            $this->updateTeamMonitoring($spreadsheetId,$values,$update_range);
+        }
+        return 200;
     }
-    public function dataTeamGlobalMonitoring($values,$name,$head,$person_data){
+    public function dataSanitizerTeamMonitoring($values,$name,$head,$person_data){
         array_push($values,$name);
         array_push($values,$head);
         for($i=0;$i<count($person_data);$i++){
@@ -1240,5 +1538,98 @@ class SheetController extends Controller
         ];
         $update_sheet = $service->spreadsheets_values->append($spreadsheetId, $update_range, $body, $params);
         return $update_sheet;
+    }
+    /*--------------------------
+    | Lv 2 REPORT MONTHLY
+    -----------------------------*/
+    public function setAllTeamReport(){
+        $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
+        // $title = "Bot-Try Lv. 1 Global Monitoring - ".$this->month_name;
+        // $spreadsheetId = $this->CreateNewSpreadsheet($title);
+
+        try {
+            $new_worksheet = "Monthly Report";
+            $this->CreateNewWorksheet($spreadsheetId,$new_worksheet);
+        } catch (\Throwable $th) {
+            $new_worksheet = "Monthly Report";
+        }
+
+        $month = $this->month;
+        $date_start = date($month."-d", strtotime("first day of this month"));
+        $date_end = date($month."-d", strtotime("last day of this month"));
+        $date = $date_start.",".$date_end;
+        $date = explode(",",$date);
+
+        $values = [];
+
+        $head_a = [date('F Y',strtotime($this->month))];
+        array_push($values,$head_a);
+        $head_ia = [
+            "Indo Team",
+            "Answer New Authors",
+            "Follow Up Authors",
+            "Royalty",
+        ];
+        array_push($values,$head_ia);
+        $datas = $this->page->MonthlyReportDataIndo($date);
+        foreach ($datas['data'] as $key => $value) {
+            if($key == 0){
+                $data['icha'] = [
+                    $this->page->personIndo[$key],
+                    $value[1],
+                    $value[2],
+                    $value[3],
+                ];
+            }
+            else{
+                $data['irel'] = [
+                    $this->page->personIndo[$key],
+                    $value[2],
+                    $value[5],
+                    $value[6],
+                ];
+            }
+        }
+        array_push($values, $data['icha']);
+        $head_ib = [
+            "",
+            "Help",
+            "Follow Up",
+            "Solved Problem",
+        ];
+        array_push($values,$head_ib);
+        array_push($values, $data['irel']);
+        $head_g = [
+            "Global Team",
+            "Answer New Authors",
+            "N. Auth Non Ex",
+            "Follow Up",
+            "Follow Up Non Ex",
+            "Sent E Contract",
+            "Rec. E Contract",
+            "Done Non Ex",
+            "Royalty"
+        ];
+        array_push($values,$head_g);
+        $datas = $this->page->MonthlyReportDataGlobal($date);
+        foreach ($datas['data'] as $key => $value) {
+            if($key == 0){
+                $value[0] = "Total";
+                array_push($values, $value);
+            }
+            else if($key == 1){
+                $value[0] = "Average";
+                array_push($values, $value);
+            }
+            else{
+                $value[0] = $this->page->personGlobal[$key-2];
+                array_push($values, $value);
+            }
+        }
+        // dd($values);
+        $update_range = $new_worksheet."!A1:I1";
+        $endindex = 20;
+        $sheetId = 468929916;
+        $this->insertValuesIntoFirstRow($spreadsheetId,$values,$update_range,$endindex,$sheetId);
     }
 }

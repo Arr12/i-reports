@@ -22,8 +22,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::prefix('/daily-report')->name('api.dailyReport.')->group(function(){
     Route::get('/get-spreadsheet', [SheetController::class, 'GetDailyReport'])->name('get');
 });
-Route::get('/non-exclusive',[SheetController::class, 'getNonExReport'])->name('non-exclusive');
-
 Route::prefix('/team-monitoring')->name('api.setTeamMonitoring')->group(function(){
     Route::get('/global', [SheetController::class, 'setTeamMonitoringGlobal'])->name('setGlobal');
+    Route::get('/indo', [SheetController::class, 'setTeamMonitoringIndo'])->name('setIndo');
+});
+Route::prefix('/all-team-report')->name('api.setAllTeam')->group(function(){
+    Route::get('/monthly', [SheetController::class, 'setAllTeamReport'])->name('setAllTeam');
 });

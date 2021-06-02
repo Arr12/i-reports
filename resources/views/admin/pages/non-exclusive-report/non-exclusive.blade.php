@@ -59,7 +59,7 @@ let TabelGlobalDaily = function(url){
     });
 }
 $(document).ready(function(){
-    let url = "{{route('daily-report-indo.irels.data')}}";
+    let url = "{{route('non-exclusive-report.non-exclusive.data')}}";
     TabelGlobalDaily(url);
     $(document).on('click','#getDataDaily',function(){
         $('#FormTabelGlobalDaily').html(createSkeleton(1));
@@ -92,12 +92,12 @@ $(document).ready(function(){
         <div class="card">
             <div class="header">
                 <h2>
-                    Global Daily Report Irel
+                    Non Exclusive Report
                 </h2>
                 <ul class="header-dropdown m-r--5">
                     <li class="dropdown">
-                        <button id='getDataDaily' data-href="{{route('api.dailyReport.get')}}?d=indo-irel" role="button" aria-haspopup="true" aria-expanded="false">
-                            <i class="material-icons">sync</i> Get Data Daily
+                        <button id='getDataDaily' class="btn btn-primary" data-href="{{route('api.dailyReport.get')}}?d=non-exclusive" role="button" aria-haspopup="true" aria-expanded="false">
+                            <i class="material-icons">sync</i>
                         </button>
                     </li>
                 </ul>
