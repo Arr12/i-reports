@@ -22,12 +22,12 @@ class ReportSpamWnUncontractedNovelList extends Migration
             $table->text('author_name')->nullable();
             $table->text('discord_contact')->nullable();
             $table->text('other_contact_way')->nullable();
-            $table->string('genre',80)->nullable();
-            $table->string('total_chapter',50)->nullable();
-            $table->string('chapter_within_7_days',50)->nullable();
+            $table->text('genre')->nullable();
+            $table->text('total_chapter')->nullable();
+            $table->text('chapter_within_7_days')->nullable();
             $table->text('collection')->nullable();
-            $table->string('status_ongoing',80)->nullable();
-            $table->string('FL_ML',50)->nullable();
+            $table->text('status_ongoing')->nullable();
+            $table->text('FL_ML')->nullable();
             $table->date('date_feedback_received')->nullable();
             $table->text('feedback_from_author')->nullable();
             $table->text('note')->nullable();

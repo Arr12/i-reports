@@ -15,6 +15,7 @@ use App\Models\DailyReportRani;
 use App\Models\NonExclusiveReport;
 use App\Models\ReportSpamMangatoonNovelList;
 use App\Models\ReportSpamNovelListFromRanking as ModelsReportSpamNovelListFromRanking;
+use App\Models\ReportSpamRoyalRoadNovelList;
 use App\Models\ReportSpamWNUncoractedNovelList;
 use Google_Service_Sheets_BatchUpdateSpreadsheetRequest;
 use Google_Service_Sheets_Request;
@@ -37,6 +38,11 @@ class SheetController extends Controller
         }
         return $date;
     }
+    public function check($array, $value)
+    {
+        return isset($array[$value]) ? $array[$value] : null;
+    }
+
     /*--------------------------
     | CONFIG SPREADSHEET
     ----------------------------*/
@@ -185,8 +191,14 @@ class SheetController extends Controller
         else if($daily == 'mangatoon'){
             $this->getSpamMangatoonNovelList();
         }
-        else if($daily == 'wn_uncontracted'){
+        else if($daily == 'royalroad'){
+            $this->getSpamRoyalRoadNovelList();
+        }
+        else if($daily == 'wn-uncontracted'){
             $this->getSpamWNUncontractedNovelList();
+        }
+        else if($daily == 'novel-list-ranking'){
+            $this->getSpamNovelListFromRanking();
         }
         /*-----------
         / EXCLUSIVE
@@ -207,6 +219,7 @@ class SheetController extends Controller
             $this->getDailyReportIndoIrel();
             $this->getNonExReport();
             $this->getSpamMangatoonNovelList();
+            $this->getSpamRoyalRoadNovelList();
             $this->getSpamWNUncontractedNovelList();
         }
         else{
@@ -984,6 +997,54 @@ class SheetController extends Controller
         }
         return true;
     }
+    public function getSpamRoyalRoadNovelList(){
+        $sId = "1yF8dhx2Emy7O31mZmxTvlLVwiuy1RcI8Boa_0bO0Nlk";
+        $keyMaster = date('Y-m-d')."_daily_report_SpamRoyalRoad";
+        $sheets = "books(1)";
+        $alphaX = "A";
+        $alphaY = "Y";
+        $this->getReportSpamData($sId,$keyMaster,$sheets,$alphaX,$alphaY);
+        $cached = Cache::get($keyMaster, []);
+        ReportSpamRoyalRoadNovelList::truncate();
+        foreach($cached as $key => $keyDaily){
+            $cachedDaily = Cache::get($keyDaily, []);
+            $savedData = [];
+            foreach ($cachedDaily as $key => $data) {
+                if(!$data[0]){continue;}
+                // dump($data);
+                $date = isset($data[0]) ? $this->FormatDateTime($data[0]) : null;
+                array_push($savedData, [
+                    'date' => $date,
+                    'editor' => $this->check($data,1),
+                    'title' => $this->check($data,2),
+                    'author' => $this->check($data,3),
+                    'url' => $this->check($data,4),
+                    'type' => $this->check($data,5),
+                    'followers' => $this->check($data,6),
+                    'pages' => $this->check($data,7),
+                    'chapters' => $this->check($data,8),
+                    'views' => $this->check($data,9),
+                    'latest_update' => $this->check($data,10),
+                    'tags6' => $this->check($data,11),
+                    'tag1' => $this->check($data,12),
+                    'tag2' => $this->check($data,13),
+                    'tag3' => $this->check($data,14),
+                    'tag4' => $this->check($data,15),
+                    'tag5' => $this->check($data,16),
+                    'tag6' => $this->check($data,17),
+                    'tags7' => $this->check($data,18),
+                    'tags8' => $this->check($data,19),
+                    'tags9' => $this->check($data,20),
+                    'tags10' => $this->check($data,21),
+                    'tags11' => $this->check($data,22),
+                    'date_feedback_received' => $this->check($data,23),
+                    'feedback_from_author' => $this->check($data,24),
+                ]);
+            }
+            ReportSpamRoyalRoadNovelList::insert($savedData);
+        }
+        return true;
+    }
     public function getSpamMangatoonNovelList(){
         $sId = "1Y7i5p0iuRI3NU374Z3w0j0Ow8w3Wg5hdkaUccpRgKbE";
         $keyMaster = date('Y-m-d')."_daily_report_SpamMangatoon";
@@ -997,6 +1058,7 @@ class SheetController extends Controller
             $cachedDaily = Cache::get($keyDaily, []);
             $savedData = [];
             foreach ($cachedDaily as $key => $data) {
+                if(!$data[0]){continue;}
                 // dump($data);
                 $date = isset($data[0]) ? $this->FormatDateTime($data[0]) : null;
                 $book_name = isset($data[1]) ? $data[1] : null;
@@ -1046,6 +1108,7 @@ class SheetController extends Controller
             $cachedDaily = Cache::get($keyDaily, []);
             $savedData = [];
             foreach ($cachedDaily as $key => $data) {
+                if(!$data[0]){continue;}
                 // dump($data);
                 $date = isset($data[0]) ? $this->FormatDateTime($data[0]) : null;
                 $editor = isset($data[1]) ? $data[1] : null;
@@ -1082,9 +1145,9 @@ class SheetController extends Controller
                     'note' => $note
                 ]);
             }
+            // dd($savedData);
             ReportSpamWNUncoractedNovelList::insert($savedData);
         }
-        return true;
     }
     public function getSpamNovelListFromRanking(){
         $sId = "1c7ib7eh9KvT-GhAAFAgSUPyKlnzxK_cGvFe8UhPSkJA";
@@ -1100,7 +1163,7 @@ class SheetController extends Controller
             $savedData = [];
             foreach ($cachedDaily as $key => $data) {
                 // dump($data);
-                $cbid = isset($data[0]) ? $this->FormatDateTime($data[0]) : null;
+                $cbid = isset($data[0]) ? $data[0] : null;
                 $book_title = isset($data[1]) ? $data[1] : null;
                 $author_name = isset($data[2]) ? $data[2] : null;
                 $author_contact = isset($data[3]) ? $data[3] : null;
@@ -1207,9 +1270,9 @@ class SheetController extends Controller
         $this->date_end = date($this->month."-d", strtotime("last day of this month"));
         $this->page = new PageController();
     }
-    /*--------------------------
+    /* --------------------------
     | Lv 1 REPORT TEAM MONITORING
-    -----------------------------*/
+    ----------------------------- */
     public function setTeamMonitoringGlobal(){
         $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
         // $title = "Bot-Try Lv. 1 Global Monitoring - ".$this->month_name;

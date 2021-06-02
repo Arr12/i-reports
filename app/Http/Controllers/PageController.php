@@ -13,9 +13,14 @@ use App\Models\DailyReportLily;
 use App\Models\DailyReportMaydewi;
 use App\Models\DailyReportRani;
 use App\Models\NonExclusiveReport;
+use App\Models\ReportSpamMangatoonNovelList;
+use App\Models\ReportSpamNovelListFromRanking;
+use App\Models\ReportSpamRoyalRoadNovelList;
+use App\Models\ReportSpamWNUncoractedNovelList;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use ReportSpamWnUncontractedNovelList;
 
 class PageController extends Controller
 {
@@ -118,6 +123,18 @@ class PageController extends Controller
     }
     public function DailyReportIndoIrels(){
         return view('admin.pages.daily-report.indo.daily-report-indo-irel');
+    }
+    public function SpamMangatoonNovelList(){
+        return view('admin.pages.spam.mangatoon');
+    }
+    public function SpamRoyalRoadNovelList(){
+        return view('admin.pages.spam.royalroad');
+    }
+    public function SpamWNUncontractedNovelList(){
+        return view('admin.pages.spam.wn-uncontracted');
+    }
+    public function SpamNovelListFromRanking(){
+        return view('admin.pages.spam.novel-list-from-ranking');
     }
     public function NonExclusiveReport(){
         return view('admin.pages.non-exclusive-report.non-exclusive');
@@ -800,6 +817,223 @@ class PageController extends Controller
                 $data->fu_8,
                 $data->fu_9,
                 $data->fu_10,
+            ]);
+        }
+        return $data_array;
+    }
+
+    /*---------------------------------------
+    | REPORT SPAM
+    -----------------------------------------*/
+    public function getSpamMangatoonNovelList(){
+        $query = ReportSpamMangatoonNovelList::orderBy('id','DESC')->limit(10000)->get();
+        /* --------------
+        / HEAD DATA
+        --------------- */
+        $data_array['columns'] = [];
+        $data_array['data'] = [];
+        $title = [
+            "No.",
+            "Date Invitation Sent",
+            "Book Name",
+            "Author Name",
+            "Views",
+            "Likes",
+            "Ratings",
+            "Update Status",
+            "Tags",
+            "Episodes",
+            "Link",
+            "Screenshot from Wave",
+            "Date Feedback Received",
+            "Author's Feedback",
+            "Comments From Wave",
+        ];
+        foreach ($title as $key => $value) {
+            array_push($data_array['columns'], ["title" => $value]);
+        }
+        foreach($query as $key => $data){
+            array_push($data_array['data'], [
+                $data->id,
+                $data->date,
+                $data->book_name,
+                $data->author_name,
+                $data->views,
+                $data->likes,
+                $data->ratings,
+                $data->update_status,
+                $data->tags,
+                $data->episodes,
+                $data->link ,
+                $data->screenshot_from_wave,
+                $data->date_feedback_received,
+                $data->author_feedback,
+                $data->comment_from_wave
+            ]);
+        }
+        return $data_array;
+    }
+    public function getSpamRoyalRoadNovelList(){
+        $query = ReportSpamRoyalRoadNovelList::orderBy('id','DESC')->limit(10000)->get();
+        /* --------------
+        / HEAD DATA
+        --------------- */
+        $data_array['columns'] = [];
+        $data_array['data'] = [];
+        $title = [
+            "No.",
+            "Date Invitation Sent",
+            "Editor",
+            "Title",
+            "Author",
+            "URL",
+            "Type",
+            "Followers",
+            "Pages",
+            "Chapters",
+            "Views",
+            "Latest Updates",
+            "tags6",
+            "Tag1",
+            "Tag2",
+            "Tag3",
+            "Tag4",
+            "Tag5",
+            "Tag6",
+            "tags7",
+            "tags8",
+            "tags9",
+            "tags10",
+            "tags11",
+            "Date Feedback Received",
+            "Feedback From Author",
+        ];
+        foreach ($title as $key => $value) {
+            array_push($data_array['columns'], ["title" => $value]);
+        }
+        foreach($query as $key => $data){
+            array_push($data_array['data'], [
+                $data->id,
+                $data->date,
+                $data->editor,
+                $data->title,
+                $data->author,
+                $data->url,
+                $data->type,
+                $data->followers,
+                $data->pages,
+                $data->chapters,
+                $data->views,
+                $data->latest_update,
+                $data->tags6,
+                $data->tag1,
+                $data->tag2,
+                $data->tag3,
+                $data->tag4,
+                $data->tag5,
+                $data->tag6,
+                $data->tags7,
+                $data->tags8,
+                $data->tags9,
+                $data->tags10,
+                $data->tags11,
+                $data->date_feedback_received,
+                $data->feedback_from_author,
+            ]);
+        }
+        return $data_array;
+    }
+    public function getSpamWNUncontractedNovelList(){
+        $query = ReportSpamWNUncoractedNovelList::orderBy('id','DESC')->limit(10000)->get();
+        /* --------------
+        / HEAD DATA
+        --------------- */
+        $data_array['columns'] = [];
+        $data_array['data'] = [];
+        $title = [
+            "No.",
+            "Date Invitation Sent",
+            "Editor",
+            "CBID",
+            "Book Title",
+            "Author name",
+            "Discord's Contact",
+            "Other Contact Way",
+            "Genre",
+            "Total Chapter",
+            "Chapter within 7 days",
+            "Ongoing/Completed",
+            "FL/ML",
+            "Date Feedback Received",
+            "Feedback From Author",
+            "Note"
+        ];
+        foreach ($title as $key => $value) {
+            array_push($data_array['columns'], ["title" => $value]);
+        }
+        foreach($query as $key => $data){
+            array_push($data_array['data'], [
+                $data->id,
+                $data->date,
+                $data->editor,
+                $data->cbid,
+                $data->book_title,
+                $data->author_name,
+                $data->discord_contact,
+                $data->other_contact_way,
+                $data->genre,
+                $data->total_chapter,
+                $data->chapter_within_7_days ,
+                $data->collection,
+                $data->status_ongoing,
+                $data->FL_ML,
+                $data->date_feedback_received,
+                $data->feedback_from_author,
+                $data->note
+            ]);
+        }
+        return $data_array;
+    }
+    public function getSpamNovelListFromRanking(){
+        $query = ReportSpamNovelListFromRanking::orderBy('id','DESC')->limit(10000)->get();
+        /* --------------
+        / HEAD DATA
+        --------------- */
+        $data_array['columns'] = [];
+        $data_array['data'] = [];
+        $title = [
+            "No.",
+            "CBID",
+            "Book Title",
+            "Author name",
+            "Author's Contact",
+            "Genre",
+            "Total ChaptEnsias",
+            "ChaptEnsias within 7 days",
+            "Collections",
+            "Ongoing/Completed",
+            "FL/ML",
+            "Editor",
+            "Note",
+        ];
+        foreach ($title as $key => $value) {
+            array_push($data_array['columns'], ["title" => $value]);
+        }
+        foreach($query as $key => $data){
+            array_push($data_array['data'], [
+                $data->id,
+                $data->cbid,
+                $data->book_title,
+                $data->author_name,
+                $data->author_contact,
+                $data->genre,
+                $data->total_chapter,
+                $data->chapter_within_7_days,
+                $data->collection,
+                $data->status_ongoing,
+                $data->FL_ML ,
+                $data->editor,
+                $data->note,
             ]);
         }
         return $data_array;
@@ -2181,6 +2415,52 @@ class PageController extends Controller
         array_push($data_array['data'], [
             "<a target='_blank' href='". route('daily-report-indo.irels') ."'>Irel</a>",
             '-',$dIrel->whereNotNull('fu_1')->count()+$dIrel->whereNotNull('fu_2')->count()+$dIrel->whereNotNull('fu_3')->count()+$dIrel->whereNotNull('fu_4')->count()+$dIrel->whereNotNull('fu_5')->count()+$dIrel->whereNotNull('fu_6')->count()+$dIrel->whereNotNull('fu_7')->count()+$dIrel->whereNotNull('fu_8')->count()+$dIrel->whereNotNull('fu_9')->count()+$dIrel->whereNotNull('fu_10')->count(),'-','-',+$dIrel->whereNotNull('date')->count(),$dIrel->whereNotNull('date_solved')->count(),
+        ]);
+        return $data_array;
+    }
+    public function MonthlyReportDataSpam($date){
+        /* --------------
+        / HEAD DATA
+        --------------- */
+        $data_array['columns'] = [];
+        $data_array['data'] = [];
+        $startdate = $date[0];
+        $enddate = $date[1];
+        $dMangatoon = ReportSpamMangatoonNovelList::whereBetween('date', [$startdate,$enddate])
+        ->orderBy('id','DESC')
+        ->get();
+        $dUncontractedWN = ReportSpamWNUncoractedNovelList::whereBetween('date', [$startdate,$enddate])
+        ->orderBy('id','DESC')
+        ->get();
+        $dRoyalroad = ReportSpamRoyalRoadNovelList::whereBetween('date', [$startdate,$enddate])
+        ->orderBy('id','DESC')
+        ->get();
+        $title = [
+            "Spam Team",
+            "Platform",
+            "Invitation Sent",
+            "Author Replied"
+        ];
+        foreach ($title as $key => $value) {
+            array_push($data_array['columns'], ["title" => $value]);
+        }
+        array_push($data_array['data'], [
+            $dMangatoon->whereNotNull('date')->count(),
+            $dMangatoon->whereNotNull('fu_1')->count()+$dMangatoon->whereNotNull('fu_2')->count()+$dMangatoon->whereNotNull('fu_3')->count()+$dMangatoon->whereNotNull('fu_4')->count()+$dMangatoon->whereNotNull('fu_5')->count(),
+            $dMangatoon->whereNotNull('sent_royalty')->count(),
+            '0',
+        ]);
+        array_push($data_array['data'], [
+            $dUncontractedWN->whereNotNull('date')->count(),
+            $dUncontractedWN->whereNotNull('fu_1')->count()+$dUncontractedWN->whereNotNull('fu_2')->count()+$dUncontractedWN->whereNotNull('fu_3')->count()+$dUncontractedWN->whereNotNull('fu_4')->count()+$dUncontractedWN->whereNotNull('fu_5')->count(),
+            $dUncontractedWN->whereNotNull('sent_royalty')->count(),
+            '0',
+        ]);
+        array_push($data_array['data'], [
+            $dRoyalroad->whereNotNull('date')->count(),
+            $dRoyalroad->whereNotNull('fu_1')->count()+$dRoyalroad->whereNotNull('fu_2')->count()+$dRoyalroad->whereNotNull('fu_3')->count()+$dRoyalroad->whereNotNull('fu_4')->count()+$dRoyalroad->whereNotNull('fu_5')->count(),
+            $dRoyalroad->whereNotNull('sent_royalty')->count(),
+            '0',
         ]);
         return $data_array;
     }

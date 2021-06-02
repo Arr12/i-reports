@@ -40,6 +40,16 @@ Route::middleware(['auth:sanctum'])->group(function(){
         Route::get('irels',[PageController::class, 'DailyReportIndoIrels'])->name('irels');
         Route::get('irels-data',[PageController::class, 'getDailyReportIndoIrels'])->name('irels.data');
     });
+    Route::prefix('/report-spam/report')->name('report-spam.')->group(function(){
+        Route::get('spam-mangatoon',[PageController::class, 'SpamMangatoonNovelList'])->name('spam-mangatoon');
+        Route::get('spam-mangatoon-data',[PageController::class, 'getSpamMangatoonNovelList'])->name('spam-mangatoon.data');
+        Route::get('spam-wn-uncontracted',[PageController::class, 'SpamWNUncontractedNovelList'])->name('spam-wn-uncontracted');
+        Route::get('spam-wn-uncontracted-data',[PageController::class, 'getSpamWNUncontractedNovelList'])->name('spam-wn-uncontracted.data');
+        Route::get('spam-novel-list-from-ranking',[PageController::class, 'SpamNovelListFromRanking'])->name('spam-novel-list-from-ranking');
+        Route::get('spam-novel-list-from-ranking-data',[PageController::class, 'getSpamNovelListFromRanking'])->name('spam-novel-list-from-ranking.data');
+        Route::get('spam-royalroad',[PageController::class, 'SpamRoyalRoadNovelList'])->name('spam-royalroad');
+        Route::get('spam-royalroad-data',[PageController::class, 'getSpamRoyalRoadNovelList'])->name('spam-royalroad.data');
+    });
     Route::prefix('/daily-report/report')->name('non-exclusive-report.')->group(function(){
         Route::get('non-exclusive',[PageController::class, 'NonExclusiveReport'])->name('non-exclusive');
         Route::get('non-exclusive-data',[PageController::class, 'getNonExclusiveReport'])->name('non-exclusive.data');

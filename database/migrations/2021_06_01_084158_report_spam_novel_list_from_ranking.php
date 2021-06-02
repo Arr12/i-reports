@@ -19,12 +19,12 @@ class ReportSpamNovelListFromRanking extends Migration
             $table->text('book_title')->nullable();
             $table->text('author_name')->nullable();
             $table->text('author_contact')->nullable();
-            $table->string('genre',80)->nullable();
-            $table->string('total_chapter',50)->nullable();
-            $table->string('chapter_within_7_days',50)->nullable();
+            $table->text('genre')->nullable();
+            $table->text('total_chapter')->nullable();
+            $table->text('chapter_within_7_days')->nullable();
             $table->text('collection')->nullable();
-            $table->string('status_ongoing',80)->nullable();
-            $table->string('FL_ML',50)->nullable();
+            $table->text('status_ongoing')->nullable();
+            $table->text('FL_ML')->nullable();
             $table->text('editor')->nullable();
             $table->text('note')->nullable();
             $table->timestamps();
