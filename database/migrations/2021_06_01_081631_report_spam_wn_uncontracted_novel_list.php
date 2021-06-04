@@ -16,6 +16,7 @@ class ReportSpamWnUncontractedNovelList extends Migration
         Schema::create('report_spam_wn_uncontracted_novel_list', function (Blueprint $table) {
             $table->id();
             $table->date('date')->nullable();
+            $table->text('reasons')->nullable();
             $table->text('editor')->nullable();
             $table->text('cbid')->nullable();
             $table->text('book_title')->nullable();

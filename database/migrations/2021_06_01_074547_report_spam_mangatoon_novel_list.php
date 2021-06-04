@@ -16,6 +16,7 @@ class ReportSpamMangatoonNovelList extends Migration
         Schema::create('report_spam_mangatoon_novel_list', function (Blueprint $table) {
             $table->id();
             $table->date('date')->nullable();
+            $table->text('reasons')->nullable();
             $table->text('book_name')->nullable();
             $table->text('author_name')->nullable();
             $table->text('views')->nullable();

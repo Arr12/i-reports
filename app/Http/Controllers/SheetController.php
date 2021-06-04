@@ -38,8 +38,7 @@ class SheetController extends Controller
         }
         return $date;
     }
-    public function check($array, $value)
-    {
+    public function check($array, $value){
         return isset($array[$value]) ? $array[$value] : null;
     }
 
@@ -62,17 +61,43 @@ class SheetController extends Controller
         $values = $response->getValues();
         return $values;
     }
+    public function CreateNewFolderApi($title){
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+        CURLOPT_URL => 'http://45.76.182.41:8000/create-folder/'.$title,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'GET',
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        return $response;
+    }
     public function CreateNewSpreadsheet($title){
-        $service = self::ApiSpreadsheet();
-        $spreadsheet = new Google_Service_Sheets_Spreadsheet([
-            'properties' => [
-                'title' => $title
-            ]
-        ]);
-        $spreadsheet = $service->spreadsheets->create($spreadsheet, [
-            'fields' => 'spreadsheetId'
-        ]);
-        return $spreadsheet->spreadsheetId;
+        $curl = curl_init();
+        $title = str_replace(" ", "%20", $title);
+        curl_setopt_array($curl, array(
+        CURLOPT_URL => "http://45.76.182.41:8000/create-spreadsheet/1XQ1pLnuAUjCgAGkShZ9eI5CrDVWD2oDU/$title",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'GET',
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        return $response;
     }
     public function CreateNewWorksheet($spreadsheetId,$title){
         $service = self::ApiSpreadsheet();
@@ -141,6 +166,32 @@ class SheetController extends Controller
             'valueInputOption' => 'RAW'
         ];
         $service->spreadsheets_values->append($spreadsheetId, $update_range, $body, $params);
+        return true;
+    }
+    public function ChangeColor($spreadsheetId, $sheetId,$color,$startRowIndex,$endRowIndex,$startColumnIndex,$endColumnIndex){
+        $service = self::ApiSpreadsheet();
+        $request = new Google_Service_Sheets_BatchUpdateSpreadsheetRequest([
+            'updateCells' => [
+                'rows' => array([
+                  'values' => array(
+                      [
+                        'userEnteredFormat' => [
+                            'backgroundColor' => $color
+                        ]
+                    ]
+                  )
+                ]),
+                'range' => [
+                    'sheetId' => $sheetId,
+                    'startRowIndex' => $startRowIndex,
+                    'endRowIndex' => $endRowIndex,
+                    'startColumnIndex' => $startColumnIndex,
+                    'endColumnIndex' => $endColumnIndex
+                ],
+                'fields' => 'userEnteredFormat'
+            ]
+        ]);
+        $service->spreadsheets->batchUpdate($spreadsheetId, $request);
         return true;
     }
 
@@ -219,7 +270,7 @@ class SheetController extends Controller
             $this->getDailyReportIndoIrel();
             $this->getNonExReport();
             $this->getSpamMangatoonNovelList();
-            $this->getSpamRoyalRoadNovelList();
+            // $this->getSpamRoyalRoadNovelList();
             $this->getSpamWNUncontractedNovelList();
         }
         else{
@@ -290,7 +341,9 @@ class SheetController extends Controller
                     'sent_royalty' => $sent_royalty,
                     'sent_non_exclusive' => $sent_non_exclusive,
                     'marker' => $marker,
-                    'old_new_book' => $old_new_book
+                    'old_new_book' => $old_new_book,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
                 ]);
             }
 
@@ -361,7 +414,9 @@ class SheetController extends Controller
                     'sent_royalty' => $sent_royalty,
                     'sent_non_exclusive' => $sent_non_exclusive,
                     'marker' => $marker,
-                    'old_new_book' => $old_new_book
+                    'old_new_book' => $old_new_book,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
                 ]);
             }
             DailyReportAnna::insert($savedData);
@@ -431,7 +486,9 @@ class SheetController extends Controller
                     'sent_royalty' => $sent_royalty,
                     'sent_non_exclusive' => $sent_non_exclusive,
                     'marker' => $marker,
-                    'old_new_book' => $old_new_book
+                    'old_new_book' => $old_new_book,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
                 ]);
             }
             DailyReportCarol::insert($savedData);
@@ -501,7 +558,9 @@ class SheetController extends Controller
                     'sent_royalty' => $sent_royalty,
                     'sent_non_exclusive' => $sent_non_exclusive,
                     'marker' => $marker,
-                    'old_new_book' => $old_new_book
+                    'old_new_book' => $old_new_book,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
                 ]);
             }
             DailyReportEric::insert($savedData);
@@ -573,7 +632,8 @@ class SheetController extends Controller
                     'sent_non_exclusive' => $sent_non_exclusive,
                     'marker' => $marker,
                     'old_new_book' => $old_new_book,
-                    'created_at' => $now
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
                 ]);
             }
             DailyReportIcha::insert($savedData);
@@ -643,7 +703,9 @@ class SheetController extends Controller
                     'sent_royalty' => $sent_royalty,
                     'sent_non_exclusive' => $sent_non_exclusive,
                     'marker' => $marker,
-                    'old_new_book' => $old_new_book
+                    'old_new_book' => $old_new_book,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
                 ]);
             }
             DailyReportLily::insert($savedData);
@@ -713,7 +775,9 @@ class SheetController extends Controller
                     'sent_royalty' => $sent_royalty,
                     'sent_non_exclusive' => $sent_non_exclusive,
                     'marker' => $marker,
-                    'old_new_book' => $old_new_book
+                    'old_new_book' => $old_new_book,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
                 ]);
             }
             DailyReportMaydewi::insert($savedData);
@@ -783,7 +847,9 @@ class SheetController extends Controller
                     'sent_royalty' => $sent_royalty,
                     'sent_non_exclusive' => $sent_non_exclusive,
                     'marker' => $marker,
-                    'old_new_book' => $old_new_book
+                    'old_new_book' => $old_new_book,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
                 ]);
             }
             DailyReportRani::insert($savedData);
@@ -850,7 +916,9 @@ class SheetController extends Controller
                     'fu_5' => $fu_5,
                     'data_sent' => $data_sent,
                     'marker' => $marker,
-                    'old_new_book' => $old_new_book
+                    'old_new_book' => $old_new_book,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
                 ]);
             }
             DailyReportIndoIchaNur::insert($savedData);
@@ -910,7 +978,9 @@ class SheetController extends Controller
                     'fu_7' => $fu_7,
                     'fu_8' => $fu_8,
                     'fu_9' => $fu_9,
-                    'fu_10' => $fu_10
+                    'fu_10' => $fu_10,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
                 ]);
             }
             DailyReportIndoIrel::insert($savedData);
@@ -931,7 +1001,7 @@ class SheetController extends Controller
             $savedData = [];
             // dump($cachedDaily);
             foreach ($cachedDaily as $key => $data) {
-                if(!$data[0]){continue;}
+                if(!$data[1]){continue;}
                 $date = isset($data[0]) ? $this->FormatDateTime($data[0]) : null;
                 $global_editor = isset($data[1]) ? $data[1] : null;
                 $author_contact = isset($data[2]) ? $data[2] : null;
@@ -991,6 +1061,8 @@ class SheetController extends Controller
                     'batch_date' => $batch_date,
                     'and_evidence' => $and_evidence,
                     'global_evidence' => $global_evidence,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
                 ]);
             }
             NonExclusiveReport::insert($savedData);
@@ -1010,7 +1082,7 @@ class SheetController extends Controller
             $cachedDaily = Cache::get($keyDaily, []);
             $savedData = [];
             foreach ($cachedDaily as $key => $data) {
-                if(!$data[0]){continue;}
+                // if(!$data[0]){continue;}
                 // dump($data);
                 $date = isset($data[0]) ? $this->FormatDateTime($data[0]) : null;
                 array_push($savedData, [
@@ -1058,24 +1130,26 @@ class SheetController extends Controller
             $cachedDaily = Cache::get($keyDaily, []);
             $savedData = [];
             foreach ($cachedDaily as $key => $data) {
-                if(!$data[0]){continue;}
+                // if(!$data[0]){continue;}
                 // dump($data);
                 $date = isset($data[0]) ? $this->FormatDateTime($data[0]) : null;
-                $book_name = isset($data[1]) ? $data[1] : null;
-                $author_name = isset($data[2]) ? $data[2] : null;
-                $views = isset($data[3]) ? $data[3] : null;
-                $likes = isset($data[4]) ? $data[4] : null;
-                $ratings = isset($data[5]) ? $data[5] : null;
-                $update_status = isset($data[6]) ? $data[6] : null;
-                $tags = isset($data[7]) ? $data[7] : null;
-                $episodes = isset($data[8]) ? $data[8] : null;
-                $link = isset($data[9]) ? $data[9] : null;
-                $screenshot_from_wave = isset($data[10]) ? $data[10] : null;
-                $date_feedback_received = isset($data[11]) ? $data[11] : null;
-                $author_feedback = isset($data[12]) ? $data[12] : null;
-                $comment_from_wave = isset($data[13]) ? $data[13] : null;
+                $reasons = isset($data[1]) ? $data[1] : null;
+                $book_name = isset($data[2]) ? $data[2] : null;
+                $author_name = isset($data[3]) ? $data[3] : null;
+                $views = isset($data[4]) ? $data[4] : null;
+                $likes = isset($data[5]) ? $data[5] : null;
+                $ratings = isset($data[6]) ? $data[6] : null;
+                $update_status = isset($data[7]) ? $data[7] : null;
+                $tags = isset($data[8]) ? $data[8] : null;
+                $episodes = isset($data[9]) ? $data[9] : null;
+                $link = isset($data[10]) ? $data[10] : null;
+                $screenshot_from_wave = isset($data[11]) ? $data[11] : null;
+                $date_feedback_received = isset($data[12]) ? $this->FormatDateTime($data[12]) : null;
+                $author_feedback = isset($data[13]) ? $data[13] : null;
+                $comment_from_wave = isset($data[14]) ? $data[14] : null;
                 array_push($savedData, [
                     'date' => $date,
+                    'reasons' => $reasons,
                     'book_name' => $book_name,
                     'author_name' => $author_name,
                     'views' => $views,
@@ -1091,6 +1165,7 @@ class SheetController extends Controller
                     'comment_from_wave' => $comment_from_wave
                 ]);
             }
+            // dump($savedData);
             ReportSpamMangatoonNovelList::insert($savedData);
         }
         return true;
@@ -1108,26 +1183,28 @@ class SheetController extends Controller
             $cachedDaily = Cache::get($keyDaily, []);
             $savedData = [];
             foreach ($cachedDaily as $key => $data) {
-                if(!$data[0]){continue;}
+                // if(!$data[0]){continue;}
                 // dump($data);
                 $date = isset($data[0]) ? $this->FormatDateTime($data[0]) : null;
-                $editor = isset($data[1]) ? $data[1] : null;
-                $cbid = isset($data[2]) ? $data[2] : null;
-                $book_title = isset($data[3]) ? $data[3] : null;
-                $author_name = isset($data[4]) ? $data[4] : null;
-                $discord_contact = isset($data[5]) ? $data[5] : null;
-                $other_contact_way = isset($data[6]) ? $data[6] : null;
-                $genre = isset($data[7]) ? $data[7] : null;
-                $total_chapter = isset($data[8]) ? $data[8] : null;
-                $chapter_within_7_days = isset($data[9]) ? $data[9] : null;
-                $collection = isset($data[10]) ? $data[10] : null;
-                $status_ongoing = isset($data[11]) ? $data[11] : null;
-                $FL_ML = isset($data[12]) ? $data[12] : null;
-                $date_feedback_received = isset($data[13]) ? $data[13] : null;
-                $feedback_from_author = isset($data[14]) ? $data[14] : null;
-                $note = isset($data[15]) ? $data[15] : null;
+                $reasons = $this->check($data,1);
+                $editor = $this->check($data,2);
+                $cbid = $this->check($data,3);
+                $book_title = $this->check($data,4);
+                $author_name = $this->check($data,5);
+                $discord_contact = $this->check($data,6);
+                $other_contact_way = $this->check($data,7);
+                $genre = $this->check($data,8);
+                $total_chapter = $this->check($data,9);
+                $chapter_within_7_days = $this->check($data,10);
+                $collection = $this->check($data,11);
+                $status_ongoing = $this->check($data,12);
+                $FL_ML = $this->check($data,13);
+                $date_feedback_received = $this->check($data,14);
+                $feedback_from_author = $this->check($data,15);
+                $note = $this->check($data,16);
                 array_push($savedData, [
                     'date' => $date,
+                    'reasons' => $reasons,
                     'editor' => $editor,
                     'cbid' => $cbid,
                     'book_title' => $book_title,
@@ -1258,10 +1335,22 @@ class SheetController extends Controller
     -----------------------------*/
     private $month = false;
     private $month_name = false;
-    private $month_now = false;
     private $date_start = false;
     private $date_end = false;
     private $page = false;
+    private $n_ame = [];
+    private $n_anna = [];
+    private $n_Carol = [];
+    private $n_Eric = [];
+    private $n_Icha = [];
+    private $n_Lily = [];
+    private $n_Maydewi = [];
+    private $n_Rani = [];
+    private $n_indo_irel = [];
+    private $n_indo_icha = [];
+    private $head_global = [];
+    private $head_indo = [];
+    private $head_indo_b = [];
     public function __construct() {
         $this->month = date('Y-m');
         $this->month_name = date('F Y');
@@ -1269,34 +1358,17 @@ class SheetController extends Controller
         $this->date_start = date($this->month."-d", strtotime("first day of this month"));
         $this->date_end = date($this->month."-d", strtotime("last day of this month"));
         $this->page = new PageController();
-    }
-    /* --------------------------
-    | Lv 1 REPORT TEAM MONITORING
-    ----------------------------- */
-    public function setTeamMonitoringGlobal(){
-        $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
-        // $title = "Bot-Try Lv. 1 Global Monitoring - ".$this->month_name;
-        // $spreadsheetId = $this->CreateNewSpreadsheet($title);
-
-        $n_ame = ["Ame"];
-        $n_anna = ["Anna"];
-        $n_Carol = ["Carol"];
-        $n_Eric = ["Eric"];
-        $n_Icha = ["Icha"];
-        $n_Lily = ["Lily"];
-        $n_Maydewi = ["Maydewi"];
-        $n_Rani = ["Rani"];
-
-        try {
-            $new_worksheet = "Weekly Report";
-            $this->CreateNewWorksheet($spreadsheetId,$new_worksheet);
-        } catch (\Throwable $th) {
-            $new_worksheet = "Weekly Report";
-        }
-
-        $page = $this->page;
-        $date = $this->date_start.",".$this->date_end;
-        $head = [
+        $this->n_ame = ["Ame"];
+        $this->n_anna = ["Anna"];
+        $this->n_Carol = ["Carol"];
+        $this->n_Eric = ["Eric"];
+        $this->n_Icha = ["Icha"];
+        $this->n_Lily = ["Lily"];
+        $this->n_Maydewi = ["Maydewi"];
+        $this->n_Rani = ["Rani"];
+        $this->n_indo_irel = ["Irel"];
+        $this->n_indo_icha = ["Icha Nur"];
+        $this->head_global = [
             "Global Team",
             "Answer New Authors",
             "N. Auth Non Ex",
@@ -1307,128 +1379,63 @@ class SheetController extends Controller
             "Done Non Ex",
             "Royalty"
         ];
+        $this->head_indo = [
+            "Indo Team",
+            "Answer New Authors",
+            "Follow Up Authors",
+            "Royalty",
+            "Non Exclusive"
+        ];
+        $this->head_indo_b = [
+            "",
+            "Help Authors",
+            "Follow Up Authors",
+            "Solved Problems"
+        ];
+    }
 
-        $update_range = $new_worksheet;
-
-        $DateWeekly = $page->WeekFromDate(date('Y-m'));
-        foreach($DateWeekly['c_week'] as $key => $v_weekly){
-            $values = [];
-            $startdate = $DateWeekly['startdate'][$key];
-            $enddate = $DateWeekly['enddate'][$key];
-            $f_head = [
-                $v_weekly." ".$this->month_name_now,
-                $startdate,
-                $enddate
-            ];
-            $d_ame = $page->DataAme($startdate,$enddate);
-            $d_anna = $page->DataAnna($startdate,$enddate);
-            $d_carol = $page->DataCarol($startdate,$enddate);
-            $d_eric = $page->DataEric($startdate,$enddate);
-            $d_icha = $page->DataIcha($startdate,$enddate);
-            $d_lily = $page->DataLily($startdate,$enddate);
-            $d_maydewi = $page->DataMaydewi($startdate,$enddate);
-            $d_rani = $page->DataRani($startdate,$enddate);
-            array_push($values,$f_head);
-            array_push($values,$head);
-            $v_ame = [
-                $n_ame[0],
-                $d_ame['daily']->whereNotNull('date')->count(),
-                $d_ame['non_ex']->whereNotNull('first_touch')->count(),
-                $d_ame['daily']->whereNotNull('fu_1')->count()+$d_ame['daily']->whereNotNull('fu_2')->count()+$d_ame['daily']->whereNotNull('fu_3')->count()+$d_ame['daily']->whereNotNull('fu_4')->count()+$d_ame['daily']->whereNotNull('fu_5')->count(),
-                $d_ame['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_ame['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_ame['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_ame['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_ame['non_ex']->whereNotNull('fu_non_ex_5')->count(),
-                $d_ame['non_ex']->whereNotNull('sent_e_contract')->count(),
-                $d_ame['non_ex']->whereNotNull('rec_e_contract')->count(),
-                $d_ame['non_ex']->whereNotNull('email_sent')->count(),
-                $d_ame['non_ex']->whereNotNull('sent_royalty')->count()
-            ];
-            array_push($values, $v_ame);
-            $v_anna = [
-                $n_anna[0],
-                $d_anna['daily']->whereNotNull('date')->count(),
-                $d_anna['non_ex']->whereNotNull('first_touch')->count(),
-                $d_anna['daily']->whereNotNull('fu_1')->count()+$d_anna['daily']->whereNotNull('fu_2')->count()+$d_anna['daily']->whereNotNull('fu_3')->count()+$d_anna['daily']->whereNotNull('fu_4')->count()+$d_anna['daily']->whereNotNull('fu_5')->count(),
-                $d_anna['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_anna['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_anna['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_anna['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_anna['non_ex']->whereNotNull('fu_non_ex_5')->count(),
-                $d_anna['non_ex']->whereNotNull('sent_e_contract')->count(),
-                $d_anna['non_ex']->whereNotNull('rec_e_contract')->count(),
-                $d_anna['non_ex']->whereNotNull('email_sent')->count(),
-                $d_anna['non_ex']->whereNotNull('sent_royalty')->count()
-            ];
-            array_push($values, $v_anna);
-            $v_carol = [
-                $n_Carol[0],
-                $d_carol['daily']->whereNotNull('date')->count(),
-                $d_carol['non_ex']->whereNotNull('first_touch')->count(),
-                $d_carol['daily']->whereNotNull('fu_1')->count()+$d_carol['daily']->whereNotNull('fu_2')->count()+$d_carol['daily']->whereNotNull('fu_3')->count()+$d_carol['daily']->whereNotNull('fu_4')->count()+$d_carol['daily']->whereNotNull('fu_5')->count(),
-                $d_carol['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_carol['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_carol['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_carol['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_carol['non_ex']->whereNotNull('fu_non_ex_5')->count(),
-                $d_carol['non_ex']->whereNotNull('sent_e_contract')->count(),
-                $d_carol['non_ex']->whereNotNull('rec_e_contract')->count(),
-                $d_carol['non_ex']->whereNotNull('email_sent')->count(),
-                $d_carol['non_ex']->whereNotNull('sent_royalty')->count()
-            ];
-            array_push($values, $v_carol);
-            $v_eric = [
-                $n_Eric[0],
-                $d_eric['daily']->whereNotNull('date')->count(),
-                $d_eric['non_ex']->whereNotNull('first_touch')->count(),
-                $d_eric['daily']->whereNotNull('fu_1')->count()+$d_eric['daily']->whereNotNull('fu_2')->count()+$d_eric['daily']->whereNotNull('fu_3')->count()+$d_eric['daily']->whereNotNull('fu_4')->count()+$d_eric['daily']->whereNotNull('fu_5')->count(),
-                $d_eric['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_eric['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_eric['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_eric['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_eric['non_ex']->whereNotNull('fu_non_ex_5')->count(),
-                $d_eric['non_ex']->whereNotNull('sent_e_contract')->count(),
-                $d_eric['non_ex']->whereNotNull('rec_e_contract')->count(),
-                $d_eric['non_ex']->whereNotNull('email_sent')->count(),
-                $d_eric['non_ex']->whereNotNull('sent_royalty')->count()
-            ];
-            array_push($values, $v_eric);
-            $v_icha = [
-                $n_Icha[0],
-                $d_icha['daily']->whereNotNull('date')->count(),
-                $d_icha['non_ex']->whereNotNull('first_touch')->count(),
-                $d_icha['daily']->whereNotNull('fu_1')->count()+$d_icha['daily']->whereNotNull('fu_2')->count()+$d_icha['daily']->whereNotNull('fu_3')->count()+$d_icha['daily']->whereNotNull('fu_4')->count()+$d_icha['daily']->whereNotNull('fu_5')->count(),
-                $d_icha['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_icha['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_icha['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_icha['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_icha['non_ex']->whereNotNull('fu_non_ex_5')->count(),
-                $d_icha['non_ex']->whereNotNull('sent_e_contract')->count(),
-                $d_icha['non_ex']->whereNotNull('rec_e_contract')->count(),
-                $d_icha['non_ex']->whereNotNull('email_sent')->count(),
-                $d_icha['non_ex']->whereNotNull('sent_royalty')->count()
-            ];
-            array_push($values, $v_icha);
-            $v_lily = [
-                $n_Lily[0],
-                $d_lily['daily']->whereNotNull('date')->count(),
-                $d_lily['non_ex']->whereNotNull('first_touch')->count(),
-                $d_lily['daily']->whereNotNull('fu_1')->count()+$d_lily['daily']->whereNotNull('fu_2')->count()+$d_lily['daily']->whereNotNull('fu_3')->count()+$d_lily['daily']->whereNotNull('fu_4')->count()+$d_lily['daily']->whereNotNull('fu_5')->count(),
-                $d_lily['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_lily['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_lily['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_lily['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_lily['non_ex']->whereNotNull('fu_non_ex_5')->count(),
-                $d_lily['non_ex']->whereNotNull('sent_e_contract')->count(),
-                $d_lily['non_ex']->whereNotNull('rec_e_contract')->count(),
-                $d_lily['non_ex']->whereNotNull('email_sent')->count(),
-                $d_lily['non_ex']->whereNotNull('sent_royalty')->count()
-            ];
-            array_push($values, $v_lily);
-            $v_maydewi = [
-                $n_Maydewi[0],
-                $d_maydewi['daily']->whereNotNull('date')->count(),
-                $d_maydewi['non_ex']->whereNotNull('first_touch')->count(),
-                $d_maydewi['daily']->whereNotNull('fu_1')->count()+$d_maydewi['daily']->whereNotNull('fu_2')->count()+$d_maydewi['daily']->whereNotNull('fu_3')->count()+$d_maydewi['daily']->whereNotNull('fu_4')->count()+$d_maydewi['daily']->whereNotNull('fu_5')->count(),
-                $d_maydewi['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_maydewi['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_maydewi['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_maydewi['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_maydewi['non_ex']->whereNotNull('fu_non_ex_5')->count(),
-                $d_maydewi['non_ex']->whereNotNull('sent_e_contract')->count(),
-                $d_maydewi['non_ex']->whereNotNull('rec_e_contract')->count(),
-                $d_maydewi['non_ex']->whereNotNull('email_sent')->count(),
-                $d_maydewi['non_ex']->whereNotNull('sent_royalty')->count()
-            ];
-            array_push($values, $v_maydewi);
-            $v_rani = [
-                $n_Rani[0],
-                $d_rani['daily']->whereNotNull('date')->count(),
-                $d_rani['non_ex']->whereNotNull('first_touch')->count(),
-                $d_rani['daily']->whereNotNull('fu_1')->count()+$d_rani['daily']->whereNotNull('fu_2')->count()+$d_rani['daily']->whereNotNull('fu_3')->count()+$d_rani['daily']->whereNotNull('fu_4')->count()+$d_rani['daily']->whereNotNull('fu_5')->count(),
-                $d_rani['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_rani['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_rani['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_rani['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_rani['non_ex']->whereNotNull('fu_non_ex_5')->count(),
-                $d_rani['non_ex']->whereNotNull('sent_e_contract')->count(),
-                $d_rani['non_ex']->whereNotNull('rec_e_contract')->count(),
-                $d_rani['non_ex']->whereNotNull('email_sent')->count(),
-                $d_rani['non_ex']->whereNotNull('sent_royalty')->count()
-            ];
-            array_push($values, $v_rani);
-            // dump($values);
-            $this->updateTeamMonitoring($spreadsheetId,$values,$update_range);
+    /* --------------------------
+    | Lv 1 REPORT TEAM MONITORING
+    ----------------------------- */
+    public function total($array, $value){
+        $x = 0;
+        foreach($array as $a){
+            $x += $a[$value];
+            // dump($a);
         }
+        return $x;
+    }
+    public function average($array, $value){
+        $x = 0;
+        foreach($array as $a){
+            $x += $a[$value]/count($this->page->personGlobal);
+            // dump($a);
+        }
+        return $x;
+    }
+    public function setTeamMonitoringGlobal(){
+        // $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
+        $title = "Lv. 1 Global Monitoring - ".$this->month_name;
+        $create = $this->CreateNewSpreadsheet($title);
+        $data = json_decode($create);
+        $spreadsheetId = $data->spreadsheet_id;
+
+        try {
+            $new_worksheet = "Weekly Report";
+            $this->CreateNewWorksheet($spreadsheetId,$new_worksheet);
+        } catch (\Throwable $th) {
+            $new_worksheet = "Weekly Report";
+        }
+        $page = $this->page;
+
+        /*--------------------------
+        | FUNCTION FORMAT REPORT WEEKLY
+        -----------------------------*/
+        $date = $this->date_start.",".$this->date_end;
+        $update_range = $new_worksheet;
+        $level = "1";
+        $values = $this->ReportWeeklyGlobalFormat($page,$level);
+        $this->updateTeamMonitoring($spreadsheetId,$values,$update_range);
 
         try{
             $update_worksheet = "Lv 1 Monitoring";
@@ -1447,87 +1454,72 @@ class SheetController extends Controller
         $Rani = $page->dataGlobalTeamMonitoringRani($date);
 
         $v_ame = [];
-        $v_ame = $this->dataSanitizerTeamMonitoring($v_ame,$n_ame,$head,$ame['data']);
+        $v_ame = $this->dataSanitizerTeamMonitoring($v_ame,$this->n_ame,$this->head_global,$ame['data']);
         $update_range = $update_worksheet."!A:I";
         $this->updateTeamMonitoring($spreadsheetId,$v_ame,$update_range);
 
         $v_anna = [];
-        $v_anna = $this->dataSanitizerTeamMonitoring($v_anna,$n_anna,$head,$anna['data']);
+        $v_anna = $this->dataSanitizerTeamMonitoring($v_anna,$this->n_anna,$this->head_global,$anna['data']);
         $update_range = $update_worksheet."!J:R";
         $this->updateTeamMonitoring($spreadsheetId,$v_anna,$update_range);
 
         $v_Carol = [];
-        $v_Carol = $this->dataSanitizerTeamMonitoring($v_Carol,$n_Carol,$head,$Carol['data']);
+        $v_Carol = $this->dataSanitizerTeamMonitoring($v_Carol,$this->n_Carol,$this->head_global,$Carol['data']);
         $update_range = $update_worksheet."!S:AA";
         $this->updateTeamMonitoring($spreadsheetId,$v_Carol,$update_range);
 
         $v_Eric = [];
-        $v_Eric = $this->dataSanitizerTeamMonitoring($v_Eric,$n_Eric,$head,$Eric['data']);
+        $v_Eric = $this->dataSanitizerTeamMonitoring($v_Eric,$this->n_Eric,$this->head_global,$Eric['data']);
         $update_range = $update_worksheet."!AB:AJ";
         $this->updateTeamMonitoring($spreadsheetId,$v_Eric,$update_range);
 
         $v_Icha = [];
-        $v_Icha = $this->dataSanitizerTeamMonitoring($v_Icha,$n_Icha,$head,$Icha['data']);
+        $v_Icha = $this->dataSanitizerTeamMonitoring($v_Icha,$this->n_Icha,$this->head_global,$Icha['data']);
         $update_range = $update_worksheet."!AK:AS";
         $this->updateTeamMonitoring($spreadsheetId,$v_Icha,$update_range);
 
         $v_Lily = [];
-        $v_Lily = $this->dataSanitizerTeamMonitoring($v_Lily,$n_Lily,$head,$Lily['data']);
+        $v_Lily = $this->dataSanitizerTeamMonitoring($v_Lily,$this->n_Lily,$this->head_global,$Lily['data']);
         $update_range = $update_worksheet."!AT:BB";
         $this->updateTeamMonitoring($spreadsheetId,$v_Lily,$update_range);
 
         $v_Maydewi = [];
-        $v_Maydewi = $this->dataSanitizerTeamMonitoring($v_Maydewi,$n_Maydewi,$head,$Maydewi['data']);
+        $v_Maydewi = $this->dataSanitizerTeamMonitoring($v_Maydewi,$this->n_Maydewi,$this->head_global,$Maydewi['data']);
         $update_range = $update_worksheet."!BC:BK";
         $this->updateTeamMonitoring($spreadsheetId,$v_Maydewi,$update_range);
 
         $v_Rani = [];
-        $v_Rani = $this->dataSanitizerTeamMonitoring($v_Rani,$n_Rani,$head,$Rani['data']);
+        $v_Rani = $this->dataSanitizerTeamMonitoring($v_Rani,$this->n_Rani,$this->head_global,$Rani['data']);
         $update_range = $update_worksheet."!BL:BT";
         $this->updateTeamMonitoring($spreadsheetId,$v_Rani,$update_range);
 
         return 200;
     }
     public function setTeamMonitoringIndo(){
-        $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
-        // $title = "Bot-Try Lv. 1 Global Monitoring - ".$this->month_name;
-        // $spreadsheetId = $this->CreateNewSpreadsheet($title);
+        // $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
+        $title = "Lv. 1 Indo Monitoring - ".$this->month_name;
+        $create = $this->CreateNewSpreadsheet($title);
+        $data = json_decode($create);
+        $spreadsheetId = $data->spreadsheet_id;
         $page = $this->page;
         $date = $this->date_start.",".$this->date_end;
 
-        $n_indo_icha = ['Icha Nur'];
-        $n_indo_irel = ['Irelda'];
-
-        $head = [
-            "Indo Team",
-            "Answer New Authors",
-            "Follow Up Authors",
-            "Royalty",
-            "Non Exclusive"
-        ];
-        $head_b = [
-            "",
-            "Help Authors",
-            "Follow Up Authors",
-            "Solved Problems"
-        ];
-
         try {
             $update_worksheet = "Lv 1 Monitoring Indo";
-            $this->CreateNewWorksheet($spreadsheetId,$update_worksheet);
+            $this->UpdateSheetProperties($spreadsheetId, $update_worksheet);
         } catch (\Throwable $th) {
             $update_worksheet = "Lv 1 Monitoring Indo";
         }
 
         $indo_ichanur = $page->dataIndoTeamMonitoringIchaNur($date);
         $v_indo_ichanur = [];
-        $v_indo_ichanur = $this->dataSanitizerTeamMonitoring($v_indo_ichanur,$n_indo_icha,$head,$indo_ichanur['data']);
+        $v_indo_ichanur = $this->dataSanitizerTeamMonitoring($v_indo_ichanur,$this->n_indo_icha,$this->head_indo,$indo_ichanur['data']);
         $update_range = $update_worksheet."!A:E";
         $this->updateTeamMonitoring($spreadsheetId,$v_indo_ichanur,$update_range);
 
         $indo_irel = $page->dataIndoTeamMonitoringIrel($date);
         $v_indo_irel = [];
-        $v_indo_irel = $this->dataSanitizerTeamMonitoring($v_indo_irel,$n_indo_irel,$head_b,$indo_irel['data']);
+        $v_indo_irel = $this->dataSanitizerTeamMonitoring($v_indo_irel,$this->n_indo_irel,$this->head_indo_b,$indo_irel['data']);
         $update_range = $update_worksheet."!F:I";
         $this->updateTeamMonitoring($spreadsheetId,$v_indo_irel,$update_range);
 
@@ -1537,41 +1529,229 @@ class SheetController extends Controller
         } catch (\Throwable $th) {
             $new_worksheet = "Weekly Report Indo";
         }
+
+        /*--------------------------
+        | FUNCTION FORMAT REPORT WEEKLY
+        -----------------------------*/
         $update_range = $new_worksheet;
+        $level = "1";
+        $values = $this->ReportWeeklyIndoFormat($page,$level);
+        $this->updateTeamMonitoring($spreadsheetId,$values,$update_range);
+
+        return 200;
+    }
+    public function ReportWeeklyGlobalFormat($page, $level){
+        $Date = date('Y-m-d');
+        $values = [];
         $DateWeekly = $page->WeekFromDate(date('Y-m'));
+        $DateWeekly['startdate'] = array_reverse($DateWeekly['startdate']);
+        $DateWeekly['enddate'] = array_reverse($DateWeekly['enddate']);
+        $DateWeekly['c_week'] = array_reverse($DateWeekly['c_week']);
         foreach($DateWeekly['c_week'] as $key => $v_weekly){
-            $values = [];
             $startdate = $DateWeekly['startdate'][$key];
             $enddate = $DateWeekly['enddate'][$key];
-            $f_head = [
-                $v_weekly." ".$this->month_name_now,
-                $startdate,
-                $enddate
-            ];
-            $d_ichanur = $page->DataIndoIchaNur($startdate,$enddate);
-            array_push($values, $f_head);
-            array_push($values, $head);
-            $v_indo_icha = [
-                $n_indo_icha[0],
-                $d_ichanur->whereNotNull('date')->count(),
-                $d_ichanur->whereNotNull('fu_1')->count()+$d_ichanur->whereNotNull('fu_2')->count()+$d_ichanur->whereNotNull('fu_3')->count()+$d_ichanur->whereNotNull('fu_4')->count()+$d_ichanur->whereNotNull('fu_5')->count(),
-                $d_ichanur->whereNotNull('sent_royalty')->count(),
-                "0"
-            ];
-            array_push($values, $v_indo_icha);
-
-            $d_irel = $page->DataIndoIrel($startdate,$enddate);
-            array_push($values, $head_b);
-            $v_indo_irel = [
-                $n_indo_irel[0],
-                $d_irel->whereNotNull('date')->count(),
-                $d_irel->whereNotNull('fu_1')->count()+$d_irel->whereNotNull('fu_2')->count()+$d_irel->whereNotNull('fu_3')->count()+$d_irel->whereNotNull('fu_4')->count()+$d_irel->whereNotNull('fu_5')->count(),
-                $d_irel->whereNotNull('date_solved')->count(),
-            ];
-            array_push($values, $v_indo_irel);
-            $this->updateTeamMonitoring($spreadsheetId,$values,$update_range);
+            if($level == '1'){
+                $values = $this->ReportWeeklyGlobalFormatSanitizer($values, $v_weekly, $startdate, $enddate);
+            }else{
+                if($Date >= date('Y-m-d',strtotime($startdate)) && $Date <= date('Y-m-d',strtotime($enddate))){
+                    $values = $this->ReportWeeklyGlobalFormatSanitizer($values, $v_weekly, $startdate, $enddate);
+                }
+            }
+            // dump($values);
         }
-        return 200;
+        return $values;
+    }
+    public function ReportWeeklyGlobalFormatSanitizer($values, $v_weekly, $startdate, $enddate){
+        $page = $this->page;
+        $head = $this->head_global;
+        $n_ame = $this->n_ame;
+        $n_anna = $this->n_anna;
+        $n_Carol = $this->n_Carol;
+        $n_Eric = $this->n_Eric;
+        $n_Icha = $this->n_Icha;
+        $n_Lily = $this->n_Lily;
+        $n_Maydewi = $this->n_Maydewi;
+        $n_Rani = $this->n_Rani;
+        $f_head = [
+            $v_weekly." ".$this->month_name_now,
+            $startdate,
+            $enddate
+        ];
+        $d_ame = $page->DataAme($startdate,$enddate);
+        $d_anna = $page->DataAnna($startdate,$enddate);
+        $d_carol = $page->DataCarol($startdate,$enddate);
+        $d_eric = $page->DataEric($startdate,$enddate);
+        $d_icha = $page->DataIcha($startdate,$enddate);
+        $d_lily = $page->DataLily($startdate,$enddate);
+        $d_maydewi = $page->DataMaydewi($startdate,$enddate);
+        $d_rani = $page->DataRani($startdate,$enddate);
+        array_push($values,$f_head);
+        array_push($values,$head);
+        $v_ame = [
+            $n_ame[0],
+            $d_ame['daily']->whereNotNull('date')->count(),
+            $d_ame['non_ex']->whereNotNull('first_touch')->count(),
+            $d_ame['daily']->whereNotNull('fu_1')->count()+$d_ame['daily']->whereNotNull('fu_2')->count()+$d_ame['daily']->whereNotNull('fu_3')->count()+$d_ame['daily']->whereNotNull('fu_4')->count()+$d_ame['daily']->whereNotNull('fu_5')->count(),
+            $d_ame['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_ame['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_ame['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_ame['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_ame['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+            $d_ame['non_ex']->whereNotNull('sent_e_contract')->count(),
+            $d_ame['non_ex']->whereNotNull('rec_e_contract')->count(),
+            $d_ame['non_ex']->whereNotNull('email_sent')->count(),
+            $d_ame['non_ex']->whereNotNull('sent_royalty')->count()
+        ];
+        array_push($values, $v_ame);
+        $v_anna = [
+            $n_anna[0],
+            $d_anna['daily']->whereNotNull('date')->count(),
+            $d_anna['non_ex']->whereNotNull('first_touch')->count(),
+            $d_anna['daily']->whereNotNull('fu_1')->count()+$d_anna['daily']->whereNotNull('fu_2')->count()+$d_anna['daily']->whereNotNull('fu_3')->count()+$d_anna['daily']->whereNotNull('fu_4')->count()+$d_anna['daily']->whereNotNull('fu_5')->count(),
+            $d_anna['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_anna['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_anna['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_anna['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_anna['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+            $d_anna['non_ex']->whereNotNull('sent_e_contract')->count(),
+            $d_anna['non_ex']->whereNotNull('rec_e_contract')->count(),
+            $d_anna['non_ex']->whereNotNull('email_sent')->count(),
+            $d_anna['non_ex']->whereNotNull('sent_royalty')->count()
+        ];
+        array_push($values, $v_anna);
+        $v_carol = [
+            $n_Carol[0],
+            $d_carol['daily']->whereNotNull('date')->count(),
+            $d_carol['non_ex']->whereNotNull('first_touch')->count(),
+            $d_carol['daily']->whereNotNull('fu_1')->count()+$d_carol['daily']->whereNotNull('fu_2')->count()+$d_carol['daily']->whereNotNull('fu_3')->count()+$d_carol['daily']->whereNotNull('fu_4')->count()+$d_carol['daily']->whereNotNull('fu_5')->count(),
+            $d_carol['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_carol['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_carol['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_carol['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_carol['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+            $d_carol['non_ex']->whereNotNull('sent_e_contract')->count(),
+            $d_carol['non_ex']->whereNotNull('rec_e_contract')->count(),
+            $d_carol['non_ex']->whereNotNull('email_sent')->count(),
+            $d_carol['non_ex']->whereNotNull('sent_royalty')->count()
+        ];
+        array_push($values, $v_carol);
+        $v_eric = [
+            $n_Eric[0],
+            $d_eric['daily']->whereNotNull('date')->count(),
+            $d_eric['non_ex']->whereNotNull('first_touch')->count(),
+            $d_eric['daily']->whereNotNull('fu_1')->count()+$d_eric['daily']->whereNotNull('fu_2')->count()+$d_eric['daily']->whereNotNull('fu_3')->count()+$d_eric['daily']->whereNotNull('fu_4')->count()+$d_eric['daily']->whereNotNull('fu_5')->count(),
+            $d_eric['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_eric['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_eric['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_eric['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_eric['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+            $d_eric['non_ex']->whereNotNull('sent_e_contract')->count(),
+            $d_eric['non_ex']->whereNotNull('rec_e_contract')->count(),
+            $d_eric['non_ex']->whereNotNull('email_sent')->count(),
+            $d_eric['non_ex']->whereNotNull('sent_royalty')->count()
+        ];
+        array_push($values, $v_eric);
+        $v_icha = [
+            $n_Icha[0],
+            $d_icha['daily']->whereNotNull('date')->count(),
+            $d_icha['non_ex']->whereNotNull('first_touch')->count(),
+            $d_icha['daily']->whereNotNull('fu_1')->count()+$d_icha['daily']->whereNotNull('fu_2')->count()+$d_icha['daily']->whereNotNull('fu_3')->count()+$d_icha['daily']->whereNotNull('fu_4')->count()+$d_icha['daily']->whereNotNull('fu_5')->count(),
+            $d_icha['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_icha['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_icha['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_icha['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_icha['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+            $d_icha['non_ex']->whereNotNull('sent_e_contract')->count(),
+            $d_icha['non_ex']->whereNotNull('rec_e_contract')->count(),
+            $d_icha['non_ex']->whereNotNull('email_sent')->count(),
+            $d_icha['non_ex']->whereNotNull('sent_royalty')->count()
+        ];
+        array_push($values, $v_icha);
+        $v_lily = [
+            $n_Lily[0],
+            $d_lily['daily']->whereNotNull('date')->count(),
+            $d_lily['non_ex']->whereNotNull('first_touch')->count(),
+            $d_lily['daily']->whereNotNull('fu_1')->count()+$d_lily['daily']->whereNotNull('fu_2')->count()+$d_lily['daily']->whereNotNull('fu_3')->count()+$d_lily['daily']->whereNotNull('fu_4')->count()+$d_lily['daily']->whereNotNull('fu_5')->count(),
+            $d_lily['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_lily['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_lily['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_lily['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_lily['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+            $d_lily['non_ex']->whereNotNull('sent_e_contract')->count(),
+            $d_lily['non_ex']->whereNotNull('rec_e_contract')->count(),
+            $d_lily['non_ex']->whereNotNull('email_sent')->count(),
+            $d_lily['non_ex']->whereNotNull('sent_royalty')->count()
+        ];
+        array_push($values, $v_lily);
+        $v_maydewi = [
+            $n_Maydewi[0],
+            $d_maydewi['daily']->whereNotNull('date')->count(),
+            $d_maydewi['non_ex']->whereNotNull('first_touch')->count(),
+            $d_maydewi['daily']->whereNotNull('fu_1')->count()+$d_maydewi['daily']->whereNotNull('fu_2')->count()+$d_maydewi['daily']->whereNotNull('fu_3')->count()+$d_maydewi['daily']->whereNotNull('fu_4')->count()+$d_maydewi['daily']->whereNotNull('fu_5')->count(),
+            $d_maydewi['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_maydewi['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_maydewi['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_maydewi['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_maydewi['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+            $d_maydewi['non_ex']->whereNotNull('sent_e_contract')->count(),
+            $d_maydewi['non_ex']->whereNotNull('rec_e_contract')->count(),
+            $d_maydewi['non_ex']->whereNotNull('email_sent')->count(),
+            $d_maydewi['non_ex']->whereNotNull('sent_royalty')->count()
+        ];
+        array_push($values, $v_maydewi);
+        $v_rani = [
+            $n_Rani[0],
+            $d_rani['daily']->whereNotNull('date')->count(),
+            $d_rani['non_ex']->whereNotNull('first_touch')->count(),
+            $d_rani['daily']->whereNotNull('fu_1')->count()+$d_rani['daily']->whereNotNull('fu_2')->count()+$d_rani['daily']->whereNotNull('fu_3')->count()+$d_rani['daily']->whereNotNull('fu_4')->count()+$d_rani['daily']->whereNotNull('fu_5')->count(),
+            $d_rani['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_rani['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_rani['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_rani['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_rani['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+            $d_rani['non_ex']->whereNotNull('sent_e_contract')->count(),
+            $d_rani['non_ex']->whereNotNull('rec_e_contract')->count(),
+            $d_rani['non_ex']->whereNotNull('email_sent')->count(),
+            $d_rani['non_ex']->whereNotNull('sent_royalty')->count()
+        ];
+        array_push($values, $v_rani);
+
+        $x = ["Total"];
+        foreach ($v_rani as $key => $value) {
+            if($key == 0){continue;}
+            array_push($x, $this->total([$v_ame,$v_anna,$v_carol,$v_eric,$v_icha,$v_lily,$v_maydewi,$v_rani], $key));
+        }
+        array_push($values, $x);
+        $y = ["Average"];
+        foreach ($v_rani as $key => $value) {
+            if($key == 0){continue;}
+            array_push($y, $this->average([$v_ame,$v_anna,$v_carol,$v_eric,$v_icha,$v_lily,$v_maydewi,$v_rani], $key));
+        }
+        array_push($values, $y);
+
+        return $values;
+    }
+    public function ReportWeeklyIndoFormat($page,$level){
+        $values = [];
+        $DateWeekly = $page->WeekFromDate(date('Y-m'));
+        $DateWeekly['startdate'] = array_reverse($DateWeekly['startdate']);
+        $DateWeekly['enddate'] = array_reverse($DateWeekly['enddate']);
+        $DateWeekly['c_week'] = array_reverse($DateWeekly['c_week']);
+        foreach($DateWeekly['c_week'] as $key => $v_weekly){
+            $startdate = $DateWeekly['startdate'][$key];
+            $enddate = $DateWeekly['enddate'][$key];
+            $Date = date('Y-m-d');
+            if($level == '1'){
+                $values = $this->ReportWeeklyIndoFormatSanitizer($values,$v_weekly,$startdate,$enddate);
+            }else{
+                if($Date >= date('Y-m-d',strtotime($startdate)) && $Date <= date('Y-m-d',strtotime($enddate))){
+                    $values = $this->ReportWeeklyIndoFormatSanitizer($values,$v_weekly,$startdate,$enddate);
+                }
+            }
+        }
+        return $values;
+    }
+    public function ReportWeeklyIndoFormatSanitizer($values,$v_weekly,$startdate,$enddate){
+        $head = $this->head_indo;
+        $head_b = $this->head_indo_b;
+        $n_indo_icha = $this->n_indo_icha;
+        $n_indo_irel = $this->n_indo_irel;
+        $page = $this->page;
+        $f_head = [
+            $v_weekly." ".$this->month_name_now,
+            $startdate,
+            $enddate
+        ];
+        $d_ichanur = $page->DataIndoIchaNur($startdate,$enddate);
+        array_push($values, $f_head);
+        array_push($values, $head);
+        $v_indo_icha = [
+            $n_indo_icha[0],
+            $d_ichanur->whereNotNull('date')->count(),
+            $d_ichanur->whereNotNull('fu_1')->count()+$d_ichanur->whereNotNull('fu_2')->count()+$d_ichanur->whereNotNull('fu_3')->count()+$d_ichanur->whereNotNull('fu_4')->count()+$d_ichanur->whereNotNull('fu_5')->count(),
+            $d_ichanur->whereNotNull('sent_royalty')->count(),
+            "0"
+        ];
+        array_push($values, $v_indo_icha);
+
+        $d_irel = $page->DataIndoIrel($startdate,$enddate);
+        array_push($values, $head_b);
+        $v_indo_irel = [
+            $n_indo_irel[0],
+            $d_irel->whereNotNull('date')->count(),
+            $d_irel->whereNotNull('fu_1')->count()+$d_irel->whereNotNull('fu_2')->count()+$d_irel->whereNotNull('fu_3')->count()+$d_irel->whereNotNull('fu_4')->count()+$d_irel->whereNotNull('fu_5')->count(),
+            $d_irel->whereNotNull('date_solved')->count(),
+        ];
+        array_push($values, $v_indo_irel);
+        return $values;
     }
     public function dataSanitizerTeamMonitoring($values,$name,$head,$person_data){
         array_push($values,$name);
@@ -1602,24 +1782,68 @@ class SheetController extends Controller
         $update_sheet = $service->spreadsheets_values->append($spreadsheetId, $update_range, $body, $params);
         return $update_sheet;
     }
+
     /*--------------------------
     | Lv 2 REPORT MONTHLY
     -----------------------------*/
+    public function setAllTeamReportWeekly(){
+        /*--------------------------
+        | INSERT TO LEVEL 2 GLOBAL WEEKLY
+        -----------------------------*/
+        // TRIAL
+        // $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
+        // REAL
+        $spreadsheetId = "16xGw6KdeUzxASEnsXuIKIPawD5Dx6lSi52NohPp5u5s";
+
+        // TRIAL
+        // $sheetId = 182102069;
+
+        // REAL
+        $sheetId = 0;
+
+        $page = $this->page;
+        $DateWeekly = $page->WeekFromDate(date('Y-m'));
+        $new_worksheet = "Global Weekly Report";
+        $level = "2";
+        $values = $this->ReportWeeklyGlobalFormat($page, $level);
+        $update_range = $new_worksheet."!A1:I1";
+        $endindex = 12;
+        $this->insertValuesIntoFirstRow($spreadsheetId,$values,$update_range,$endindex,$sheetId);
+
+        /*--------------------------
+        | INSERT TO LEVEL 2 INDO WEEKLY
+        -----------------------------*/
+        // TRIAL
+        // $sheetId = 820330505;
+
+        // REAL
+        $sheetId = 441103606;
+
+        $new_worksheet = "Indo Weekly Report";
+        $level = "2";
+        $values = $this->ReportWeeklyIndoFormat($page,$level);
+        // dd($values);
+        $update_range = $new_worksheet."!A1:I1";
+        $endindex = 5;
+        $this->insertValuesIntoFirstRow($spreadsheetId,$values,$update_range,$endindex,$sheetId);
+
+        return 200;
+    }
     public function setAllTeamReport(){
-        $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
-        // $title = "Bot-Try Lv. 1 Global Monitoring - ".$this->month_name;
-        // $spreadsheetId = $this->CreateNewSpreadsheet($title);
+        // TRIAL
+        // $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
+        // $sheetId = 468929916;
 
-        try {
-            $new_worksheet = "Monthly Report";
-            $this->CreateNewWorksheet($spreadsheetId,$new_worksheet);
-        } catch (\Throwable $th) {
-            $new_worksheet = "Monthly Report";
-        }
+        // REAL
+        $spreadsheetId = "16xGw6KdeUzxASEnsXuIKIPawD5Dx6lSi52NohPp5u5s";
+        $sheetId = 1190393942;
 
-        $month = $this->month;
-        $date_start = date($month."-d", strtotime("first day of this month"));
-        $date_end = date($month."-d", strtotime("last day of this month"));
+        $page = $this->page;
+        $DateWeekly = $page->WeekFromDate(date('Y-m'));
+
+        $new_worksheet = "Monthly Report";
+        $date_start = date("Y-m-d", strtotime($DateWeekly['startdate'][0]));
+        $date_end = date("Y-m-d", strtotime(end($DateWeekly['enddate'])));
         $date = $date_start.",".$date_end;
         $date = explode(",",$date);
 
@@ -1689,10 +1913,20 @@ class SheetController extends Controller
                 array_push($values, $value);
             }
         }
+        $head_ic = [
+            "Spam Team",
+            "Platform",
+            "Invitation Sent",
+            "Author Replied"
+        ];
+        $datas = $this->page->MonthlyReportDataSpam($date);
+        array_push($values,$head_ic);
+        foreach ($datas['data'] as $key => $value) {
+            array_push($values, $value);
+        }
         // dd($values);
         $update_range = $new_worksheet."!A1:I1";
         $endindex = 20;
-        $sheetId = 468929916;
         $this->insertValuesIntoFirstRow($spreadsheetId,$values,$update_range,$endindex,$sheetId);
     }
 }

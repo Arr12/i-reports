@@ -57,7 +57,10 @@ class PageController extends Controller
         return $dates;
     }
     public function WeekFromDate($date){
-        $textdt = date($date.'-01');
+        // $textdt = date($date.'-01');
+        $textdt = date($date.'-01', strtotime('first Week'));
+        $textdt = date('Y-m-d', strtotime($textdt.'-1 days'));
+        // dd($textdt);
         $dt= strtotime( $textdt);
         $currdt=$dt;
         $nextmonth=strtotime($textdt."+1 month");
@@ -65,18 +68,21 @@ class PageController extends Controller
         $date = [
             'c_week' => [],
             'startdate' => [],
-            'enddate' => []
+            'daystart' => [],
+            'enddate' => [],
+            'dayend' => [],
         ];
         do{
             $weekday= date("w",$currdt);
-            $nextday=7-$weekday;
-            $endday=abs($weekday-6);
+            $endday=abs($weekday-7);
             $startarr[$i]=$currdt;
             $endarr[$i]=strtotime(date("Y-m-d",$currdt)."+$endday day");
             $currdt=strtotime(date("Y-m-d",$endarr[$i])."+1 day");
             array_push($date['c_week'],"Week ".($i+1));
             array_push($date["startdate"], date("Y-m-d",$startarr[$i]));
+            array_push($date["daystart"], date("D",$startarr[$i]));
             array_push($date["enddate"], date("Y-m-d",$endarr[$i]));
+            array_push($date["dayend"], date("D",$endarr[$i]));
             $i++;
         }while($endarr[$i-1]<$nextmonth);
         return $date;
@@ -2076,7 +2082,31 @@ class PageController extends Controller
     -----------------------------------------*/
     public function getWeeklyReport(Request $request){
         $report = $request->input('r');
-        $date = explode(',', $request->input('w'));
+        $month = $request->input('mon');
+        $type = $request->input('type');
+        $date = [];
+        if($type != 'ready'){
+            $x = explode(',', $request->input('w'));
+            array_push($date, $month);
+            array_push($date, $x[0]);
+            array_push($date, $x[1]);
+        } else {
+            $DateWeekly = $this->WeekFromDate(date('Y-m'));
+            $Date = date('Y-m-d');
+            foreach($DateWeekly['c_week'] as $key => $v_weekly){
+                $startdate = $DateWeekly['startdate'][$key];
+                $enddate = $DateWeekly['enddate'][$key];
+                $Date = date('Y-m-d');
+                if($Date >= date('Y-m-d',strtotime($startdate)) && $Date <= date('Y-m-d',strtotime($enddate))){
+                    $y = $startdate.",".$enddate;
+                    $x = explode(",",$y);
+                    array_push($date, $v_weekly);
+                }
+            }
+            array_push($date, $x[0]);
+            array_push($date, $x[1]);
+        }
+
         if($report == 'global'){
             $x = $this->WeeklyReportDataGlobal($date);
         }else{
@@ -2109,89 +2139,65 @@ class PageController extends Controller
             array_push($data_array['columns'], ["title" => $value]);
         }
 
-        $dAme = DailyReportAme::whereBetween('date', [$startdate,$enddate])
-        ->orderBy('id','DESC')
-        ->get();
-        $dAmen = NonExclusiveReport::where('global_editor','=','Ashley')
-        ->whereBetween('date', [$startdate,$enddate])->orderBy('id','DESC')
-        ->get();
+        $ame = $this->DataAme($startdate,$enddate);
+        $dAme = $ame['daily'];
+        $dAmen = $ame['non_ex'];
         array_push($data_array['data'], [
             "<a target='_blank' href='". route('daily-report-global.ames') ."'>Ame</a>",
             $dAme->whereNotNull('date')->count(),$dAmen->whereNotNull('first_touch')->count(),$dAme->whereNotNull('fu_1')->count()+$dAme->whereNotNull('fu_2')->count()+$dAme->whereNotNull('fu_3')->count()+$dAme->whereNotNull('fu_4')->count()+$dAme->whereNotNull('fu_5')->count(),$dAmen->whereNotNull('fu_1')->count()+$dAmen->whereNotNull('fu_2')->count()+$dAmen->whereNotNull('fu_3')->count()+$dAmen->whereNotNull('fu_4')->count()+$dAmen->whereNotNull('fu_5')->count(),$dAmen->whereNotNull('sent_e_contract')->count(),$dAmen->whereNotNull('rec_e_contract')->count(),$dAmen->whereNotNull('email_sent')->count(), $dAme->whereNotNull('sent_royalty')->count()
         ]);
 
-        $dAnna = DailyReportAnna::whereBetween('date', [$startdate,$enddate])
-        ->orderBy('id','DESC')
-        ->get();
-        $dAnnan = NonExclusiveReport::where('global_editor','=','Erica')
-        ->whereBetween('date', [$startdate,$enddate])->orderBy('id','DESC')
-        ->get();
+        $anna = $this->DataAnna($startdate,$enddate);
+        $dAnna = $anna['daily'];
+        $dAnnan = $anna['non_ex'];
         array_push($data_array['data'], [
             "<a target='_blank' href='". route('daily-report-global.annas') ."'>Anna</a>",
             $dAnna->whereNotNull('date')->count(),$dAnnan->whereNotNull('first_touch')->count(),$dAnna->whereNotNull('fu_1')->count()+$dAnna->whereNotNull('fu_2')->count()+$dAnna->whereNotNull('fu_3')->count()+$dAnna->whereNotNull('fu_4')->count()+$dAnna->whereNotNull('fu_5')->count(),$dAnnan->whereNotNull('fu_1')->count()+$dAnnan->whereNotNull('fu_2')->count()+$dAnnan->whereNotNull('fu_3')->count()+$dAnnan->whereNotNull('fu_4')->count()+$dAnnan->whereNotNull('fu_5')->count(),$dAnnan->whereNotNull('sent_e_contract')->count(),$dAnnan->whereNotNull('rec_e_contract')->count(),$dAnnan->whereNotNull('email_sent')->count(), $dAnna->whereNotNull('sent_royalty')->count()
         ]);
 
-        $dCarol = DailyReportCarol::whereBetween('date', [$startdate,$enddate])
-        ->orderBy('id','DESC')
-        ->get();
-        $dCaroln = NonExclusiveReport::where('global_editor','=','Ashley')
-        ->whereBetween('date', [$startdate,$enddate])->orderBy('id','DESC')
-        ->get();
+        $carol = $this->DataCarol($startdate,$enddate);
+        $dCarol = $carol['daily'];
+        $dCaroln = $carol['non_ex'];
         array_push($data_array['data'], [
             "<a target='_blank' href='". route('daily-report-global.carols') ."'>Carol</a>",
             $dCarol->whereNotNull('date')->count(),$dCaroln->whereNotNull('first_touch')->count(),$dCarol->whereNotNull('fu_1')->count()+$dCarol->whereNotNull('fu_2')->count()+$dCarol->whereNotNull('fu_3')->count()+$dCarol->whereNotNull('fu_4')->count()+$dCarol->whereNotNull('fu_5')->count(),$dCaroln->whereNotNull('fu_1')->count()+$dCaroln->whereNotNull('fu_2')->count()+$dCaroln->whereNotNull('fu_3')->count()+$dCaroln->whereNotNull('fu_4')->count()+$dCaroln->whereNotNull('fu_5')->count(),$dCaroln->whereNotNull('sent_e_contract')->count(),$dCaroln->whereNotNull('rec_e_contract')->count(),$dCaroln->whereNotNull('email_sent')->count(), $dCarol->whereNotNull('sent_royalty')->count()
         ]);
 
-        $dEric = DailyReportEric::whereBetween('date', [$startdate,$enddate])
-        ->orderBy('id','DESC')
-        ->get();
-        $dEricn = NonExclusiveReport::where('global_editor','=','Cornelia')
-        ->whereBetween('date', [$startdate,$enddate])->orderBy('id','DESC')
-        ->get();
+        $eric = $this->DataEric($startdate,$enddate);
+        $dEric = $eric['daily'];
+        $dEricn = $eric['non_ex'];
         array_push($data_array['data'], [
             "<a target='_blank' href='". route('daily-report-global.erics') ."'>Eric</a>",
             $dEric->whereNotNull('date')->count(),$dEricn->whereNotNull('first_touch')->count(),$dEric->whereNotNull('fu_1')->count()+$dEric->whereNotNull('fu_2')->count()+$dEric->whereNotNull('fu_3')->count()+$dEric->whereNotNull('fu_4')->count()+$dEric->whereNotNull('fu_5')->count(),$dEricn->whereNotNull('fu_1')->count()+$dEricn->whereNotNull('fu_2')->count()+$dEricn->whereNotNull('fu_3')->count()+$dEricn->whereNotNull('fu_4')->count()+$dEricn->whereNotNull('fu_5')->count(),$dEricn->whereNotNull('sent_e_contract')->count(),$dEricn->whereNotNull('rec_e_contract')->count(),$dEricn->whereNotNull('email_sent')->count(), $dEric->whereNotNull('sent_royalty')->count()
         ]);
 
-        $dIcha = DailyReportIcha::whereBetween('date', [$startdate,$enddate])
-        ->orderBy('id','DESC')
-        ->get();
-        $dIchan = NonExclusiveReport::where('global_editor','=','Claire')
-        ->whereBetween('date', [$startdate,$enddate])->orderBy('id','DESC')
-        ->get();
+        $icha = $this->DataIcha($startdate,$enddate);
+        $dIcha = $icha['daily'];
+        $dIchan = $icha['non_ex'];
         array_push($data_array['data'], [
             "<a target='_blank' href='". route('daily-report-global.ichas') ."'>Icha</a>",
             $dIcha->whereNotNull('date')->count(),$dIchan->whereNotNull('first_touch')->count(),$dIcha->whereNotNull('fu_1')->count()+$dIcha->whereNotNull('fu_2')->count()+$dIcha->whereNotNull('fu_3')->count()+$dIcha->whereNotNull('fu_4')->count()+$dIcha->whereNotNull('fu_5')->count(),$dIchan->whereNotNull('fu_1')->count()+$dIchan->whereNotNull('fu_2')->count()+$dIchan->whereNotNull('fu_3')->count()+$dIchan->whereNotNull('fu_4')->count()+$dIchan->whereNotNull('fu_5')->count(),$dIchan->whereNotNull('sent_e_contract')->count(),$dIchan->whereNotNull('rec_e_contract')->count(),$dIchan->whereNotNull('email_sent')->count(), $dIcha->whereNotNull('sent_royalty')->count()
         ]);
 
-        $dLily = DailyReportLily::whereBetween('date', [$startdate,$enddate])
-        ->orderBy('id','DESC')
-        ->get();
-        $dLilyn = NonExclusiveReport::where('global_editor','=','Ensia')
-        ->whereBetween('date', [$startdate,$enddate])->orderBy('id','DESC')
-        ->get();
+        $lily = $this->DataLily($startdate,$enddate);
+        $dLily = $lily['daily'];
+        $dLilyn = $lily['non_ex'];
         array_push($data_array['data'], [
             "<a target='_blank' href='". route('daily-report-global.lilies') ."'>Lily</a>",
             $dLily->whereNotNull('date')->count(),$dLilyn->whereNotNull('first_touch')->count(),$dLily->whereNotNull('fu_1')->count()+$dLily->whereNotNull('fu_2')->count()+$dLily->whereNotNull('fu_3')->count()+$dLily->whereNotNull('fu_4')->count()+$dLily->whereNotNull('fu_5')->count(),$dLilyn->whereNotNull('fu_1')->count()+$dLilyn->whereNotNull('fu_2')->count()+$dLilyn->whereNotNull('fu_3')->count()+$dLilyn->whereNotNull('fu_4')->count()+$dLilyn->whereNotNull('fu_5')->count(),$dLilyn->whereNotNull('sent_e_contract')->count(),$dLilyn->whereNotNull('rec_e_contract')->count(),$dLilyn->whereNotNull('email_sent')->count(), $dLily->whereNotNull('sent_royalty')->count()
         ]);
 
-        $dMaydewi = DailyReportMaydewi::whereBetween('date', [$startdate,$enddate])
-        ->orderBy('id','DESC')
-        ->get();
-        $dMaydewin = NonExclusiveReport::where('global_editor','=','Serena')
-        ->whereBetween('date', [$startdate,$enddate])->orderBy('id','DESC')
-        ->get();
+        $maydewi = $this->DataMaydewi($startdate,$enddate);
+        $dMaydewi = $maydewi['daily'];
+        $dMaydewin = $maydewi['non_ex'];
         array_push($data_array['data'], [
             "<a target='_blank' href='". route('daily-report-global.maydewis') ."'>Maydewi</a>",
             $dMaydewi->whereNotNull('date')->count(),$dMaydewin->whereNotNull('first_touch')->count(),$dMaydewi->whereNotNull('fu_1')->count()+$dMaydewi->whereNotNull('fu_2')->count()+$dMaydewi->whereNotNull('fu_3')->count()+$dMaydewi->whereNotNull('fu_4')->count()+$dMaydewi->whereNotNull('fu_5')->count(),$dMaydewin->whereNotNull('fu_1')->count()+$dMaydewin->whereNotNull('fu_2')->count()+$dMaydewin->whereNotNull('fu_3')->count()+$dMaydewin->whereNotNull('fu_4')->count()+$dMaydewin->whereNotNull('fu_5')->count(),$dMaydewin->whereNotNull('sent_e_contract')->count(),$dMaydewin->whereNotNull('rec_e_contract')->count(),$dMaydewin->whereNotNull('email_sent')->count(), $dMaydewi->whereNotNull('sent_royalty')->count()
         ]);
 
-        $dRani = DailyReportRani::whereBetween('date', [$startdate,$enddate])
-        ->orderBy('id','DESC')
-        ->get();
-        $dRanin = NonExclusiveReport::where('global_editor','=','Aurora')
-        ->whereBetween('date', [$startdate,$enddate])->orderBy('id','DESC')
-        ->get();
+        $rani = $this->DataRani($startdate,$enddate);
+        $dRani = $rani['daily'];
+        $dRanin = $rani['non_ex'];
         array_push($data_array['data'], [
             "<a target='_blank' href='". route('daily-report-global.ranis') ."'>Rani</a>",
             $dRani->whereNotNull('date')->count(),$dRanin->whereNotNull('first_touch')->count(),$dRani->whereNotNull('fu_1')->count()+$dRani->whereNotNull('fu_2')->count()+$dRani->whereNotNull('fu_3')->count()+$dRani->whereNotNull('fu_4')->count()+$dRani->whereNotNull('fu_5')->count(),$dRanin->whereNotNull('fu_1')->count()+$dRanin->whereNotNull('fu_2')->count()+$dRanin->whereNotNull('fu_3')->count()+$dRanin->whereNotNull('fu_4')->count()+$dRanin->whereNotNull('fu_5')->count(),$dRanin->whereNotNull('sent_e_contract')->count(),$dRanin->whereNotNull('rec_e_contract')->count(),$dRanin->whereNotNull('email_sent')->count(), $dRani->whereNotNull('sent_royalty')->count()
@@ -2245,8 +2251,17 @@ class PageController extends Controller
     public function getMonthlyReport(Request $request){
         $report = $request->input('r');
         $month = $request->input('mon');
-        $date_start = date($month."-d", strtotime("first day of this month"));
-        $date_end = date($month."-d", strtotime("last day of this month"));
+        $type = $request->input('type');
+
+        if($type != 'ready'){
+            $DateWeekly = $this->WeekFromDate($month);
+        } else {
+            $DateWeekly = $this->WeekFromDate(date('Y-m'));
+        }
+
+        $date_start = date("Y-m-d", strtotime($DateWeekly['startdate'][0]));
+        $date_end = date("Y-m-d", strtotime(end($DateWeekly['enddate'])));
+
         $date = $date_start.",".$date_end;
         $date = explode(",",$date);
         if($report == 'global'){
@@ -2266,54 +2281,37 @@ class PageController extends Controller
         /*-----------------------
         | QUERY
         ------------------------*/
-        $dAme = DailyReportAme::whereBetween('date', [$startdate,$enddate])
-        ->orderBy('id','DESC')
-        ->get();
-        $dAmen = NonExclusiveReport::where('global_editor','=','Ashley')
-        ->whereBetween('date', [$startdate,$enddate])->orderBy('id','DESC')
-        ->get();
-        $dAnna = DailyReportAnna::whereBetween('date', [$startdate,$enddate])
-        ->orderBy('id','DESC')
-        ->get();
-        $dAnnan = NonExclusiveReport::where('global_editor','=','Erica')
-        ->whereBetween('date', [$startdate,$enddate])->orderBy('id','DESC')
-        ->get();
-        $dCarol = DailyReportCarol::whereBetween('date', [$startdate,$enddate])
-        ->orderBy('id','DESC')
-        ->get();
-        $dCaroln = NonExclusiveReport::where('global_editor','=','Ashley')
-        ->whereBetween('date', [$startdate,$enddate])->orderBy('id','DESC')
-        ->get();
-        $dEric = DailyReportEric::whereBetween('date', [$startdate,$enddate])
-        ->orderBy('id','DESC')
-        ->get();
-        $dEricn = NonExclusiveReport::where('global_editor','=','Cornelia')
-        ->whereBetween('date', [$startdate,$enddate])->orderBy('id','DESC')
-        ->get();
-        $dIcha = DailyReportIcha::whereBetween('date', [$startdate,$enddate])
-        ->orderBy('id','DESC')
-        ->get();
-        $dIchan = NonExclusiveReport::where('global_editor','=','Claire')
-        ->whereBetween('date', [$startdate,$enddate])->orderBy('id','DESC')
-        ->get();
-        $dLily = DailyReportLily::whereBetween('date', [$startdate,$enddate])
-        ->orderBy('id','DESC')
-        ->get();
-        $dLilyn = NonExclusiveReport::where('global_editor','=','Ensia')
-        ->whereBetween('date', [$startdate,$enddate])->orderBy('id','DESC')
-        ->get();
-        $dMaydewi = DailyReportMaydewi::whereBetween('date', [$startdate,$enddate])
-        ->orderBy('id','DESC')
-        ->get();
-        $dMaydewin = NonExclusiveReport::where('global_editor','=','Serena')
-        ->whereBetween('date', [$startdate,$enddate])->orderBy('id','DESC')
-        ->get();
-        $dRani = DailyReportRani::whereBetween('date', [$startdate,$enddate])
-        ->orderBy('id','DESC')
-        ->get();
-        $dRanin = NonExclusiveReport::where('global_editor','=','Aurora')
-        ->whereBetween('date', [$startdate,$enddate])->orderBy('id','DESC')
-        ->get();
+        $ame = $this->DataAme($startdate,$enddate);
+        $dAme = $ame['daily'];
+        $dAmen = $ame['non_ex'];
+
+        $anna = $this->DataAnna($startdate,$enddate);
+        $dAnna = $anna['daily'];
+        $dAnnan = $anna['non_ex'];
+
+        $carol = $this->DataCarol($startdate,$enddate);
+        $dCarol = $carol['daily'];
+        $dCaroln = $carol['non_ex'];
+
+        $eric = $this->DataEric($startdate,$enddate);
+        $dEric = $eric['daily'];
+        $dEricn = $eric['non_ex'];
+
+        $icha = $this->DataIcha($startdate,$enddate);
+        $dIcha = $icha['daily'];
+        $dIchan = $icha['non_ex'];
+
+        $lily = $this->DataLily($startdate,$enddate);
+        $dLily = $lily['daily'];
+        $dLilyn = $lily['non_ex'];
+
+        $maydewi = $this->DataMaydewi($startdate,$enddate);
+        $dMaydewi = $maydewi['daily'];
+        $dMaydewin = $maydewi['non_ex'];
+
+        $rani = $this->DataRani($startdate,$enddate);
+        $dRani = $rani['daily'];
+        $dRanin = $rani['non_ex'];
 
         /* --------------
         / HEAD DATA
@@ -2343,7 +2341,7 @@ class PageController extends Controller
         array_push($data_array['data'], [
             "- -Total",$grand_answer,$n_auth_non_ex,$fu,$fu_non_ex,$sent_e,$rec_e,$d_non_ex,$d_royalty
         ]);
-        $counter_person = count($this->personGlobal)+count($this->personIndo);
+        $counter_person = count($this->personGlobal);
         array_push($data_array['data'], [
             "- Average",$grand_answer/$counter_person,$n_auth_non_ex/$counter_person,$fu/$counter_person,$fu_non_ex/$counter_person,$sent_e/$counter_person,$rec_e/$counter_person,$d_non_ex/$counter_person,$d_royalty/$counter_person
         ]);
@@ -2432,9 +2430,6 @@ class PageController extends Controller
         $dUncontractedWN = ReportSpamWNUncoractedNovelList::whereBetween('date', [$startdate,$enddate])
         ->orderBy('id','DESC')
         ->get();
-        $dRoyalroad = ReportSpamRoyalRoadNovelList::whereBetween('date', [$startdate,$enddate])
-        ->orderBy('id','DESC')
-        ->get();
         $title = [
             "Spam Team",
             "Platform",
@@ -2445,22 +2440,16 @@ class PageController extends Controller
             array_push($data_array['columns'], ["title" => $value]);
         }
         array_push($data_array['data'], [
+            'Esy',
+            "Mangatoon",
             $dMangatoon->whereNotNull('date')->count(),
-            $dMangatoon->whereNotNull('fu_1')->count()+$dMangatoon->whereNotNull('fu_2')->count()+$dMangatoon->whereNotNull('fu_3')->count()+$dMangatoon->whereNotNull('fu_4')->count()+$dMangatoon->whereNotNull('fu_5')->count(),
-            $dMangatoon->whereNotNull('sent_royalty')->count(),
-            '0',
+            $dMangatoon->whereNotNull('date_feedback_received')->count(),
         ]);
         array_push($data_array['data'], [
+            'Global Team',
+            "Uncontracted WN",
             $dUncontractedWN->whereNotNull('date')->count(),
-            $dUncontractedWN->whereNotNull('fu_1')->count()+$dUncontractedWN->whereNotNull('fu_2')->count()+$dUncontractedWN->whereNotNull('fu_3')->count()+$dUncontractedWN->whereNotNull('fu_4')->count()+$dUncontractedWN->whereNotNull('fu_5')->count(),
-            $dUncontractedWN->whereNotNull('sent_royalty')->count(),
-            '0',
-        ]);
-        array_push($data_array['data'], [
-            $dRoyalroad->whereNotNull('date')->count(),
-            $dRoyalroad->whereNotNull('fu_1')->count()+$dRoyalroad->whereNotNull('fu_2')->count()+$dRoyalroad->whereNotNull('fu_3')->count()+$dRoyalroad->whereNotNull('fu_4')->count()+$dRoyalroad->whereNotNull('fu_5')->count(),
-            $dRoyalroad->whereNotNull('sent_royalty')->count(),
-            '0',
+            $dUncontractedWN->whereNotNull('date_feedback_received')->count(),
         ]);
         return $data_array;
     }

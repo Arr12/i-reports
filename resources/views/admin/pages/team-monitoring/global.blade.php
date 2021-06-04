@@ -73,6 +73,22 @@ $(document).ready(function(){
             }
         });
     });
+    $(document).on('click', '#setDataDaily', function(){
+        $(this).attr('disabled','disabled');
+        var url = "{{route('api.setTeamMonitoringsetGlobal')}}";
+        $.ajax({
+            url: url,
+            success:function(json) {
+                $('#setDataDaily').removeAttr('disabled','disabled');
+                $("#alert").html(
+                `<div class="alert alert-success alert-dismissible" role="alert" id="alert_success">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>Success!</strong> Data has been updated!
+                </div>`
+                );
+            }
+        });
+    });
 });
 </script>
 @endpush
@@ -84,11 +100,19 @@ $(document).ready(function(){
         <div class="card">
             <div class="header">
                 <h2>
-                    Lv.1 Global Team Monitoring
+                    Lv.1 Global Team
                 </h2>
+                <ul class="header-dropdown m-r--5">
+                    <li class="dropdown">
+                        <button id='setDataDaily' class="btn waves-effect btn-success" role="button" aria-haspopup="true" aria-expanded="false">
+                            <i style="color:#fff;" class="material-icons">save</i> Export
+                        </button>
+                    </li>
+                </ul>
             </div>
             <div class="body">
                 <div class="row clearfix">
+                    <div id="alert"></div>
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <select class="form-control show-tick" id="SPerson" name="person">
                             <option value="">Select person</option>

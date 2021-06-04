@@ -96,8 +96,8 @@ $(document).ready(function(){
                 </h2>
                 <ul class="header-dropdown m-r--5">
                     <li class="dropdown">
-                        <button id='getDataDaily' data-href="{{route('api.dailyReport.get')}}?d=indo-ichanur" role="button" aria-haspopup="true" aria-expanded="false">
-                            <i class="material-icons">sync</i> Get Data Daily
+                        <button id='getDataDaily' class="btn btn-primary" data-href="{{route('api.dailyReport.get')}}?d=indo-ichanur" role="button" aria-haspopup="true" aria-expanded="false">
+                            <i class="material-icons">sync</i>
                         </button>
                     </li>
                 </ul>

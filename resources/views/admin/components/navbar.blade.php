@@ -117,11 +117,13 @@
                                 <span>Mangatoon</span>
                             </a>
                         </li>
+                        {{--
                         <li>
                             <a href="{{route('report-spam.spam-royalroad')}}">
                                 <span>RoyalRoad</span>
                             </a>
                         </li>
+                        --}}
                         <li>
                             <a href="{{route('report-spam.spam-wn-uncontracted')}}">
                                 <span>WN Uncontracted</span>

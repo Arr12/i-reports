@@ -61,6 +61,14 @@ let Tabel = function(url){
     });
 }
 $(document).ready(function(){
+    $('#FormTabel').html(createSkeleton(1));
+    let url_dx = "{{route('all-report.monthly.data')}}?r=global&type=ready";
+    $.ajax({
+        url: url_dx,
+        success:function(json) {
+            Tabel(url_dx);
+        }
+    });
     $(document).on('click','#ShowData',function(){
         $('#FormTabel').html(createSkeleton(1));
         let a = $('#SReport').val();
@@ -70,6 +78,22 @@ $(document).ready(function(){
             url: url_dx,
             success:function(json) {
                 Tabel(url_dx);
+            }
+        });
+    });
+    $(document).on('click', '#setDataDaily', function(){
+        $(this).attr('disabled','disabled');
+        var url = "{{route('api.setAllTeam.monthly')}}";
+        $.ajax({
+            url: url,
+            success:function(json) {
+                $('#setDataDaily').removeAttr('disabled','disabled');
+                $("#alert").html(
+                `<div class="alert alert-success alert-dismissible" role="alert" id="alert_success">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>Success!</strong> Data has been updated!
+                </div>`
+                );
             }
         });
     });
@@ -84,9 +108,17 @@ $(document).ready(function(){
         <div class="card">
             <div class="header">
                 <h2>Lv.2 Monthly Report</h2>
+                <ul class="header-dropdown m-r--5">
+                    <li class="dropdown">
+                        <button id='setDataDaily' class="btn waves-effect btn-success" role="button" aria-haspopup="true" aria-expanded="false">
+                            <i style="color:#fff;" class="material-icons">save</i> Export Monthly Report Lv 2
+                        </button>
+                    </li>
+                </ul>
             </div>
             <div class="body">
                 <div class="row clearfix">
+                    <div id="alert"></div>
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <select class="form-control show-tick" id="SReport" name="report">
                             <option value="">Select Reports</option>
