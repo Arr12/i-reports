@@ -1199,7 +1199,7 @@ class SheetController extends Controller
                 $collection = $this->check($data,11);
                 $status_ongoing = $this->check($data,12);
                 $FL_ML = $this->check($data,13);
-                $date_feedback_received = $this->check($data,14);
+                $date_feedback_received = isset($data[14]) ? $this->FormatDateTime($data[14]) : null;
                 $feedback_from_author = $this->check($data,15);
                 $note = $this->check($data,16);
                 array_push($savedData, [
@@ -1313,7 +1313,8 @@ class SheetController extends Controller
                 Cache::forget($keyDaily);
                 // dump($keyDaily);
                 $result = self::getApiSpreadsheet($sId, $get_range);
-                if(!$result[0][2]){
+                // dd($result);
+                if(!$result[0][3]){
                     break;
                 }
                 Cache::put($keyDaily, $result);
