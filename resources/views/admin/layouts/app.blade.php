@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta name="csrf-token" content="{!! csrf_token() !!}">
     <title>Welcome To | Global All Team Internal Report</title>
     <!-- Favicon-->
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
@@ -28,6 +29,18 @@
 
     {{-- Skeleton Load --}}
     <link rel="stylesheet" href="/css/skeleton.css" rel="stylesheet" />
+
+    <!-- Bootstrap Material Datetime Picker Css -->
+    <link href="/plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" rel="stylesheet" />
+
+    <!-- Bootstrap DatePicker Css -->
+    <link href="/plugins/bootstrap-datepicker/css/bootstrap-datepicker.css" rel="stylesheet" />
+
+    <!-- Wait Me Css -->
+    <link href="/plugins/waitme/waitMe.css" rel="stylesheet" />
+
+    <!-- Bootstrap Select Css -->
+    <link href="/plugins/bootstrap-select/css/bootstrap-select.css" rel="stylesheet" />
 
     <!-- Custom Css -->
     <link href="/css/style.css" rel="stylesheet">
@@ -100,6 +113,14 @@
     <!-- Morris Plugin Js -->
     <script src="/plugins/raphael/raphael.min.js"></script>
     <script src="/plugins/morrisjs/morris.js"></script>
+
+    {{-- Custom JS --}}
+<script src="/plugins/momentjs/moment.js"></script>
+<script src="/plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
+<script src="/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+<script src="/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+<script src="/plugins/autosize/autosize.js"></script>
+<script src="/js/pages/forms/basic-form-elements.js"></script>
 
     @stack('after-script')
 

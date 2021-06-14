@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\UpdateController;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\VarDumper\Cloner\Data;
 
@@ -66,6 +67,10 @@ Route::middleware(['auth:sanctum'])->group(function(){
         Route::get('weekly-data',[PageController::class, 'getWeeklyReport'])->name('weekly.data');
         Route::get('monthly',[PageController::class, 'MonthlyReport'])->name('monthly');
         Route::get('monthly-data',[PageController::class, 'getMonthlyReport'])->name('monthly.data');
+    });
+    Route::prefix('/update-daily')->name('update-daily.')->group(function(){
+        Route::put('edit-value',[UpdateController::class, 'editValueReport'])->name('edit-value');
+        Route::patch('add-value',[UpdateController::class, 'addValueReport'])->name('add-value');
     });
 });
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {

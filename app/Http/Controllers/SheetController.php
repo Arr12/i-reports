@@ -270,8 +270,8 @@ class SheetController extends Controller
             $this->getDailyReportIndoIrel();
             $this->getNonExReport();
             $this->getSpamMangatoonNovelList();
-            // $this->getSpamRoyalRoadNovelList();
             $this->getSpamWNUncontractedNovelList();
+            // $this->getSpamRoyalRoadNovelList();
         }
         else{
             $p = 400;
@@ -346,7 +346,7 @@ class SheetController extends Controller
                     'updated_at' => date('Y-m-d H:i:s'),
                 ]);
             }
-
+            // dd($savedData);
             DailyReportAme::insert($savedData);
         }
         return true;
@@ -870,11 +870,11 @@ class SheetController extends Controller
             // dump($cachedDaily);
             $savedData = [];
             foreach ($cachedDaily as $key => $data) {
-                // dump($data[0]);
+                // dump($data[2]);
                 if(!$data[0]){continue;}
                 $date = $this->FormatDateTime($data[0]);
                 $contact_way = isset($data[1]) ? $data[1] : null;
-                $author = isset($data[2]) ? $data[2] : null;
+                $author_contact = isset($data[2]) ? $data[2] : null;
                 $platform = isset($data[3]) ? $data[3] : null;
                 $status = isset($data[4]) ? $data[4] : null;
                 $inquiries = isset($data[5]) ? $data[5] : null;
@@ -892,12 +892,12 @@ class SheetController extends Controller
                 $fu_4 = isset($data[17]) ? $this->FormatDateTime($data[17]) : null;
                 $fu_5 = isset($data[18]) ? $this->FormatDateTime($data[18]) : null;
                 $data_sent = isset($data[19]) ? $this->FormatDateTime($data[19]) : null;
-                $marker = isset($data[20]) ? $this->FormatDateTime($data[20]) : null;
-                $old_new_book = isset($data[21]) ? $this->FormatDateTime($data[21]) : null;
+                $marker = isset($data[20]) ? $data[20] : null;
+                $old_new_book = isset($data[21]) ? $data[21] : null;
                 array_push($savedData, [
                     'date' => $date,
                     'contact_way' => $contact_way,
-                    'author_contact' => $author,
+                    'author_contact' => $author_contact,
                     'platform' => $platform,
                     'status' => $status,
                     'inquiries' => $inquiries,
@@ -943,7 +943,7 @@ class SheetController extends Controller
                 $date = $this->FormatDateTime($data[0]);
                 $status = isset($data[1]) ? $data[1] : null;
                 $date_solved = isset($data[2]) ? $this->FormatDateTime($data[2]) : null;
-                $author = isset($data[3]) ? $data[3] : null;
+                $author_contact = isset($data[3]) ? $data[3] : null;
                 $inquiries = isset($data[4]) ? $data[4] : null;
                 $cbid = isset($data[5]) ? $data[5] : null;
                 $title = isset($data[6]) ? $data[6] : null;
@@ -963,7 +963,7 @@ class SheetController extends Controller
                     'date' => $date,
                     'status' => $status,
                     'date_solved' => $date_solved,
-                    'author_contact' => $author,
+                    'author_contact' => $author_contact,
                     'inquiries' => $inquiries,
                     'cbid' => $cbid,
                     'title' => $title,
@@ -1029,8 +1029,8 @@ class SheetController extends Controller
                 $marker_for_and = isset($data[24]) ? $data[24] : null;
                 $email_sent = isset($data[25]) ? $this->FormatDateTime($data[25]) : null;
                 $batch_date = isset($data[26]) ? $this->FormatDateTime($data[26]) : null;
-                $and_evidence = isset($data[27]) ? $this->FormatDateTime($data[27]) : null;
-                $global_evidence = isset($data[28]) ? $this->FormatDateTime($data[28]) : null;
+                $and_evidence = isset($data[27]) ? $data[27] : null;
+                $global_evidence = isset($data[28]) ? $data[28] : null;
                 array_push($savedData, [
                     'date' => $date,
                     'global_editor' => $global_editor,
@@ -1274,11 +1274,11 @@ class SheetController extends Controller
     public function getDailyReportData($sId,$keyMaster,$sheets,$alphaX,$alphaY){
         $master = [];
         Cache::forget($keyMaster);
-        $start = 2;
+        $start = 1;
         $end = $start+self::$limit;
         $counter = 0;
         while(true){
-            $get_range = $sheets."!".$alphaX.($start).":".$alphaY.$end;
+            $get_range = $sheets."!".$alphaX.($start+1).":".$alphaY.$end;
             try {
                 $keyDaily = $keyMaster . "_" . $counter;
                 Cache::forget($keyDaily);
@@ -1290,8 +1290,8 @@ class SheetController extends Controller
                 Cache::put($keyDaily, $result);
                 array_push($master, $keyDaily);
                 // dump(["A{$start}", $result[0][3]]);
-                $start += self::$limit-1;
-                $end += self::$limit;
+                $start+=self::$limit;
+                $end+=self::$limit;
                 $counter++;
                 // dump(Cache::get($keyDaily));
             } catch (\Throwable $th) {
@@ -1303,11 +1303,11 @@ class SheetController extends Controller
     public function getReportSpamData($sId,$keyMaster,$sheets,$alphaX,$alphaY){
         $master = [];
         Cache::forget($keyMaster);
-        $start = 2;
+        $start = 1;
         $end = $start+self::$limit;
         $counter = 0;
         while(true){
-            $get_range = $sheets."!".$alphaX.($start).":".$alphaY.$end;
+            $get_range = $sheets."!".$alphaX.($start+1).":".$alphaY.$end;
             try {
                 $keyDaily = $keyMaster . "_" . $counter;
                 Cache::forget($keyDaily);
@@ -1320,7 +1320,7 @@ class SheetController extends Controller
                 Cache::put($keyDaily, $result);
                 array_push($master, $keyDaily);
                 // dump(["A{$start}", $result[0][3]]);
-                $start += self::$limit-1;
+                $start += self::$limit;
                 $end += self::$limit;
                 $counter++;
                 // dump(Cache::get($keyDaily));
