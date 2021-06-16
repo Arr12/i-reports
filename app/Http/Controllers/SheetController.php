@@ -165,6 +165,44 @@ class SheetController extends Controller
         $response = $service->spreadsheets->BatchUpdate($spreadsheetId, $requests);
         return true;
     }
+    public function BlankRowSheetAll($spreadsheetId, $sheetId){
+        $service = $this->ApiSpreadsheet();
+        $request = new \Google_Service_Sheets_UpdateCellsRequest([
+            'updateCells' => [
+                'range' => [
+                    'sheetId' => $sheetId
+                ],
+                'fields' => "*"
+            ]
+        ]);
+        $requests[] = $request;
+
+        $requestBody = new Google_Service_Sheets_BatchUpdateSpreadsheetRequest();
+        $requestBody->setRequests($requests);
+        $response = $service->spreadsheets->batchUpdate($spreadsheetId, $requestBody);
+        return $response;
+    }
+    public function DeleteRowSheet($sId, $sheetId, $startRowIndex, $endRowIndex){
+        $service = $this->ApiSpreadsheet();
+        $deleteOperation = array(
+            'range' => array(
+                'sheetId'   => $sheetId,
+                'dimension' => 'ROWS',
+                'startIndex'=> $startRowIndex,
+                'endIndex'  => $endRowIndex
+            )
+        );
+        $deletable_row[] = new Google_Service_Sheets_Request(
+            array('deleteDimension' =>  $deleteOperation)
+        );
+        $delete_body    = new Google_Service_Sheets_BatchUpdateSpreadsheetRequest(array(
+                'requests' => $deletable_row
+            )
+        );
+        //var_dump($delete_body);
+        $result = $service->spreadsheets->batchUpdate($sId, $delete_body);
+        return $result;
+    }
     public function insertValuesIntoFirstRow($spreadsheetId,$values,$update_range,$endindex,$sheetId){
         $service = self::ApiSpreadsheet();
         $request = new Google_Service_Sheets_BatchUpdateSpreadsheetRequest([
@@ -214,6 +252,18 @@ class SheetController extends Controller
         ]);
         $service->spreadsheets->batchUpdate($spreadsheetId, $request);
         return true;
+    }
+    public function DeleteFuncRowSheet($spreadsheetId,$sheetId){
+        $start = 0;
+        $endindex = 1000;
+        while(true){
+            try {
+                $this->DeleteRowSheet($spreadsheetId, $sheetId, $start, $endindex);
+            } catch (\Throwable $th) {
+                break;
+            }
+        }
+        $this->BlankRowSheetAll($spreadsheetId, $sheetId);
     }
 
     /*----------------------------
@@ -1925,13 +1975,13 @@ class SheetController extends Controller
     | Lv 2 REPORT MONTHLY
     -----------------------------*/
     public function setAllTeamReportWeekly(){
-        /*--------------------------
-        | INSERT TO LEVEL 2 GLOBAL WEEKLY
-        -----------------------------*/
         // TRIAL
         // $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
         // REAL
         $spreadsheetId = "16xGw6KdeUzxASEnsXuIKIPawD5Dx6lSi52NohPp5u5s";
+        /*--------------------------
+        | INSERT TO LEVEL 2 GLOBAL WEEKLY
+        --------------------------------- */
 
         // TRIAL
         // $sheetId = 182102069;

@@ -482,6 +482,7 @@ class PageController extends Controller
         $d['date_feedback_received'] = ReportSpamMangatoonNovelList::select('date_feedback_received')->whereBetween('date_feedback_received', [$startdate,$enddate])
         ->orderBy('id','DESC')
         ->get();
+        return $d;
     }
     public function DataUncontractedWN($startdate,$enddate){
         $d['daily'] = ReportSpamWNUncoractedNovelList::whereBetween('date', [$startdate,$enddate])
@@ -490,6 +491,7 @@ class PageController extends Controller
         $d['date_feedback_received'] = ReportSpamWNUncoractedNovelList::select('date_feedback_received')->whereBetween('date_feedback_received', [$startdate,$enddate])
         ->orderBy('id','DESC')
         ->get();
+        return $d;
     }
 
     /*---------------------------------------
@@ -511,6 +513,7 @@ class PageController extends Controller
         $data_array['data'] = [];
         $title = [
             "No.",
+            "Person",
             "Date",
             "Contact Way",
             "Author Contact",
@@ -2013,6 +2016,7 @@ class PageController extends Controller
         }
         return $data_array;
     }
+
     /*---------------------------------------
     | REPORT SPAM
     -----------------------------------------*/
@@ -3531,9 +3535,9 @@ class PageController extends Controller
         $date = [];
         if($type != 'ready'){
             $x = explode(',', $request->input('w'));
-            array_push($date, $month);
             array_push($date, $x[0]);
             array_push($date, $x[1]);
+            array_push($date, $x[2]);
         } else {
             $DateWeekly = $this->WeekFromDate(date('Y-m'));
             $Date = date('Y-m-d');
@@ -3559,6 +3563,7 @@ class PageController extends Controller
         return $x;
     }
     public function WeeklyReportDataGlobal($date){
+        // dd($date);
         /* --------------
         / HEAD DATA
         --------------- */
@@ -4127,7 +4132,7 @@ class PageController extends Controller
         $startdate = $date[0];
         $enddate = $date[1];
         $dMangatoon = $this->DataSpamMangatoon($startdate,$enddate);
-        $dUncontractedWN = $this->DataSpamUncontractedWN($startdate,$enddate);
+        $dUncontractedWN = $this->DataUncontractedWN($startdate,$enddate);
         $title = [
             "Spam Team",
             "Platform",
