@@ -2,7 +2,7 @@ import httplib2
 import os
 from apiclient import discovery
 from google.oauth2 import service_account
-
+from oauth2client.service_account import ServiceAccountCredentials
 scopes = [
           "https://www.googleapis.com/auth/drive",
           "https://www.googleapis.com/auth/drive.file",
@@ -83,6 +83,41 @@ def create_spreadsheet(folder_id, nama_file):
         'creation_response' : creation_response,
         'permission_response' : permission_response,
         'move_response' : move_response,
+    }
+
+@app.get("/duplicate-spreadsheet/{old_file}/{folder_sid}/{name_file}")
+def create_spreadsheet(old_file, folder_sid, name_file):
+    import gspread
+    from gspread.models import Cell, Spreadsheet
+
+    scope = [
+        "https://www.googleapis.com/auth/spreadsheets.readonly",
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive.readonly",
+        "https://www.googleapis.com/auth/drive.file",
+        "https://www.googleapis.com/auth/drive",
+    ]
+
+    json_key_absolute_path = "credentials.json"
+    credentials = ServiceAccountCredentials.from_json_keyfile_name(json_key_absolute_path, scope)
+    client = gspread.authorize(credentials)
+    client.copy(old_file, title=name_file, copy_permissions=True)
+    sht = client.open(name_file)
+    worksheet = sht.get_worksheet(0)
+    spreadsheetId = worksheet.spreadsheet.id
+    
+    ## MOVE SPREADSHEET TO FOLDER
+    get_parents_response = drive_service.files().get(fileId=spreadsheetId,
+    fields='parents').execute()
+
+    previous_parents = ",".join(get_parents_response.get('parents'))
+
+    move_response = drive_service.files().update(fileId=spreadsheetId,
+    addParents=folder_sid,
+    removeParents=previous_parents,
+    fields='id, parents').execute()
+    return {
+        'move_response' : move_response
     }
 
 # @app.get("/items/{item_id}")
