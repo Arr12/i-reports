@@ -71,11 +71,13 @@ $(document).ready(function(){
     let url = "{{ $data_person }}";
     TabelGlobalDaily(url);
     $(document).on('click','#getDataDaily',function(){
+        $(this).attr('disabled','disabled');
         $('#FormTabelGlobalDaily').html(createSkeleton(1));
         let url_dx = $(this).attr('data-href');
         $.ajax({
             url: url_dx,
             success:function(json) {
+                $('#getDataDaily').removeAttr('disabled','disabled');
                 if(json == "200"){
                     $("#alert_success").show();
                     $("#alert_danger").hide();
@@ -87,6 +89,11 @@ $(document).ready(function(){
                     $("#alert_danger").hide();
                 }
                 TabelGlobalDaily(url);
+            },
+            error:function(){
+                $('#getDataDaily').removeAttr('disabled','disabled');
+                $("#alert_success").hide();
+                $("#alert_danger").show();
             }
         });
     });
@@ -121,7 +128,7 @@ $(document).ready(function(){
         $("#episodes").val(episodes);
         $("#link").val(link);
         $("#screenshot_from_wave").val(screenshot_from_wave);
-        $("#auhtor_feedback").val(auhtor_feedback);
+        $("#author_feedback").val(author_feedback);
         $("#comment_from_wave").val(comment_from_wave);
     });
     $('#BtnSaveEditModal').on('click', function(){
@@ -162,7 +169,7 @@ $(document).ready(function(){
                 "link" : link,
                 "screenshot_from_wave" : screenshot_from_wave,
                 "auhtor_feedback" : author_feedback,
-                "comment_from_wave" : comment_from_wave,
+                "comment_from_wave" : comment_from_wave
             },
             success : function(x){
                 $('#editModal').modal('hide');

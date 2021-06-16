@@ -320,7 +320,7 @@ class UpdateController extends Controller
                     }
                 }
                 break;
-            case 'spam-mangatoon' :
+            case 'mangatoon' :
                 $data = ReportSpamMangatoonNovelList::findOrFail($id);
                 switch ($row) {
                     case 'date_feedback_received':
@@ -340,7 +340,7 @@ class UpdateController extends Controller
                     }
                 }
                 break;
-            case 'spam-wnuncontracted' :
+            case 'wn-uncontracted' :
                 $data = ReportSpamWNUncoractedNovelList::findOrFail($id);
                 switch ($row) {
                     case 'date_feedback_received':
@@ -753,7 +753,7 @@ class UpdateController extends Controller
                     return ['data' => null];
                 }
                 break;
-            case 'spam-mangatoon' :
+            case 'mangatoon' :
                 $data = ReportSpamMangatoonNovelList::findOrFail($id);
                 $isi = [
                     "date" => $request->input('date'),
@@ -778,7 +778,7 @@ class UpdateController extends Controller
                     return ['data' => null];
                 }
                 break;
-            case 'spam-wnuncontracted' :
+            case 'wn-uncontracted' :
                 $data = ReportSpamWNUncoractedNovelList::findOrFail($id);
                 $isi = [
                     "date" => $request->input('date'),
@@ -805,7 +805,7 @@ class UpdateController extends Controller
                     return ['data' => null];
                 }
                 break;
-            case 'spam-novellist' :
+            case 'novel-list-ranking' :
                 $data = ReportSpamNovelListFromRanking::findOrFail($id);
                 $isi = [
                     "cbid" => $request->input('cbid'),

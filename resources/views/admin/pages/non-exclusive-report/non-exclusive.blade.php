@@ -71,11 +71,13 @@ $(document).ready(function(){
     let url = "{{ $data_person }}";
     TabelGlobalDaily(url);
     $(document).on('click','#getDataDaily',function(){
+        $(this).attr('disabled','disabled');
         $('#FormTabelGlobalDaily').html(createSkeleton(1));
         let url_dx = $(this).attr('data-href');
         $.ajax({
             url: url_dx,
             success:function(json) {
+                $('#getDataDaily').removeAttr('disabled','disabled');
                 if(json == "200"){
                     $("#alert_success").show();
                     $("#alert_danger").hide();

@@ -17,6 +17,10 @@ use Symfony\Component\VarDumper\Cloner\Data;
 */
 Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/', [PageController::class, 'index']);
+    Route::prefix('/daily-report-marker')->name('daily-report-marker.')->group(function(){
+        Route::get('marker',[PageController::class, 'DailyReportMarker'])->name('marker');
+        Route::get('marker-data',[PageController::class, 'getDailyReportMarker'])->name('marker.data');
+    });
     Route::prefix('/daily-report-global/report')->name('daily-report-global.')->group(function(){
         Route::get('ames',[PageController::class, 'DailyReportAmes'])->name('ames');
         Route::get('ames-data',[PageController::class, 'getDailyReportAmes'])->name('ames.data');
@@ -55,6 +59,10 @@ Route::middleware(['auth:sanctum'])->group(function(){
         Route::get('non-exclusive',[PageController::class, 'NonExclusiveReport'])->name('non-exclusive');
         Route::get('non-exclusive-data',[PageController::class, 'getNonExclusiveReport'])->name('non-exclusive.data');
     });
+    Route::prefix('/report-to-sunny')->name('report-to-sunny.')->group(function(){
+        Route::get('report-to-sunny',[PageController::class, 'ReportToSunny'])->name('report-to-sunny');
+        Route::get('report-to-sunny-data',[PageController::class, 'getReportToSunny'])->name('report-to-sunny.data');
+    });
     Route::prefix('/team-monitoring')->name('team-monitoring.')->group(function(){
         Route::get('global',[PageController::class, 'GlobalTeamMonitoring'])->name('global');
         Route::get('global-data',[PageController::class, 'getGlobalTeamMonitoring'])->name('global.data');
@@ -63,6 +71,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     });
     Route::prefix('/all-report')->name('all-report.')->group(function(){
         Route::get('get-date',[PageController::class, 'GetDateWeekly'])->name('date-weekly');
+        Route::get('get-date-friday',[PageController::class, 'GetDateWeeklyFriday'])->name('date-weekly-friday');
         Route::get('weekly',[PageController::class, 'WeeklyReport'])->name('weekly');
         Route::get('weekly-data',[PageController::class, 'getWeeklyReport'])->name('weekly.data');
         Route::get('monthly',[PageController::class, 'MonthlyReport'])->name('monthly');

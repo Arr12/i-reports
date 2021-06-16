@@ -20,7 +20,6 @@ use App\Models\ReportSpamWNUncoractedNovelList;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
-use ReportSpamWnUncontractedNovelList;
 
 class PageController extends Controller
 {
@@ -88,7 +87,41 @@ class PageController extends Controller
         }while($endarr[$i-1]<$nextmonth);
         return $date;
     }
+    public function WeekFromDateFriday($date){
+        // $textdt = date($date.'-01');
+        $textdt = date($date.'-01', strtotime('first Week'));
+        $textdt = date('Y-m-d', strtotime($textdt.'-3 days'));
+        // dd($textdt);
+        $dt= strtotime( $textdt);
+        $currdt=$dt;
+        $nextmonth=strtotime($textdt."+1 month");
+        $i=0;
+        $date = [
+            'c_week' => [],
+            'startdate' => [],
+            'daystart' => [],
+            'enddate' => [],
+            'dayend' => [],
+        ];
+        do{
+            $weekday= date("w",$currdt);
+            $endday=6;
+            $startarr[$i]=$currdt;
+            $endarr[$i]=strtotime(date("Y-m-d",$currdt)."+$endday day");
+            $currdt=strtotime(date("Y-m-d",$endarr[$i])."+1 day");
+            array_push($date['c_week'],"Week ".($i+1));
+            array_push($date["startdate"], date("Y-m-d",$startarr[$i]));
+            array_push($date["daystart"], date("D",$startarr[$i]));
+            array_push($date["enddate"], date("Y-m-d",$endarr[$i]));
+            array_push($date["dayend"], date("D",$endarr[$i]));
+            $i++;
+        }while($endarr[$i-1]<$nextmonth);
+        return $date;
+    }
     public function GetDateWeekly($request = false){
+        /* -----------
+        | Senin - Minggu
+        ------------------ */
         $date_i = $request ?: request()->input('m');
         $yd = $this->WeekFromDate($date_i);
         foreach($yd['c_week'] as $key => $data){
@@ -98,8 +131,21 @@ class PageController extends Controller
         }
         return $date;
     }
+    public function GetDateWeeklyFriday($request = false){
+        $date_i = $request ?: request()->input('m');
+        $yd = $this->WeekFromDateFriday($date_i);
+        foreach($yd['c_week'] as $key => $data){
+            $startdate = $yd['startdate'][$key];
+            $enddate = $yd['enddate'][$key];
+            $date['option'][] = "<option value='$data,$startdate,$enddate'>$data - $startdate/$enddate</option>";
+        }
+        return $date;
+    }
     public function index(){
         return view('admin.pages.home');
+    }
+    public function DailyReportMarker(){
+        return view('admin.pages.daily-report.marker.daily-report-complete-marker');
     }
     public function DailyReportAmes(){
         return view('admin.pages.daily-report.global.daily-report-ames');
@@ -145,6 +191,9 @@ class PageController extends Controller
     }
     public function NonExclusiveReport(){
         return view('admin.pages.non-exclusive-report.non-exclusive');
+    }
+    public function ReportToSunny(){
+        return view('admin.pages.report-to-sunny.report-to-sunny');
     }
     public function GlobalTeamMonitoring(){
         $person = $this->personGlobal;
@@ -444,12 +493,411 @@ class PageController extends Controller
     }
 
     /*---------------------------------------
+    | DAILY REPORT MARKER
+    -----------------------------------------*/
+    public function getDailyReportMarker(Request $request){
+        if($request->input('d') == 'indo'){
+            $x = $this->ReportMarkerIndo();
+        } else {
+            $x = $this->ReportMarkerGlobal();
+        }
+        return $x;
+    }
+    public function ReportMarkerIndo(){
+        /* --------------
+        / HEAD DATA
+        --------------- */
+        $data_array['columns'] = [];
+        $data_array['data'] = [];
+        $title = [
+            "No.",
+            "Date",
+            "Contact Way",
+            "Author Contact",
+            "Platform",
+            "Status",
+            "Inquiries",
+            "New CBID",
+            "Old CBID",
+            "Author",
+            "Title",
+            "Genre",
+            "4K+?",
+            "Plot",
+            "Maintain Account",
+            "Follow up 1",
+            "Follow up 2",
+            "Follow up 3",
+            "Follow up 4",
+            "Follow up 5",
+            "Data Sent",
+            "Marker",
+            "Old/New Book"
+        ];
+        foreach ($title as $key => $value) {
+            array_push($data_array['columns'], ["title" => $value]);
+        }
+        $query = DailyReportIndoIchaNur::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        $no = 1;
+        foreach($query as $key => $data){
+            array_push($data_array['data'], [
+                $no++,
+                "Icha Nur",
+                $data->date,
+                $data->contact_way,
+                $data->author_contact,
+                $data->platform,
+                $data->status,
+                $data->inquiries,
+                $data->new_cbid,
+                $data->old_cbid,
+                $data->author,
+                $data->title,
+                $data->genre,
+                $data->k4,
+                $data->plot,
+                $data->maintain_account,
+                $data->fu_1,
+                $data->fu_2,
+                $data->fu_3,
+                $data->fu_4,
+                $data->fu_5,
+                $data->data_sent,
+                $data->marker,
+                $data->old_new_book,
+            ]);
+        }
+        return $data_array;
+    }
+    public function ReportMarkerGlobal(){
+        /* --------------
+        / HEAD DATA
+        --------------- */
+        $data_array['columns'] = [];
+        $data_array['data'] = [];
+        $title = [
+            "No.",
+            "Person",
+            "Date",
+            "Status",
+            "Media",
+            "Author Contact",
+            "Inquiries",
+            "Platform",
+            "Username",
+            "Title",
+            "Webnovel Username",
+            "CBID/Book ID",
+            "Title",
+            "Genre",
+            "Plot",
+            "4K+?",
+            "Maintain Account",
+            "Follow up 1",
+            "Follow up 2",
+            "Follow up 3",
+            "Follow up 4",
+            "Follow up 5",
+            "Data Sent Royalty",
+            "Data Sent Non Exclusive",
+            "Marker",
+            "Old/New Book"
+        ];
+        foreach ($title as $key => $value) {
+            array_push($data_array['columns'], ["title" => $value]);
+        }
+        $persons = $this->personGlobal;
+        $no = 1;
+        foreach($persons as $key => $person){
+            switch ($person) {
+                case 'Ame':
+                    $query = DailyReportAme::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                    foreach($query as $key => $data){
+                        array_push($data_array['data'], [
+                            $no++,
+                            $person,
+                            $data->date,
+                            $data->status,
+                            $data->media,
+                            $data->author_contact,
+                            $data->inquiries,
+                            $data->platform,
+                            $data->platform_user,
+                            $data->platform_title,
+                            $data->username,
+                            $data->cbid,
+                            $data->title,
+                            $data->genre,
+                            $data->plot,
+                            $data->k4,
+                            $data->maintain_account,
+                            $data->fu_1,
+                            $data->fu_2,
+                            $data->fu_3,
+                            $data->fu_4,
+                            $data->fu_5,
+                            $data->sent_royalty,
+                            $data->sent_non_exclusive,
+                            $data->marker,
+                            $data->old_new_book
+                        ]);
+                    }
+                    break;
+                case 'Anna':
+                    $query = DailyReportAnna::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                    foreach($query as $key => $data){
+                        array_push($data_array['data'], [
+                            $no++,
+                            $person,
+                            $data->date,
+                            $data->status,
+                            $data->media,
+                            $data->author_contact,
+                            $data->inquiries,
+                            $data->platform,
+                            $data->platform_user,
+                            $data->platform_title,
+                            $data->username,
+                            $data->cbid,
+                            $data->title,
+                            $data->genre,
+                            $data->plot,
+                            $data->k4,
+                            $data->maintain_account,
+                            $data->fu_1,
+                            $data->fu_2,
+                            $data->fu_3,
+                            $data->fu_4,
+                            $data->fu_5,
+                            $data->sent_royalty,
+                            $data->sent_non_exclusive,
+                            $data->marker,
+                            $data->old_new_book
+                        ]);
+                    }
+                    break;
+                case 'Carol' :
+                    $query = DailyReportCarol::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                    foreach($query as $key => $data){
+                        array_push($data_array['data'], [
+                            $no++,
+                            $person,
+                            $data->date,
+                            $data->status,
+                            $data->media,
+                            $data->author_contact,
+                            $data->inquiries,
+                            $data->platform,
+                            $data->platform_user,
+                            $data->platform_title,
+                            $data->username,
+                            $data->cbid,
+                            $data->title,
+                            $data->genre,
+                            $data->plot,
+                            $data->k4,
+                            $data->maintain_account,
+                            $data->fu_1,
+                            $data->fu_2,
+                            $data->fu_3,
+                            $data->fu_4,
+                            $data->fu_5,
+                            $data->sent_royalty,
+                            $data->sent_non_exclusive,
+                            $data->marker,
+                            $data->old_new_book
+                        ]);
+                    }
+                    break;
+                case 'Eric' :
+                    $query = DailyReportEric::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                    foreach($query as $key => $data){
+                        array_push($data_array['data'], [
+                            $no++,
+                            $person,
+                            $data->date,
+                            $data->status,
+                            $data->media,
+                            $data->author_contact,
+                            $data->inquiries,
+                            $data->platform,
+                            $data->platform_user,
+                            $data->platform_title,
+                            $data->username,
+                            $data->cbid,
+                            $data->title,
+                            $data->genre,
+                            $data->plot,
+                            $data->k4,
+                            $data->maintain_account,
+                            $data->fu_1,
+                            $data->fu_2,
+                            $data->fu_3,
+                            $data->fu_4,
+                            $data->fu_5,
+                            $data->sent_royalty,
+                            $data->sent_non_exclusive,
+                            $data->marker,
+                            $data->old_new_book
+                        ]);
+                    }
+                    break;
+                case 'Icha' :
+                    $query = DailyReportIcha::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                    foreach($query as $key => $data){
+                        array_push($data_array['data'], [
+                            $no++,
+                            $person,
+                            $data->date,
+                            $data->status,
+                            $data->media,
+                            $data->author_contact,
+                            $data->inquiries,
+                            $data->platform,
+                            $data->platform_user,
+                            $data->platform_title,
+                            $data->username,
+                            $data->cbid,
+                            $data->title,
+                            $data->genre,
+                            $data->plot,
+                            $data->k4,
+                            $data->maintain_account,
+                            $data->fu_1,
+                            $data->fu_2,
+                            $data->fu_3,
+                            $data->fu_4,
+                            $data->fu_5,
+                            $data->sent_royalty,
+                            $data->sent_non_exclusive,
+                            $data->marker,
+                            $data->old_new_book
+                        ]);
+                    }
+                    break;
+                case 'Lily' :
+                    $query = DailyReportLily::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                    foreach($query as $key => $data){
+                        array_push($data_array['data'], [
+                            $no++,
+                            $person,
+                            $data->date,
+                            $data->status,
+                            $data->media,
+                            $data->author_contact,
+                            $data->inquiries,
+                            $data->platform,
+                            $data->platform_user,
+                            $data->platform_title,
+                            $data->username,
+                            $data->cbid,
+                            $data->title,
+                            $data->genre,
+                            $data->plot,
+                            $data->k4,
+                            $data->maintain_account,
+                            $data->fu_1,
+                            $data->fu_2,
+                            $data->fu_3,
+                            $data->fu_4,
+                            $data->fu_5,
+                            $data->sent_royalty,
+                            $data->sent_non_exclusive,
+                            $data->marker,
+                            $data->old_new_book
+                        ]);
+                    }
+                    break;
+                case 'Maydewi' :
+                    $query = DailyReportMaydewi::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                    foreach($query as $key => $data){
+                        array_push($data_array['data'], [
+                            $no++,
+                            $person,
+                            $data->date,
+                            $data->status,
+                            $data->media,
+                            $data->author_contact,
+                            $data->inquiries,
+                            $data->platform,
+                            $data->platform_user,
+                            $data->platform_title,
+                            $data->username,
+                            $data->cbid,
+                            $data->title,
+                            $data->genre,
+                            $data->plot,
+                            $data->k4,
+                            $data->maintain_account,
+                            $data->fu_1,
+                            $data->fu_2,
+                            $data->fu_3,
+                            $data->fu_4,
+                            $data->fu_5,
+                            $data->sent_royalty,
+                            $data->sent_non_exclusive,
+                            $data->marker,
+                            $data->old_new_book
+                        ]);
+                    }
+                    break;
+                case 'Rani' :
+                    $query = DailyReportRani::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                    foreach($query as $key => $data){
+                        array_push($data_array['data'], [
+                            $no++,
+                            $person,
+                            $data->date,
+                            $data->status,
+                            $data->media,
+                            $data->author_contact,
+                            $data->inquiries,
+                            $data->platform,
+                            $data->platform_user,
+                            $data->platform_title,
+                            $data->username,
+                            $data->cbid,
+                            $data->title,
+                            $data->genre,
+                            $data->plot,
+                            $data->k4,
+                            $data->maintain_account,
+                            $data->fu_1,
+                            $data->fu_2,
+                            $data->fu_3,
+                            $data->fu_4,
+                            $data->fu_5,
+                            $data->sent_royalty,
+                            $data->sent_non_exclusive,
+                            $data->marker,
+                            $data->old_new_book
+                        ]);
+                    }
+                    break;
+                default:
+                    $query = [];
+                    break;
+            }
+        }
+        return $data_array;
+    }
+
+    /*---------------------------------------
     | LV 0 DAILY REPORT
     -----------------------------------------*/
     public function getDailyReportAmes(){
-        if(request()->input('where') && request()->input('where') != ''){
-            $query = DailyReportAme::where('author_contact','ilike', '%'.request()->input('where').'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
-        }else{
+        $where = request()->input('where');
+        $marker = request()->input('marker');
+        if(isset($marker) && $marker!=''){
+            $query = DailyReportAme::where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        }
+        else if(isset($where) && $where != ''){
+            $query = DailyReportAme::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        }
+        else if((isset($where) && $where != '') && (isset($marker) && $marker != '')){
+            $query = DailyReportAme::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        }
+        else{
             $query = DailyReportAme::orderBy('id', 'DESC')->limit($this->data_show)->get();
         }
         /* --------------
@@ -525,9 +973,18 @@ class PageController extends Controller
         return $data_array;
     }
     public function getDailyReportAnnas(){
-        if(request()->input('where') && request()->input('where') != ''){
-            $query = DailyReportAnna::where('author_contact','ilike', '%'.request()->input('where').'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
-        }else{
+        $where = request()->input('where');
+        $marker = request()->input('marker');
+        if(isset($marker) && $marker!=''){
+            $query = DailyReportAnna::where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        }
+        else if(isset($where) && $where != ''){
+            $query = DailyReportAnna::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        }
+        else if((isset($where) && $where != '') && (isset($marker) && $marker != '')){
+            $query = DailyReportAnna::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        }
+        else{
             $query = DailyReportAnna::orderBy('id', 'DESC')->limit($this->data_show)->get();
         }
         /* --------------
@@ -603,9 +1060,18 @@ class PageController extends Controller
         return $data_array;
     }
     public function getDailyReportCarols(){
-        if(request()->input('where') && request()->input('where') != ''){
-            $query = DailyReportCarol::where('author_contact','ilike', '%'.request()->input('where').'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
-        }else{
+        $where = request()->input('where');
+        $marker = request()->input('marker');
+        if(isset($marker) && $marker!=''){
+            $query = DailyReportCarol::where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        }
+        else if(isset($where) && $where != ''){
+            $query = DailyReportCarol::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        }
+        else if((isset($where) && $where != '') && (isset($marker) && $marker != '')){
+            $query = DailyReportCarol::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        }
+        else{
             $query = DailyReportCarol::orderBy('id', 'DESC')->limit($this->data_show)->get();
         }
         /* --------------
@@ -681,9 +1147,18 @@ class PageController extends Controller
         return $data_array;
     }
     public function getDailyReportErics(){
-        if(request()->input('where') && request()->input('where') != ''){
-            $query = DailyReportEric::where('author_contact','ilike', '%'.request()->input('where').'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
-        }else{
+        $where = request()->input('where');
+        $marker = request()->input('marker');
+        if(isset($marker) && $marker!=''){
+            $query = DailyReportEric::where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        }
+        else if(isset($where) && $where != ''){
+            $query = DailyReportEric::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        }
+        else if((isset($where) && $where != '') && (isset($marker) && $marker != '')){
+            $query = DailyReportEric::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        }
+        else{
             $query = DailyReportEric::orderBy('id', 'DESC')->limit($this->data_show)->get();
         }
         /* --------------
@@ -759,9 +1234,18 @@ class PageController extends Controller
         return $data_array;
     }
     public function getDailyReportIchas(){
-        if(request()->input('where') && request()->input('where') != ''){
-            $query = DailyReportIcha::where('author_contact','ilike', '%'.request()->input('where').'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
-        }else{
+        $where = request()->input('where');
+        $marker = request()->input('marker');
+        if(isset($marker) && $marker!=''){
+            $query = DailyReportIcha::where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        }
+        else if(isset($where) && $where != ''){
+            $query = DailyReportIcha::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        }
+        else if((isset($where) && $where != '') && (isset($marker) && $marker != '')){
+            $query = DailyReportIcha::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        }
+        else{
             $query = DailyReportIcha::orderBy('id', 'DESC')->limit($this->data_show)->get();
         }
         /* --------------
@@ -837,9 +1321,18 @@ class PageController extends Controller
         return $data_array;
     }
     public function getDailyReportLilies(){
-        if(request()->input('where') && request()->input('where') != ''){
-            $query = DailyReportLily::where('author_contact','ilike', '%'.request()->input('where').'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
-        }else{
+        $where = request()->input('where');
+        $marker = request()->input('marker');
+        if(isset($marker) && $marker!=''){
+            $query = DailyReportLily::where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        }
+        else if(isset($where) && $where != ''){
+            $query = DailyReportLily::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        }
+        else if((isset($where) && $where != '') && (isset($marker) && $marker != '')){
+            $query = DailyReportLily::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        }
+        else{
             $query = DailyReportLily::orderBy('id', 'DESC')->limit($this->data_show)->get();
         }
         /* --------------
@@ -915,9 +1408,18 @@ class PageController extends Controller
         return $data_array;
     }
     public function getDailyReportMayDewis(){
-        if(request()->input('where') && request()->input('where') != ''){
-            $query = DailyReportMaydewi::where('author_contact','ilike', '%'.request()->input('where').'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
-        }else{
+        $where = request()->input('where');
+        $marker = request()->input('marker');
+        if(isset($marker) && $marker!=''){
+            $query = DailyReportMaydewi::where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        }
+        else if(isset($where) && $where != ''){
+            $query = DailyReportMaydewi::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        }
+        else if((isset($where) && $where != '') && (isset($marker) && $marker != '')){
+            $query = DailyReportMaydewi::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        }
+        else{
             $query = DailyReportMaydewi::orderBy('id', 'DESC')->limit($this->data_show)->get();
         }
         /* --------------
@@ -993,9 +1495,18 @@ class PageController extends Controller
         return $data_array;
     }
     public function getDailyReportRanis(){
-        if(request()->input('where') && request()->input('where') != ''){
-            $query = DailyReportRani::where('author_contact','ilike', '%'.request()->input('where').'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
-        }else{
+        $where = request()->input('where');
+        $marker = request()->input('marker');
+        if(isset($marker) && $marker!=''){
+            $query = DailyReportRani::where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        }
+        else if(isset($where) && $where != ''){
+            $query = DailyReportRani::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        }
+        else if((isset($where) && $where != '') && (isset($marker) && $marker != '')){
+            $query = DailyReportRani::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        }
+        else{
             $query = DailyReportRani::orderBy('id', 'DESC')->limit($this->data_show)->get();
         }
         /* --------------
@@ -1071,9 +1582,18 @@ class PageController extends Controller
         return $data_array;
     }
     public function getDailyReportIndoIchaNurs(){
-        if(request()->input('where') && request()->input('where') != ''){
-            $query = DailyReportIndoIchaNur::where('author_contact','ilike', '%'.request()->input('where').'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
-        }else{
+        $where = request()->input('where');
+        $marker = request()->input('marker');
+        if(isset($marker) && $marker!=''){
+            $query = DailyReportIndoIchaNur::where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        }
+        else if(isset($where) && $where != ''){
+            $query = DailyReportIndoIchaNur::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        }
+        else if((isset($where) && $where != '') && (isset($marker) && $marker != '')){
+            $query = DailyReportIndoIchaNur::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        }
+        else{
             $query = DailyReportIndoIchaNur::orderBy('id', 'DESC')->limit($this->data_show)->get();
         }
         /* --------------
@@ -1213,6 +1733,286 @@ class PageController extends Controller
         return $data_array;
     }
 
+    /*-----------------------------
+    | REPORT TO SUNNY
+    -------------------------------*/
+    public function getReportToSunny(Request $request){
+        $report = $request->input('r');
+        $type = $request->input('type');
+        $category = $request->input('c');
+        if($category == 'all'){
+            $x = $this->ReportSunnyDataGlobal();
+        }else{
+            $date = [];
+            if($type != 'ready'){
+                $x = explode(',', $request->input('w'));
+                array_push($date, $x[0]);
+                array_push($date, $x[1]);
+                array_push($date, $x[2]);
+            } else {
+                $DateWeekly = $this->WeekFromDateFriday(date('Y-m'));
+                $Date = date('Y-m-d');
+                foreach($DateWeekly['c_week'] as $key => $v_weekly){
+                    $startdate = $DateWeekly['startdate'][$key];
+                    $enddate = $DateWeekly['enddate'][$key];
+                    $Date = date('Y-m-d');
+                    if($Date >= date('Y-m-d',strtotime($startdate)) && $Date <= date('Y-m-d',strtotime($enddate))){
+                        $y = $startdate.",".$enddate;
+                        $x = explode(",",$y);
+                        array_push($date, $v_weekly);
+                    }
+                }
+                array_push($date, $x[0]);
+                array_push($date, $x[1]);
+            }
+
+            if($report == 'spam'){
+                $x = $this->WeeklyReportSunnySpam($date);
+            }else{
+                $x = $this->WeeklyReportSunnyGlobal($date);
+            }
+        }
+        return $x;
+    }
+    public function ReportSunnyDataGlobal(){
+        $data_array['columns'] = [];
+        $data_array['data'] = [];
+        $no=1;
+        $title = [
+            "No.", "Person", "MIA", "Reject", "Fan Fiction", "Non Fiction", "Non English", "Assisted by Other"
+        ];
+        foreach ($title as $key => $value) {
+            array_push($data_array['columns'], ["title" => $value]);
+        }
+        $persons = $this->personGlobal;
+        foreach($persons as $key => $person){
+            switch($person){
+                case "Ame" :
+                    $query = DailyReportAme::select('inquiries')->orderBy('id', 'ASC')->get();
+                    array_push($data_array['data'], [
+                        $no++,
+                        $person,
+                    ]);
+                    for($i=2; $i<count($title); $i++){
+                        $total = $query->where('inquiries','=',$title[$i])->whereNotNull('inquiries')->count();
+                        array_push($data_array['data'][$key],$total);
+                    }
+                    break;
+                case "Anna" :
+                    $query = DailyReportAnna::select('inquiries')->orderBy('id', 'ASC')->get();
+                    array_push($data_array['data'], [
+                        $no++,
+                        $person,
+                    ]);
+                    for($i=2; $i<count($title); $i++){
+                        $total = $query->where('inquiries','=',$title[$i])->whereNotNull('inquiries')->count();
+                        array_push($data_array['data'][$key],$total);
+                    }
+                    break;
+                case "Carol" :
+                    $query = DailyReportCarol::select('inquiries')->orderBy('id', 'ASC')->get();
+                    array_push($data_array['data'], [
+                        $no++,
+                        $person,
+                    ]);
+                    for($i=2; $i<count($title); $i++){
+                        $total = $query->where('inquiries','=',$title[$i])->whereNotNull('inquiries')->count();
+                        array_push($data_array['data'][$key],$total);
+                    }
+                    break;
+                case "Eric" :
+                    $query = DailyReportEric::select('inquiries')->orderBy('id', 'ASC')->get();
+                    array_push($data_array['data'], [
+                        $no++,
+                        $person,
+                    ]);
+                    for($i=2; $i<count($title); $i++){
+                        $total = $query->where('inquiries','=',$title[$i])->whereNotNull('inquiries')->count();
+                        array_push($data_array['data'][$key],$total);
+                    }
+                    break;
+                case "Icha" :
+                    $query = DailyReportIcha::select('inquiries')->orderBy('id', 'ASC')->get();
+                    array_push($data_array['data'], [
+                        $no++,
+                        $person,
+                    ]);
+                    for($i=2; $i<count($title); $i++){
+                        $total = $query->where('inquiries','=',$title[$i])->whereNotNull('inquiries')->count();
+                        array_push($data_array['data'][$key],$total);
+                    }
+                    break;
+                case "Lily" :
+                    $query = DailyReportLily::select('inquiries')->orderBy('id', 'ASC')->get();
+                    array_push($data_array['data'], [
+                        $no++,
+                        $person,
+                    ]);
+                    for($i=2; $i<count($title); $i++){
+                        $total = $query->where('inquiries','=',$title[$i])->whereNotNull('inquiries')->count();
+                        array_push($data_array['data'][$key],$total);
+                    }
+                    break;
+                case "Maydewi" :
+                    $query = DailyReportMaydewi::select('inquiries')->orderBy('id', 'ASC')->get();
+                    array_push($data_array['data'], [
+                        $no++,
+                        $person,
+                    ]);
+                    for($i=2; $i<count($title); $i++){
+                        $total = $query->where('inquiries','=',$title[$i])->whereNotNull('inquiries')->count();
+                        array_push($data_array['data'][$key],$total);
+                    }
+                    break;
+                case "Rani" :
+                    $query = DailyReportRani::select('inquiries')->orderBy('id', 'ASC')->get();
+                    array_push($data_array['data'], [
+                        $no++,
+                        $person,
+                    ]);
+                    for($i=2; $i<count($title); $i++){
+                        $total = $query->where('inquiries','=',$title[$i])->whereNotNull('inquiries')->count();
+                        array_push($data_array['data'][$key],$total);
+                    }
+                    break;
+                default :
+                    $query = [];
+                    break;
+            }
+        }
+        array_push($data_array['data'], [
+            $no++,
+            "Total",
+        ]);
+        for($i=2; $i<count($title); $i++){
+            $total = 0;
+            foreach($persons as $key => $person){
+                $total += $data_array['data'][$key][$i];
+            }
+            array_push($data_array['data'][$key+1],$total);
+        }
+        array_push($data_array['data'], [
+            $no++,
+            "Average",
+        ]);
+        for($i=2; $i<count($title); $i++){
+            $total = 0;
+            foreach($persons as $key => $person){
+                $total += $data_array['data'][$key][$i];
+            }
+            array_push($data_array['data'][$key+2],$total/count($persons));
+        }
+        return $data_array;
+    }
+    public function WeeklyReportSunnyGlobal($date){
+        /* --------------
+        / HEAD DATA
+        --------------- */
+        $data_array['columns'] = [];
+        $data_array['data'] = [];
+        // dd($date);
+        $week = $date[0];
+        $startdate = $date[1];
+        $enddate = $date[2];
+        $persons = $this->personGlobal;
+        $title = [
+            "No.",
+            "Global",
+            "$week"
+        ];
+        foreach ($title as $key => $value) {
+            array_push($data_array['columns'], ["title" => $value]);
+        }
+        $no = 1;
+        $arr_title = ["Email", "Facebook", "Whatsapp", "Instagram", "Discord"];
+        foreach($arr_title as $key1 => $data){
+            array_push($data_array['data'], [
+                $no++,
+                $data,
+            ]);
+            $counter_media = 0;
+            foreach($persons as $key => $person){
+                switch($person){
+                    case "Ame" :
+                        $query = DailyReportAme::select('media')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        break;
+                    case "Anna" :
+                        $query = DailyReportAnna::select('media')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        break;
+                    case "Carol" :
+                        $query = DailyReportCarol::select('media')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        break;
+                    case "Eric" :
+                        $query = DailyReportEric::select('media')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        break;
+                    case "Icha" :
+                        $query = DailyReportIcha::select('media')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        break;
+                    case "Lily" :
+                        $query = DailyReportLily::select('media')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        break;
+                    case "Maydewi" :
+                        $query = DailyReportMaydewi::select('media')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        break;
+                    case "Rani" :
+                        $query = DailyReportRani::select('media')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        break;
+                    default :
+                        $query = [];
+                        break;
+                }
+                $counter_media += $query->where('media','=',$data)->whereNotNull('media')->count();
+            }
+            array_push($data_array['data'][$key1], $counter_media);
+        }
+        return $data_array;
+    }
+    public function WeeklyReportSunnySpam($date){
+        /* --------------
+        / HEAD DATA
+        --------------- */
+        $data_array['columns'] = [];
+        $data_array['data'] = [];
+        // dd($date);
+        $week = $date[0];
+        $startdate = $date[1];
+        $enddate = $date[2];
+        $spams = ["Mangatoon","WN Uncontracted"];
+        $title = [
+            "No.",
+            "Spam Team",
+            "Invitation Sent",
+            "Messages Received"
+        ];
+        foreach ($title as $key => $value) {
+            array_push($data_array['columns'], ["title" => $value]);
+        }
+        $no = 1;
+        foreach($spams as $key1 => $spam){
+            array_push($data_array['data'], [
+                $no++,
+                $spam,
+            ]);
+            $counter_invitation = 0;
+            $counter_received = 0;
+            switch($spam){
+                case "Mangatoon" :
+                    $query = ReportSpamMangatoonNovelList::whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                    break;
+                case "WN Uncontracted" :
+                    $query = ReportSpamWNUncoractedNovelList::whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                    break;
+                default :
+                    $query = [];
+                    break;
+            }
+            $counter_invitation += $query->whereNotNull('date')->count();
+            array_push($data_array['data'][$key1], $counter_invitation);
+            $counter_received += $query->whereNotNull('date')->count();
+            array_push($data_array['data'][$key1], $counter_received);
+        }
+        return $data_array;
+    }
     /*---------------------------------------
     | REPORT SPAM
     -----------------------------------------*/
@@ -1379,6 +2179,7 @@ class PageController extends Controller
             "Genre",
             "Total Chapter",
             "Chapter within 7 days",
+            "Collection",
             "Ongoing/Completed",
             "FL/ML",
             "Date Feedback Received",

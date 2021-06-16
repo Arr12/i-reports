@@ -66,12 +66,7 @@ $(document).ready(function(){
         let a = $('#SPerson').val();
         let b = $('#SMonth').val();
         let url_dx = "{{route('team-monitoring.indo.data')}}?mod="+a+"&mon="+b;
-        $.ajax({
-            url: url_dx,
-            success:function(json) {
-                Tabel(url_dx);
-            }
-        });
+        Tabel(url_dx);
     });
     $(document).on('click', '#setDataDaily', function(){
         $(this).attr('disabled','disabled');

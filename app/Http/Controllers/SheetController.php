@@ -23,6 +23,7 @@ use Google_Service_Sheets_Spreadsheet;
 use Google_Service_Sheets_UpdateSheetPropertiesRequest;
 use Google_Service_Sheets_ValueRange;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 
 class SheetController extends Controller
@@ -204,74 +205,73 @@ class SheetController extends Controller
         --------------*/
         $daily = $request ?: request()->input('d');
         if($daily == 'ame'){
-            $this->getDailyReportAme();
+            Artisan::call('daily:ame');
         }
         else if($daily == 'anna'){
-            $this->getDailyReportAnna();
+            Artisan::call('daily:anna');
         }
         else if($daily == 'carol'){
-            $this->getDailyReportCarol();
+            Artisan::call('daily:carol');
         }
         else if($daily == 'eric'){
-            $this->getDailyReportEric();
+            Artisan::call('daily:eric');
         }
         else if($daily == 'icha'){
-            $this->getDailyReportIcha();
+            Artisan::call('daily:icha');
         }
         else if($daily == 'lily'){
-            $this->getDailyReportLily();
+            Artisan::call('daily:lily');
         }
         else if($daily == 'maydewi'){
-            $this->getDailyReportMayDewi();
+            Artisan::call('daily:maydewi');
         }
         else if($daily == 'rani'){
-            $this->getDailyReportRani();
+            Artisan::call('daily:rani');
         }
         /*-----------
         / INDO
         --------------*/
         else if($daily == 'indo-ichanur'){
-            $this->getDailyReportIndoIchaNur();
+            Artisan::call('daily:icha-nur');
         }
         else if($daily == 'indo-irel'){
-            $this->getDailyReportIndoIrel();
+            Artisan::call('daily:irel');
         }
         /*-----------
         / SPAM
         --------------*/
         else if($daily == 'mangatoon'){
-            $this->getSpamMangatoonNovelList();
+            Artisan::call('daily:mangatoon');
         }
         else if($daily == 'royalroad'){
             $this->getSpamRoyalRoadNovelList();
         }
         else if($daily == 'wn-uncontracted'){
-            $this->getSpamWNUncontractedNovelList();
+            Artisan::call('daily:wn-uncontracted');
         }
         else if($daily == 'novel-list-ranking'){
-            $this->getSpamNovelListFromRanking();
+            Artisan::call('daily:novel-list-ranking');
         }
         /*-----------
         / EXCLUSIVE
         --------------*/
         else if($daily == 'non-exclusive'){
-            $this->getNonExReport();
+            Artisan::call('daily:non-exclusive');
         }
         else if($daily == 'all'){
-            $this->getDailyReportAme();
-            $this->getDailyReportAnna();
-            $this->getDailyReportCarol();
-            $this->getDailyReportEric();
-            $this->getDailyReportIcha();
-            $this->getDailyReportLily();
-            $this->getDailyReportMayDewi();
-            $this->getDailyReportRani();
-            $this->getDailyReportIndoIchaNur();
-            $this->getDailyReportIndoIrel();
-            $this->getNonExReport();
-            $this->getSpamMangatoonNovelList();
-            $this->getSpamWNUncontractedNovelList();
-            // $this->getSpamRoyalRoadNovelList();
+            Artisan::call('daily:ame');
+            Artisan::call('daily:anna');
+            Artisan::call('daily:carol');
+            Artisan::call('daily:eric');
+            Artisan::call('daily:icha');
+            Artisan::call('daily:lily');
+            Artisan::call('daily:maydewi');
+            Artisan::call('daily:rani');
+            Artisan::call('daily:icha-nur');
+            Artisan::call('daily:irel');
+            Artisan::call('daily:non-exclusive');
+            Artisan::call('daily:mangatoon');
+            Artisan::call('daily:wn-uncontracted');
         }
         else{
             $p = 400;
@@ -1414,6 +1414,9 @@ class SheetController extends Controller
         }
         return $x;
     }
+    public function TeamMonitoringGlobal(){
+        Artisan::call('set:team-monitoring-global');
+    }
     public function setTeamMonitoringGlobal(){
         // $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
         $title = "Lv. 1 Global Monitoring - ".$this->month_name;
@@ -1429,9 +1432,9 @@ class SheetController extends Controller
         }
         $page = $this->page;
 
-        /*--------------------------
+        /* --------------------------
         | FUNCTION FORMAT REPORT WEEKLY
-        -----------------------------*/
+        -------------------------------- */
         $date = $this->date_start.",".$this->date_end;
         $update_range = $new_worksheet;
         $level = "1";
@@ -1493,51 +1496,6 @@ class SheetController extends Controller
         $v_Rani = $this->dataSanitizerTeamMonitoring($v_Rani,$this->n_Rani,$this->head_global,$Rani['data']);
         $update_range = $update_worksheet."!BL:BT";
         $this->updateTeamMonitoring($spreadsheetId,$v_Rani,$update_range);
-
-        return 200;
-    }
-    public function setTeamMonitoringIndo(){
-        // $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
-        $title = "Lv. 1 Indo Monitoring - ".$this->month_name;
-        $create = $this->CreateNewSpreadsheet($title);
-        $data = json_decode($create);
-        $spreadsheetId = $data->spreadsheet_id;
-        $page = $this->page;
-        $date = $this->date_start.",".$this->date_end;
-
-        try {
-            $update_worksheet = "Lv 1 Monitoring Indo";
-            $this->UpdateSheetProperties($spreadsheetId, $update_worksheet);
-        } catch (\Throwable $th) {
-            $update_worksheet = "Lv 1 Monitoring Indo";
-        }
-
-        $indo_ichanur = $page->dataIndoTeamMonitoringIchaNur($date);
-        $v_indo_ichanur = [];
-        $v_indo_ichanur = $this->dataSanitizerTeamMonitoring($v_indo_ichanur,$this->n_indo_icha,$this->head_indo,$indo_ichanur['data']);
-        $update_range = $update_worksheet."!A:E";
-        $this->updateTeamMonitoring($spreadsheetId,$v_indo_ichanur,$update_range);
-
-        $indo_irel = $page->dataIndoTeamMonitoringIrel($date);
-        $v_indo_irel = [];
-        $v_indo_irel = $this->dataSanitizerTeamMonitoring($v_indo_irel,$this->n_indo_irel,$this->head_indo_b,$indo_irel['data']);
-        $update_range = $update_worksheet."!F:I";
-        $this->updateTeamMonitoring($spreadsheetId,$v_indo_irel,$update_range);
-
-        try {
-            $new_worksheet = "Weekly Report Indo";
-            $this->CreateNewWorksheet($spreadsheetId,$new_worksheet);
-        } catch (\Throwable $th) {
-            $new_worksheet = "Weekly Report Indo";
-        }
-
-        /*--------------------------
-        | FUNCTION FORMAT REPORT WEEKLY
-        -----------------------------*/
-        $update_range = $new_worksheet;
-        $level = "1";
-        $values = $this->ReportWeeklyIndoFormat($page,$level);
-        $this->updateTeamMonitoring($spreadsheetId,$values,$update_range);
 
         return 200;
     }
@@ -1697,8 +1655,55 @@ class SheetController extends Controller
             array_push($y, $this->average([$v_ame,$v_anna,$v_carol,$v_eric,$v_icha,$v_lily,$v_maydewi,$v_rani], $key));
         }
         array_push($values, $y);
-
         return $values;
+    }
+    public function TeamMonitoringIndo(){
+        Artisan::call('set:team-monitoring-indo');
+    }
+    public function setTeamMonitoringIndo(){
+        // $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
+        $title = "Lv. 1 Indo Monitoring - ".$this->month_name;
+        $create = $this->CreateNewSpreadsheet($title);
+        $data = json_decode($create);
+        $spreadsheetId = $data->spreadsheet_id;
+        $page = $this->page;
+        $date = $this->date_start.",".$this->date_end;
+
+        try {
+            $update_worksheet = "Lv 1 Monitoring Indo";
+            $this->UpdateSheetProperties($spreadsheetId, $update_worksheet);
+        } catch (\Throwable $th) {
+            $update_worksheet = "Lv 1 Monitoring Indo";
+        }
+
+        $indo_ichanur = $page->dataIndoTeamMonitoringIchaNur($date);
+        $v_indo_ichanur = [];
+        $v_indo_ichanur = $this->dataSanitizerTeamMonitoring($v_indo_ichanur,$this->n_indo_icha,$this->head_indo,$indo_ichanur['data']);
+        $update_range = $update_worksheet."!A:E";
+        $this->updateTeamMonitoring($spreadsheetId,$v_indo_ichanur,$update_range);
+
+        $indo_irel = $page->dataIndoTeamMonitoringIrel($date);
+        $v_indo_irel = [];
+        $v_indo_irel = $this->dataSanitizerTeamMonitoring($v_indo_irel,$this->n_indo_irel,$this->head_indo_b,$indo_irel['data']);
+        $update_range = $update_worksheet."!F:I";
+        $this->updateTeamMonitoring($spreadsheetId,$v_indo_irel,$update_range);
+
+        try {
+            $new_worksheet = "Weekly Report Indo";
+            $this->CreateNewWorksheet($spreadsheetId,$new_worksheet);
+        } catch (\Throwable $th) {
+            $new_worksheet = "Weekly Report Indo";
+        }
+
+        /*--------------------------
+        | FUNCTION FORMAT REPORT WEEKLY
+        -----------------------------*/
+        $update_range = $new_worksheet;
+        $level = "1";
+        $values = $this->ReportWeeklyIndoFormat($page,$level);
+        $this->updateTeamMonitoring($spreadsheetId,$values,$update_range);
+
+        return 200;
     }
     public function ReportWeeklyIndoFormat($page,$level){
         $values = [];
@@ -1736,9 +1741,9 @@ class SheetController extends Controller
         array_push($values, $head);
         $v_indo_icha = [
             $n_indo_icha[0],
-            $d_ichanur->whereNotNull('date')->count(),
-            $d_ichanur->whereNotNull('fu_1')->count()+$d_ichanur->whereNotNull('fu_2')->count()+$d_ichanur->whereNotNull('fu_3')->count()+$d_ichanur->whereNotNull('fu_4')->count()+$d_ichanur->whereNotNull('fu_5')->count(),
-            $d_ichanur->whereNotNull('sent_royalty')->count(),
+            $d_ichanur['daily']->whereNotNull('date')->count(),
+            $d_ichanur['fu_1']->whereNotNull('fu_1')->count()+$d_ichanur['fu_2']->whereNotNull('fu_2')->count()+$d_ichanur['fu_3']->whereNotNull('fu_3')->count()+$d_ichanur['fu_4']->whereNotNull('fu_4')->count()+$d_ichanur['fu_5']->whereNotNull('fu_5')->count(),
+            $d_ichanur['data_sent']->whereNotNull('sent_royalty')->count(),
             "0"
         ];
         array_push($values, $v_indo_icha);
@@ -1747,9 +1752,9 @@ class SheetController extends Controller
         array_push($values, $head_b);
         $v_indo_irel = [
             $n_indo_irel[0],
-            $d_irel->whereNotNull('date')->count(),
-            $d_irel->whereNotNull('fu_1')->count()+$d_irel->whereNotNull('fu_2')->count()+$d_irel->whereNotNull('fu_3')->count()+$d_irel->whereNotNull('fu_4')->count()+$d_irel->whereNotNull('fu_5')->count(),
-            $d_irel->whereNotNull('date_solved')->count(),
+            $d_irel['daily']->whereNotNull('date')->count(),
+            $d_irel['fu_1']->whereNotNull('fu_1')->count()+$d_irel['fu_2']->whereNotNull('fu_2')->count()+$d_irel['fu_3']->whereNotNull('fu_3')->count()+$d_irel['fu_4']->whereNotNull('fu_4')->count()+$d_irel['fu_5']->whereNotNull('fu_5')->count()+$d_irel['fu_6']->whereNotNull('fu_6')->count()+$d_irel['fu_7']->whereNotNull('fu_7')->count()+$d_irel['fu_8']->whereNotNull('fu_8')->count()+$d_irel['fu_9']->whereNotNull('fu_9')->count()+$d_irel['fu_10']->whereNotNull('fu_10')->count(),
+            $d_irel['date_solved']->whereNotNull('date_solved')->count(),
         ];
         array_push($values, $v_indo_irel);
         return $values;

@@ -24,6 +24,42 @@
 
 {{-- <script src="/js/pages/tables/jquery-datatable.js"></script> --}}
 <script>
+let TabelAll = function(url){
+    $('#FormTabelAll').html(createSkeleton(1));
+    $.ajax( {
+        url: url,
+        dataType: "json",
+        success:function(json) {
+            $('#FormTabelAll').html("<table id='TabelAll' class='table table-bordered table-striped table-hover'></table>");
+            $('#TabelAll').DataTable(json);
+            let arr = [];
+            for(let i=0;i<json.columns.length;i++){
+                let title = json.columns[i].title;
+                arr.push("<a class='btn btn-primary waves-effect toggle-vis' data-column-tabel-all='"+i+"'>"+title+"</a>");
+            }
+            let combine = arr.join();
+            let fix = combine.replace(/,/g, '');
+            $("#data-column-tabel-all").html(fix);
+            let table = $('#TabelAll').DataTable({
+                dom: 'Bfrtip',
+                responsive: true,
+                buttons: ['copy', 'excel'],
+                destroy: true,
+                searching: true,
+                // order: [[0,'desc']]
+            });
+            $('a.toggle-vis').on( 'click', function (e) {
+                e.preventDefault();
+
+                // Get the column API object
+                let column = table.column( $(this).attr('data-column-tabel-all') );
+
+                // Toggle the visibility
+                column.visible( ! column.visible() );
+            });
+        },
+    });
+}
 let Tabel = function(url){
     $('#FormTabel').html(createSkeleton(1));
     $.ajax( {
@@ -61,29 +97,25 @@ let Tabel = function(url){
     });
 }
 $(document).ready(function(){
-    $('#FormTabel').html(createSkeleton(1));
-    let url_dx = "{{route('all-report.monthly.data')}}?r=global&type=ready";
-    Tabel(url_dx);
-    $(document).on('click','#ShowData',function(){
-        $('#FormTabel').html(createSkeleton(1));
-        let a = $('#SReport').val();
-        let b = $('#SMonth').val();
-        let url_dx = "{{route('all-report.monthly.data')}}?r="+a+"&mon="+b;
-        Tabel(url_dx);
-    });
-    $(document).on('click', '#setDataDaily', function(){
-        $(this).attr('disabled','disabled');
-        var url = "{{route('api.setAllTeam.monthly')}}";
+    $('#FormTabelAll').html(createSkeleton(1));
+    let url_dx = "{{route('report-to-sunny.report-to-sunny.data')}}?c=all";
+    TabelAll(url_dx);
+    $(document).on('change','#SMonth',function(){
         $.ajax({
-            url: url,
+            url:"{{route('all-report.date-weekly-friday')}}?m="+$(this).val(),
+            type:'GET',
             success:function(json) {
-                $('#setDataDaily').removeAttr('disabled','disabled');
-                $("#alert").html(
-                `<div class="alert alert-success alert-dismissible" role="alert" id="alert_success">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <strong>Success!</strong> Data has been updated!
-                </div>`
-                );
+                $("#SWeekForm").html("<select class='form-control show-tick' id='SWeek' name='week'><option value=''>Select Weeks</option>"+json.option+"</select>");
+                $(document).on('click','#ShowData',function(){
+                    if($("#SWeekForm").val()!=null&&$("#SReport").val()!=null){
+                        $('#FormTabel').html(createSkeleton(1));
+                        let a = $('#SReport').val();
+                        let b = $('#SMonth').val();
+                        let c = $('#SWeek').val();
+                        let url_dx = "{{route('report-to-sunny.report-to-sunny.data')}}?r="+a+"&mon="+b+"&w="+c;
+                        Tabel(url_dx);
+                    }
+                });
             }
         });
     });
@@ -97,28 +129,38 @@ $(document).ready(function(){
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="card">
             <div class="header">
-                <h2>Lv.2 Monthly Report</h2>
-                <ul class="header-dropdown m-r--5">
-                    <li class="dropdown">
-                        <button id='setDataDaily' class="btn waves-effect btn-success" role="button" aria-haspopup="true" aria-expanded="false">
-                            <i style="color:#fff;" class="material-icons">save</i> Export Monthly Report Lv 2
-                        </button>
-                    </li>
-                </ul>
+                <h2>Report To Sunny All Data</h2>
+            </div>
+            <div class="body">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <p>Hide column:</p>
+                        <div id="data-column-tabel-all"></div>
+                    </div>
+                </div>
+                <div class="table-responsive" id="FormTabelAll"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="card">
+            <div class="header">
+                <h2>Report To Sunny Weekly</h2>
             </div>
             <div class="body">
                 <div class="row clearfix">
-                    <div id="alert"></div>
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                        <select class="form-control show-tick" id="SReport" name="report">
+                        <select class="form-control show-tick" id="SReport" name="person">
                             <option value="">Select Reports</option>
                             <option value="global">Global</option>
-                            <option value="indo">Indo</option>
                             <option value="spam">Spam</option>
                         </select>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <input type="month" id="SMonth" class="form-control" />
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="SWeekForm">
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <button class="btn btn-primary btn-block waves-effect" id="ShowData">

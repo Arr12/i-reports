@@ -63,12 +63,7 @@ let Tabel = function(url){
 $(document).ready(function(){
     $('#FormTabel').html(createSkeleton(1));
     let url_dx = "{{route('all-report.weekly.data')}}?r=global&type=ready";
-    $.ajax({
-        url: url_dx,
-        success:function(json) {
-            Tabel(url_dx);
-        }
-    });
+    Tabel(url_dx);
     $(document).on('click', '#setDataDaily', function(){
         $(this).attr('disabled','disabled');
         var url = "{{route('api.setAllTeam.weekly')}}";
@@ -98,12 +93,7 @@ $(document).ready(function(){
                         let b = $('#SMonth').val();
                         let c = $('#SWeek').val();
                         let url_dx = "{{route('all-report.weekly.data')}}?r="+a+"&mon="+b+"&w="+c;
-                        $.ajax({
-                            url: url_dx,
-                            success:function(json) {
-                                Tabel(url_dx);
-                            }
-                        });
+                        Tabel(url_dx);
                     }
                 });
             }

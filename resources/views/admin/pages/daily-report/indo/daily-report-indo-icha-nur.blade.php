@@ -71,11 +71,13 @@ $(document).ready(function(){
     let url = "{{ $data_person }}";
     TabelGlobalDaily(url);
     $(document).on('click','#getDataDaily',function(){
+        $(this).attr('disabled','disabled');
         $('#FormTabelGlobalDaily').html(createSkeleton(1));
         let url_dx = $(this).attr('data-href');
         $.ajax({
             url: url_dx,
             success:function(json) {
+                $('#getDataDaily').removeAttr('disabled','disabled');
                 if(json == "200"){
                     $("#alert_success").show();
                     $("#alert_danger").hide();
@@ -202,7 +204,8 @@ $(document).ready(function(){
     });
     $('#BtnSearchData').on('click', function(){
         let search_author = $('#search_author_contact').val();
-        let url = "{{ $data_person }}?where="+search_author;
+        let marker = $("#select_marker").val();
+        let url = "{{ $data_person }}?where="+search_author+"&marker="+marker;
         TabelGlobalDaily(url);
     });
 });
@@ -216,7 +219,7 @@ $(document).ready(function(){
         <div class="card">
             <div class="header">
                 <h2>
-                    Global Daily Report {{ str_replace("-"," ",ucfirst($person)) }}
+                    Indo Daily Report {{ str_replace("-"," ",ucfirst($person)) }}
                 </h2>
                 <ul class="header-dropdown m-r--5">
                     <li class="dropdown">
@@ -240,6 +243,16 @@ $(document).ready(function(){
                         <div class="form-group">
                             <div class="form-line">
                                 <input type="text" class="form-control" id="search_author_contact" placeholder="Input Author Contact for Advanced Search.." />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-line">
+                                <select class="form-control show-tick" id="select_marker">
+                                    <option value="">Select Marker</option>
+                                    @for($i=0; $i<8; $i++)
+                                        <option value="{{ $i }}">{{ $i }}</option>
+                                    @endfor
+                                </select>
                             </div>
                         </div>
                         <button type="button" id="BtnSearchData" class="btn btn-block btn-primary waves-effect"><i class="material-icons">search</i> Search Author Contact</button>
@@ -314,6 +327,12 @@ $(document).ready(function(){
                             <div class="form-line">
                                 <input type="text" class="form-control" id="old_cbid" />
                                 <label class="form-label">Old CBID</label>
+                            </div>
+                        </div>
+                        <div class="form-group form-float">
+                            <div class="form-line">
+                                <input type="text" class="form-control" id="author" />
+                                <label class="form-label">Author</label>
                             </div>
                         </div>
                         <div class="form-group form-float">

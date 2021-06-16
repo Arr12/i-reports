@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 @php
-    $person = "spam-wn-uncontracted";
+    $person = "wn-uncontracted";
     $data_person = route('report-spam.spam-wn-uncontracted.data');
     $update_value = route('update-daily.edit-value');
     $update_follow = route('update-daily.add-value');
@@ -71,11 +71,13 @@ $(document).ready(function(){
     let url = "{{ $data_person }}";
     TabelGlobalDaily(url);
     $(document).on('click','#getDataDaily',function(){
+        $(this).attr('disabled','disabled');
         $('#FormTabelGlobalDaily').html(createSkeleton(1));
         let url_dx = $(this).attr('data-href');
         $.ajax({
             url: url_dx,
             success:function(json) {
+                $('#getDataDaily').removeAttr('disabled','disabled');
                 if(json == "200"){
                     $("#alert_success").show();
                     $("#alert_danger").hide();
@@ -186,7 +188,7 @@ $(document).ready(function(){
         <div class="card">
             <div class="header">
                 <h2>
-                    Novel List from Ranking
+                    Spam WN Uncontracted
                 </h2>
                 <ul class="header-dropdown m-r--5">
                     <li class="dropdown">
@@ -239,6 +241,7 @@ $(document).ready(function(){
                 @php
                     $array_input = [
                         "id" => [
+                            "date",
                             "reasons",
                             "editor",
                             "cbid",
@@ -256,6 +259,7 @@ $(document).ready(function(){
                             "note"
                         ],
                         "label" => [
+                            "Date Invitation Sent",
                             "Reasons",
                             "Editor",
                             "CBID",
@@ -277,9 +281,13 @@ $(document).ready(function(){
                 <div class="row">
                     <div class="col-sm-12">
                         @foreach ($array_input["id"] as $key => $value)
-                            <div class="form-group form-float">
-                                <div class="form-line">
+                        <div class="form-group form-float">
+                            <div class="form-line">
+                                    @if($value == 'date')
+                                    <input type="date" class="form-control" id="{{$value}}" />
+                                    @else
                                     <input type="text" class="form-control" id="{{$value}}" />
+                                    @endif
                                     <label class="form-label">{{$array_input['label'][$key]}}</label>
                                 </div>
                             </div>

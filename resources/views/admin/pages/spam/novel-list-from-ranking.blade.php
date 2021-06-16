@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 @php
-    $person = "spam-novel-list-from-ranking";
+    $person = "novel-list-ranking";
     $data_person = route('report-spam.spam-novel-list-from-ranking.data');
     $update_value = route('update-daily.edit-value');
     $update_follow = route('update-daily.add-value');
@@ -71,11 +71,13 @@ $(document).ready(function(){
     let url = "{{ $data_person }}";
     TabelGlobalDaily(url);
     $(document).on('click','#getDataDaily',function(){
+        $(this).attr('disabled','disabled');
         $('#FormTabelGlobalDaily').html(createSkeleton(1));
         let url_dx = $(this).attr('data-href');
         $.ajax({
             url: url_dx,
             success:function(json) {
+                $('#getDataDaily').removeAttr('disabled','disabled');
                 if(json == "200"){
                     $("#alert_success").show();
                     $("#alert_danger").hide();

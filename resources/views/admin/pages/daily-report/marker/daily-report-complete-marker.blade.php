@@ -60,33 +60,47 @@ let Tabel = function(url){
         },
     });
 }
-$(document).ready(function(){
-    $('#FormTabel').html(createSkeleton(1));
-    let url_dx = "{{route('all-report.monthly.data')}}?r=global&type=ready";
-    Tabel(url_dx);
-    $(document).on('click','#ShowData',function(){
-        $('#FormTabel').html(createSkeleton(1));
-        let a = $('#SReport').val();
-        let b = $('#SMonth').val();
-        let url_dx = "{{route('all-report.monthly.data')}}?r="+a+"&mon="+b;
-        Tabel(url_dx);
-    });
-    $(document).on('click', '#setDataDaily', function(){
-        $(this).attr('disabled','disabled');
-        var url = "{{route('api.setAllTeam.monthly')}}";
-        $.ajax({
-            url: url,
-            success:function(json) {
-                $('#setDataDaily').removeAttr('disabled','disabled');
-                $("#alert").html(
-                `<div class="alert alert-success alert-dismissible" role="alert" id="alert_success">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <strong>Success!</strong> Data has been updated!
-                </div>`
-                );
+let TabelIndo = function(url){
+    $('#FormTabelIndo').html(createSkeleton(1));
+    $.ajax( {
+        url: url,
+        dataType: "json",
+        success:function(json) {
+            $('#FormTabelIndo').html("<table id='TabelIndo' class='table table-bordered table-striped table-hover'></table>");
+            $('#TabelIndo').DataTable(json);
+            let arr = [];
+            for(let i=0;i<json.columns.length;i++){
+                let title = json.columns[i].title;
+                arr.push("<a class='btn btn-primary waves-effect toggle-vis' data-column-indo='"+i+"'>"+title+"</a>");
             }
-        });
+            let combine = arr.join();
+            let fix = combine.replace(/,/g, '');
+            $("#data-column-indo").html(fix);
+            let table = $('#TabelIndo').DataTable({
+                dom: 'Bfrtip',
+                responsive: true,
+                buttons: ['copy', 'excel'],
+                destroy: true,
+                searching: true,
+                // order: [[0,'desc']]
+            });
+            $('a.toggle-vis').on( 'click', function (e) {
+                e.preventDefault();
+
+                // Get the column API object
+                let column = table.column( $(this).attr('data-column-indo') );
+
+                // Toggle the visibility
+                column.visible( ! column.visible() );
+            });
+        },
     });
+}
+$(document).ready(function(){
+    let url_dx = "{{route('daily-report-marker.marker.data')}}?d=global";
+    Tabel(url_dx);
+    let url_dx2 = "{{route('daily-report-marker.marker.data')}}?d=indo";
+    TabelIndo(url_dx2);
 });
 </script>
 @endpush
@@ -96,36 +110,30 @@ $(document).ready(function(){
 <div class="row clearfix">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="card">
-            <div class="header">
-                <h2>Lv.2 Monthly Report</h2>
-                <ul class="header-dropdown m-r--5">
-                    <li class="dropdown">
-                        <button id='setDataDaily' class="btn waves-effect btn-success" role="button" aria-haspopup="true" aria-expanded="false">
-                            <i style="color:#fff;" class="material-icons">save</i> Export Monthly Report Lv 2
-                        </button>
-                    </li>
-                </ul>
-            </div>
             <div class="body">
-                <div class="row clearfix">
-                    <div id="alert"></div>
+                <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                        <select class="form-control show-tick" id="SReport" name="report">
-                            <option value="">Select Reports</option>
-                            <option value="global">Global</option>
-                            <option value="indo">Indo</option>
-                            <option value="spam">Spam</option>
-                        </select>
+                        <a href="#scroll-global" class="btn btn-block btn-primary waves-effect">
+                            Scroll to Global
+                        </a>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                        <input type="month" id="SMonth" class="form-control" />
-                    </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <button class="btn btn-primary btn-block waves-effect" id="ShowData">
-                            <i class="material-icons">done</i> Show Data
-                        </button>
+                        <a href="#scroll-indo" class="btn btn-block btn-primary waves-effect">
+                            Scroll to Indo
+                        </a>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="card">
+            <div class="header" id="scroll-global">
+                <h2>
+                    Daily Report Person Global With Marker 7
+                </h2>
+            </div>
+            <div class="body">
                 <div class="row">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <p>Hide column:</p>
@@ -133,6 +141,24 @@ $(document).ready(function(){
                     </div>
                 </div>
                 <div class="table-responsive" id="FormTabel"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="card">
+            <div class="header" id="scroll-indo">
+                <h2>
+                    Daily Report Person Indo With Marker 7
+                </h2>
+            </div>
+            <div class="body">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <p>Hide column:</p>
+                        <div id="data-column-indo"></div>
+                    </div>
+                </div>
+                <div class="table-responsive" id="FormTabelIndo"></div>
             </div>
         </div>
     </div>

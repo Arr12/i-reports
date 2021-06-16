@@ -71,11 +71,13 @@ $(document).ready(function(){
     let url = "{{ $data_person }}";
     TabelGlobalDaily(url);
     $(document).on('click','#getDataDaily',function(){
+        $(this).attr('disabled','disabled');
         $('#FormTabelGlobalDaily').html(createSkeleton(1));
         let url_dx = $(this).attr('data-href');
         $.ajax({
             url: url_dx,
             success:function(json) {
+                $('#getDataDaily').removeAttr('disabled','disabled');
                 if(json == "200"){
                     $("#alert_success").show();
                     $("#alert_danger").hide();
@@ -193,7 +195,7 @@ $(document).ready(function(){
         <div class="card">
             <div class="header">
                 <h2>
-                    Global Daily Report {{ str_replace("-"," ",ucfirst($person)) }}
+                    Indo Daily Report {{ str_replace("-"," ",ucfirst($person)) }}
                 </h2>
                 <ul class="header-dropdown m-r--5">
                     <li class="dropdown">
@@ -259,7 +261,7 @@ $(document).ready(function(){
                         </div>
                         <div class="form-group form-float">
                             <div class="form-line">
-                                <input type="text" class="form-control" id="date_solved" />
+                                <input type="date" class="form-control" id="date_solved" />
                                 <label class="form-label">Date Solved</label>
                             </div>
                         </div>

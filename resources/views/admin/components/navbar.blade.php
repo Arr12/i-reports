@@ -107,6 +107,12 @@
                     </ul>
                 </li>
                 <li>
+                    <a href="{{route('daily-report-marker.marker')}}">
+                        <i class="material-icons">import_contacts</i>
+                        <span>Daily Report Marker 7</span>
+                    </a>
+                </li>
+                <li>
                     <a href="javascript:void(0);" class="menu-toggle">
                         <i class="material-icons">import_contacts</i>
                         <span>Lv.0 Spam</span>
@@ -177,6 +183,12 @@
                             </a>
                         </li>
                     </ul>
+                </li>
+                <li>
+                    <a href="{{route('report-to-sunny.report-to-sunny')}}">
+                        <i class="material-icons">import_contacts</i>
+                        <span>Report to Sunny</span>
+                    </a>
                 </li>
             </ul>
         </div>
