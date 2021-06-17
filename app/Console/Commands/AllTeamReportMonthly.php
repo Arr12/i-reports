@@ -5,14 +5,14 @@ namespace App\Console\Commands;
 use App\Http\Controllers\SheetController;
 use Illuminate\Console\Command;
 
-class DailyIcha extends Command
+class AllTeamReportMonthly extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'daily:icha';
+    protected $signature = 'set:all-team-report-monthly';
 
     /**
      * The console command description.
@@ -39,8 +39,8 @@ class DailyIcha extends Command
     public function handle()
     {
         $result = new SheetController();
-        $result->getDailyReportIcha();
+        $result->setAllTeamReportMonthly();
 
-        $this->info('Daily Icha has been updated successfully');
+        $this->info('Insert to first line of Lv 2 All Team Report Monthly successfully');
     }
 }

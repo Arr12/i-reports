@@ -27,6 +27,6 @@ Route::prefix('/team-monitoring')->name('api.setTeamMonitoring')->group(function
     Route::get('/indo', [SheetController::class, 'TeamMonitoringIndo'])->name('setIndo');
 });
 Route::prefix('/all-team-report')->name('api.setAllTeam.')->group(function(){
-    Route::get('/monthly', [SheetController::class, 'setAllTeamReport'])->name('monthly');
-    Route::get('/weekly', [SheetController::class, 'setAllTeamReportWeekly'])->name('weekly');
+    Route::get('/monthly', [SheetController::class, 'AllTeamReportMonthly'])->name('monthly');
+    Route::get('/weekly', [SheetController::class, 'AllTeamReportWeekly'])->name('weekly');
 });

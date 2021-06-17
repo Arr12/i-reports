@@ -100,10 +100,9 @@ class SheetController extends Controller
         curl_close($curl);
         return $response;
     }
-    public function DuplicateSpreadsheet($spreadsheetId_old,$title){
+    public function DuplicateSpreadsheet($spreadsheetId_old,$folder_id,$title){
         $curl = curl_init();
         $title = str_replace(" ", "%20", $title);
-        $folder_id = "1y6610Dn_oft-FeKkd8ADvjeSQGjU4BWq";
         curl_setopt_array($curl, array(
         CURLOPT_URL => "http://45.76.182.41:8000/duplicate-spreadsheet/$spreadsheetId_old/$folder_id/$title",
         CURLOPT_RETURNTRANSFER => true,
@@ -358,13 +357,19 @@ class SheetController extends Controller
         * DUPLICATE SPREADSHEET
         ------------------------- */
         $title = "Backup Global ".$sheets." Ame - ".date('Y-m-d H:i:s');
-        $this->DuplicateSpreadsheet($sId,$title);
+        $folder_id = "1Up6Uz0BPHiFxZcpDx-qz-gUUdF9z6cdm";
+        $this->DuplicateSpreadsheet($sId,$folder_id,$title);
+
+        /** ---------------------
+        * TRUNCATE DATABASE
+        ------------------------- */
+        DailyReportAme::truncate();
+
         /** ---------------------
         * GET DATA & INSERT TO DB
         ------------------------- */
         $this->getDailyReportData($sId,$keyMaster,$sheets,$alphaX,$alphaY);
         $cached = Cache::get($keyMaster, []);
-        DailyReportAme::truncate();
         foreach($cached as $key => $keyDaily){
             $cachedDaily = Cache::get($keyDaily, []);
             $savedData = [];
@@ -439,13 +444,19 @@ class SheetController extends Controller
         * DUPLICATE SPREADSHEET
         ------------------------- */
         $title = "Backup Global ".$sheets." Anna - ".date('Y-m-d H:i:s');
-        $this->DuplicateSpreadsheet($sId,$title);
+        $folder_id = "1uGCqZqbJg9b6g1wlEAcb-_wZQyRTA3_4";
+        $this->DuplicateSpreadsheet($sId,$folder_id,$title);
+
+        /** ---------------------
+        * TRUNCATE DATABASE
+        ------------------------- */
+        DailyReportAnna::truncate();
+
         /** ---------------------
         * GET DATA & INSERT TO DB
         ------------------------- */
         $this->getDailyReportData($sId,$keyMaster,$sheets,$alphaX,$alphaY);
         $cached = Cache::get($keyMaster, []);
-        DailyReportAnna::truncate();
         foreach($cached as $key => $keyDaily){
             $cachedDaily = Cache::get($keyDaily, []);
             $savedData = [];
@@ -519,13 +530,19 @@ class SheetController extends Controller
         * DUPLICATE SPREADSHEET
         ------------------------- */
         $title = "Backup Global ".$sheets." Carol - ".date('Y-m-d H:i:s');
-        $this->DuplicateSpreadsheet($sId,$title);
+        $folder_id = "14GDv3tcFvDsi8cGgYhvkybwShBIQYLgA";
+        $this->DuplicateSpreadsheet($sId,$folder_id,$title);
+
+        /** ---------------------
+        * TRUNCATE DATABASE
+        ------------------------- */
+        DailyReportCarol::truncate();
+
         /** ---------------------
         * GET DATA & INSERT TO DB
         ------------------------- */
         $this->getDailyReportData($sId,$keyMaster,$sheets,$alphaX,$alphaY);
         $cached = Cache::get($keyMaster, []);
-        DailyReportCarol::truncate();
         foreach($cached as $key => $keyDaily){
             $cachedDaily = Cache::get($keyDaily, []);
             $savedData = [];
@@ -599,13 +616,19 @@ class SheetController extends Controller
         * DUPLICATE SPREADSHEET
         ------------------------- */
         $title = "Backup Global ".$sheets." Eric - ".date('Y-m-d H:i:s');
-        $this->DuplicateSpreadsheet($sId,$title);
+        $folder_id = "1tS_H_w0rkzbbc7YSmV0oACEhHiA_fxfQ";
+        $this->DuplicateSpreadsheet($sId,$folder_id,$title);
+
+        /** ---------------------
+        * TRUNCATE DATABASE
+        ------------------------- */
+        DailyReportEric::truncate();
+
         /** ---------------------
         * GET DATA & INSERT TO DB
         ------------------------- */
         $this->getDailyReportData($sId,$keyMaster,$sheets,$alphaX,$alphaY);
         $cached = Cache::get($keyMaster, []);
-        DailyReportEric::truncate();
         foreach($cached as $key => $keyDaily){
             $cachedDaily = Cache::get($keyDaily, []);
             $savedData = [];
@@ -679,13 +702,19 @@ class SheetController extends Controller
         * DUPLICATE SPREADSHEET
         ------------------------- */
         $title = "Backup Global ".$sheets." Icha - ".date('Y-m-d H:i:s');
-        $this->DuplicateSpreadsheet($sId,$title);
+        $folder_id = "1_3zo7MglZLCAEKuIVgK9YWuPY7yZnj-y";
+        $this->DuplicateSpreadsheet($sId,$folder_id,$title);
+
+        /** ---------------------
+        * TRUNCATE DATABASE
+        ------------------------- */
+        DailyReportIcha::truncate();
+
         /** ---------------------
         * GET DATA & INSERT TO DB
         ------------------------- */
         $this->getDailyReportData($sId,$keyMaster,$sheets,$alphaX,$alphaY);
         $cached = Cache::get($keyMaster, []);
-        DailyReportIcha::truncate();
         foreach($cached as $key => $keyDaily){
             $cachedDaily = Cache::get($keyDaily, []);
             $savedData = [];
@@ -760,13 +789,19 @@ class SheetController extends Controller
         * DUPLICATE SPREADSHEET
         ------------------------- */
         $title = "Backup Global ".$sheets." Lily - ".date('Y-m-d H:i:s');
-        $this->DuplicateSpreadsheet($sId,$title);
+        $folder_id = "13K9xak83s38up6ac0z4F5lGvDtQVkhHF";
+        $this->DuplicateSpreadsheet($sId,$folder_id,$title);
+
+        /** ---------------------
+        * TRUNCATE DATABASE
+        ------------------------- */
+        DailyReportLily::truncate();
+
         /** ---------------------
         * GET DATA & INSERT TO DB
         ------------------------- */
         $this->getDailyReportData($sId,$keyMaster,$sheets,$alphaX,$alphaY);
         $cached = Cache::get($keyMaster, []);
-        DailyReportLily::truncate();
         foreach($cached as $key => $keyDaily){
             $cachedDaily = Cache::get($keyDaily, []);
             $savedData = [];
@@ -840,13 +875,19 @@ class SheetController extends Controller
         * DUPLICATE SPREADSHEET
         ------------------------- */
         $title = "Backup Global ".$sheets." Maydewi - ".date('Y-m-d H:i:s');
-        $this->DuplicateSpreadsheet($sId,$title);
+        $folder_id = "1gzeeNe0M4F74DjlR7gPsSQGu0bj8LN78";
+        $this->DuplicateSpreadsheet($sId,$folder_id,$title);
+
+        /** ---------------------
+        * TRUNCATE DATABASE
+        ------------------------- */
+        DailyReportMayDewi::truncate();
+
         /** ---------------------
         * GET DATA & INSERT TO DB
         ------------------------- */
         $this->getDailyReportData($sId,$keyMaster,$sheets,$alphaX,$alphaY);
         $cached = Cache::get($keyMaster, []);
-        DailyReportMayDewi::truncate();
         foreach($cached as $key => $keyDaily){
             $cachedDaily = Cache::get($keyDaily, []);
             $savedData = [];
@@ -916,17 +957,24 @@ class SheetController extends Controller
         $sheets = "Daily Report";
         $alphaX = "A";
         $alphaY = "X";
+
         /** ---------------------
         * DUPLICATE SPREADSHEET
         ------------------------- */
         $title = "Backup Global ".$sheets." Rani - ".date('Y-m-d H:i:s');
-        $this->DuplicateSpreadsheet($sId,$title);
+        $folder_id = "1s3UQZyjlPhdHxp_Q_w0LSEt6jZtFwGZO";
+        $this->DuplicateSpreadsheet($sId,$folder_id,$title);
+
+        /** ---------------------
+        * TRUNCATE DATABASE
+        ------------------------- */
+        DailyReportRani::truncate();
+
         /** ---------------------
         * GET DATA & INSERT TO DB
         ------------------------- */
         $this->getDailyReportData($sId,$keyMaster,$sheets,$alphaX,$alphaY);
         $cached = Cache::get($keyMaster, []);
-        DailyReportRani::truncate();
         foreach($cached as $key => $keyDaily){
             $cachedDaily = Cache::get($keyDaily, []);
             $savedData = [];
@@ -996,17 +1044,24 @@ class SheetController extends Controller
         $sheets = "Daily Report";
         $alphaX = "A";
         $alphaY = "V";
+
         /** ---------------------
         * DUPLICATE SPREADSHEET
         ------------------------- */
         $title = "Backup Indo ".$sheets." Icha Nur - ".date('Y-m-d H:i:s');
-        $this->DuplicateSpreadsheet($sId,$title);
+        $folder_id = "14Ez0EHDe2md0RcT7maNjevUGKcxG9leB";
+        $this->DuplicateSpreadsheet($sId,$folder_id,$title);
+
+        /** ---------------------
+        * TRUNCATE DATABASE
+        ------------------------- */
+        DailyReportIndoIchaNur::truncate();
+
         /** ---------------------
         * GET DATA & INSERT TO DB
         ------------------------- */
         $this->getDailyReportData($sId,$keyMaster,$sheets,$alphaX,$alphaY);
         $cached = Cache::get($keyMaster, []);
-        DailyReportIndoIchaNur::truncate();
         foreach($cached as $key => $keyDaily){
             $cachedDaily = Cache::get($keyDaily, []);
             // dump($cachedDaily);
@@ -1073,17 +1128,24 @@ class SheetController extends Controller
         $sheets = "Daily Report";
         $alphaX = "A";
         $alphaY = "S";
+
         /** ---------------------
         * DUPLICATE SPREADSHEET
         ------------------------- */
         $title = "Backup Indo ".$sheets." Irel - ".date('Y-m-d H:i:s');
-        $this->DuplicateSpreadsheet($sId,$title);
+        $folder_id = "1FKSe8ylQtIowXwzd3mRj0k3NSknN_7ex";
+        $this->DuplicateSpreadsheet($sId,$folder_id,$title);
+
+        /** ---------------------
+        * TRUNCATE DATABASE
+        ------------------------- */
+        DailyReportIndoIrel::truncate();
+
         /** ---------------------
         * GET DATA & INSERT TO DB
         ------------------------- */
         $this->getDailyReportData($sId,$keyMaster,$sheets,$alphaX,$alphaY);
         $cached = Cache::get($keyMaster, []);
-        DailyReportIndoIrel::truncate();
         foreach($cached as $key => $keyDaily){
             $cachedDaily = Cache::get($keyDaily, []);
             $savedData = [];
@@ -1143,17 +1205,24 @@ class SheetController extends Controller
         $sheets = "Daily Report Master";
         $alphaX = "A";
         $alphaY = "AC";
+
         /** ---------------------
         * DUPLICATE SPREADSHEET
         ------------------------- */
         $title = "Backup Non Exclusive Report - ".date('Y-m-d H:i:s');
-        $this->DuplicateSpreadsheet($sId,$title);
+        $folder_id = "1qV1PIKvw-3MZtAPtNLeJUXassnjEMSMu";
+        $this->DuplicateSpreadsheet($sId,$folder_id,$title);
+
+        /** ---------------------
+        * TRUNCATE DATABASE
+        ------------------------- */
+        NonExclusiveReport::truncate();
+
         /** ---------------------
         * GET DATA & INSERT TO DB
         ------------------------- */
         $this->getDailyReportData($sId,$keyMaster,$sheets,$alphaX,$alphaY);
         $cached = Cache::get($keyMaster, []);
-        NonExclusiveReport::truncate();
         foreach($cached as $key => $keyDaily){
             $cachedDaily = Cache::get($keyDaily, []);
             $savedData = [];
@@ -1233,17 +1302,24 @@ class SheetController extends Controller
         $sheets = "books(1)";
         $alphaX = "A";
         $alphaY = "Y";
+
         /** ---------------------
         * DUPLICATE SPREADSHEET
         ------------------------- */
         $title = "Backup Spam RoyalRoad Novel List - ".date('Y-m-d H:i:s');
-        $this->DuplicateSpreadsheet($sId,$title);
+        $folder_id = "1qV1PIKvw-3MZtAPtNLeJUXassnjEMSMu";
+        $this->DuplicateSpreadsheet($sId,$folder_id,$title);
+
+        /** ---------------------
+        * TRUNCATE DATABASE
+        ------------------------- */
+        ReportSpamRoyalRoadNovelList::truncate();
+
         /** ---------------------
         * GET DATA & INSERT TO DB
         ------------------------- */
         $this->getReportSpamData($sId,$keyMaster,$sheets,$alphaX,$alphaY);
         $cached = Cache::get($keyMaster, []);
-        ReportSpamRoyalRoadNovelList::truncate();
         foreach($cached as $key => $keyDaily){
             $cachedDaily = Cache::get($keyDaily, []);
             $savedData = [];
@@ -1289,17 +1365,24 @@ class SheetController extends Controller
         $sheets = "books(1)";
         $alphaX = "A";
         $alphaY = "N";
+
         /** ---------------------
         * DUPLICATE SPREADSHEET
         ------------------------- */
         $title = "Backup Spam Mangatoon Novel List - ".date('Y-m-d H:i:s');
-        $this->DuplicateSpreadsheet($sId,$title);
+        $folder_id = "1iHviLSnXCKU5VyjQwGUVcxhj8ZR6MSTr";
+        $this->DuplicateSpreadsheet($sId,$folder_id,$title);
+
+        /** ---------------------
+        * TRUNCATE DATABASE
+        ------------------------- */
+        ReportSpamMangatoonNovelList::truncate();
+
         /** ---------------------
         * GET DATA & INSERT TO DB
         ------------------------- */
         $this->getReportSpamData($sId,$keyMaster,$sheets,$alphaX,$alphaY);
         $cached = Cache::get($keyMaster, []);
-        ReportSpamMangatoonNovelList::truncate();
         foreach($cached as $key => $keyDaily){
             $cachedDaily = Cache::get($keyDaily, []);
             $savedData = [];
@@ -1350,17 +1433,24 @@ class SheetController extends Controller
         $sheets = "books(1)";
         $alphaX = "A";
         $alphaY = "P";
+
         /** ---------------------
         * DUPLICATE SPREADSHEET
         ------------------------- */
         $title = "Backup Spam WN Uncontracted Novel List - ".date('Y-m-d H:i:s');
-        $this->DuplicateSpreadsheet($sId,$title);
+        $folder_id = "1HBZwDT50W2r0A7-DJAIzsBW8xEzoxi1s";
+        $this->DuplicateSpreadsheet($sId,$folder_id,$title);
+
+        /** ---------------------
+        * TRUNCATE DATABASE
+        ------------------------- */
+        ReportSpamWNUncoractedNovelList::truncate();
+
         /** ---------------------
         * GET DATA & INSERT TO DB
         ------------------------- */
         $this->getReportSpamData($sId,$keyMaster,$sheets,$alphaX,$alphaY);
         $cached = Cache::get($keyMaster, []);
-        ReportSpamWNUncoractedNovelList::truncate();
         foreach($cached as $key => $keyDaily){
             $cachedDaily = Cache::get($keyDaily, []);
             $savedData = [];
@@ -1414,9 +1504,17 @@ class SheetController extends Controller
         $sheets = "Novel List from Ranking";
         $alphaX = "A";
         $alphaY = "L";
+
+        /** ---------------------
+        * TRUNCATE DATABASE
+        ------------------------- */
+        ModelsReportSpamNovelListFromRanking::truncate();
+
+        /** ---------------------
+        * GET DATA & INSERT TO DB
+        ------------------------- */
         $this->getReportSpamData($sId,$keyMaster,$sheets,$alphaX,$alphaY);
         $cached = Cache::get($keyMaster, []);
-        ModelsReportSpamNovelListFromRanking::truncate();
         foreach($cached as $key => $keyDaily){
             $cachedDaily = Cache::get($keyDaily, []);
             $savedData = [];
@@ -1974,6 +2072,9 @@ class SheetController extends Controller
     /*--------------------------
     | Lv 2 REPORT MONTHLY
     -----------------------------*/
+    public function AllTeamReportWeekly(){
+        Artisan::call('set:all-team-report-weekly');
+    }
     public function setAllTeamReportWeekly(){
         // TRIAL
         // $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
@@ -2017,7 +2118,10 @@ class SheetController extends Controller
 
         return 200;
     }
-    public function setAllTeamReport(){
+    public function AllTeamReportMonthly(){
+        Artisan::call('set:all-team-report-monthly');
+    }
+    public function setAllTeamReportMonthly(){
         // TRIAL
         // $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
         // $sheetId = 468929916;
