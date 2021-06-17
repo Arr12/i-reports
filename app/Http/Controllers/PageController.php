@@ -3823,15 +3823,13 @@ class PageController extends Controller
     -----------------------------------------*/
     public function getMonthlyReport(Request $request){
         $report = $request->input('r');
-        $month = $request->input('d');
+        $month = $request->input('mon');
         $type = $request->input('type');
-
         if($type != 'ready'){
             $DateWeekly = $this->WeekFromDate($month);
         } else {
             $DateWeekly = $this->WeekFromDate(date('Y-m'));
         }
-
         $date_start = date("Y-m-d", strtotime($DateWeekly['startdate'][0]));
         $date_end = date("Y-m-d", strtotime(end($DateWeekly['enddate'])));
 
