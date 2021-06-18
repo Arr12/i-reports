@@ -431,6 +431,8 @@ class SheetController extends Controller
             }
             // dd($savedData);
             DailyReportAme::insert($savedData);
+            Cache::forget('cache-ame');
+            $this->page->DataAmeCached();
         }
         return true;
     }
@@ -517,6 +519,8 @@ class SheetController extends Controller
                 ]);
             }
             DailyReportAnna::insert($savedData);
+            Cache::forget('cache-anna');
+            $this->page->DataAnnaCached();
         }
         return true;
     }
@@ -603,6 +607,8 @@ class SheetController extends Controller
                 ]);
             }
             DailyReportCarol::insert($savedData);
+            Cache::forget('cache-carol');
+            $this->page->DataCarolCached();
         }
         return true;
     }
@@ -689,6 +695,8 @@ class SheetController extends Controller
                 ]);
             }
             DailyReportEric::insert($savedData);
+            Cache::forget('cache-eric');
+            $this->page->DataEricCached();
         }
         return true;
     }
@@ -776,6 +784,8 @@ class SheetController extends Controller
                 ]);
             }
             DailyReportIcha::insert($savedData);
+            Cache::forget('cache-icha');
+            $this->page->DataIchaCached();
         }
         return true;
     }
@@ -862,6 +872,8 @@ class SheetController extends Controller
                 ]);
             }
             DailyReportLily::insert($savedData);
+            Cache::forget('cache-lily');
+            $this->page->DataLilyCached();
         }
         return true;
     }

@@ -110,7 +110,7 @@ $(document).ready(function(){
         $("#status").val(status);
         $("#date_solved").val(date_solved);
         $("#author_contact").val(author_contact);
-        $("#inquiries").val(inquiries);
+        $("#inquiries").val(inquiries).change();
         $("#cbid").val(cbid);
         $("#title").val(title);
         $("#author").val(author);
@@ -158,9 +158,10 @@ $(document).ready(function(){
         $("#idModalFollow").html(id);
     });
     $('#BtnSaveFollowModal').on('click', function(){
+        $(this).attr('disabled','disabled');
         let id = $('#idModalFollow').html();
         let row = $('#select_row').val();
-        let date = $("row_date").val();
+        let date = $("#row_date").val();
         let url_follow = "{{ $update_follow }}";
         $.ajax({
             type: 'PATCH',
@@ -173,6 +174,7 @@ $(document).ready(function(){
                 "p" : "{{ $person }}"
             },
             success : function(x){
+                $('#BtnSaveFollowModal').removeAttr('disabled','disabled');
                 $("#select_row option").prop("selected", false).trigger( "change" );
                 $('#followModal').modal('hide');
                 TabelGlobalDaily(url);
@@ -272,10 +274,12 @@ $(document).ready(function(){
                             </div>
                         </div>
                         <div class="form-group form-float">
-                            <div class="form-line">
-                                <input type="text" class="form-control" id="inquiries" />
-                                <label class="form-label">Inquiries</label>
-                            </div>
+                            <select class="form-control show-tick" id="inquiries">
+                                <option value="">-- Select Inquiries --</option>
+                                @foreach ($selects['inquiries'] as $key => $value)
+                                    <option value="{{ $value->name }}">{{$value->name}}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="form-group form-float">
                             <div class="form-line">

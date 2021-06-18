@@ -56,6 +56,46 @@
     .btn-primary .material-icons{
         color: #fff !important;
     }
+    /* section.content{
+        margin: 100px 15px 0 15px;
+    } */
+    .navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand{
+        margin-left:20px;
+    }
+    .ls-closed .bars:before {
+        content: "\E5D2";
+        -moz-transform: scale(1);
+        -ms-transform: scale(1);
+        -o-transform: scale(1);
+        -webkit-transform: scale(1);
+        transform: scale(1);
+    }
+    .ls-closed .bars:after {
+        content: "\E5C4";
+        -moz-transform: scale(0);
+        -ms-transform: scale(0);
+        -o-transform: scale(0);
+        -webkit-transform: scale(0);
+        transform: scale(0);
+    }
+    .overlay-open .bars:before {
+        -moz-transform: scale(0);
+        -ms-transform: scale(0);
+        -o-transform: scale(0);
+        -webkit-transform: scale(0);
+        transform: scale(0);
+    }
+    .overlay-open .bars:after {
+        -moz-transform: scale(1);
+        -ms-transform: scale(1);
+        -o-transform: scale(1);
+        -webkit-transform: scale(1);
+        transform: scale(1);
+    }
+    .overlay-open .sidebar {
+        margin-left: 0;
+        z-index: 99999999;
+    }
     @media only screen and (max-width: 998px) {
         .ls-closed section.content{
             margin-left:0;
@@ -64,7 +104,7 @@
     }
     </style>
 </head>
-<body class="theme-red">
+<body class="theme-red ls-closed">
     <!-- Page Loader -->
     <div class="page-loader-wrapper">
         <div class="loader">

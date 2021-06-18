@@ -113,6 +113,7 @@ $(document).ready(function(){
         $("#note").val($(this).attr('data-note'));
     });
     $('#BtnSaveEditModal').on('click', function(){
+        $(this).attr('disabled','disabled');
         let url_follow = "{{ $update_value }}";
         let id = $("#idModalEdit").html();
         $.ajax({
@@ -140,6 +141,7 @@ $(document).ready(function(){
                 "note" : $("#note").val(),
             },
             success : function(x){
+                $('#BtnSaveEditModal').removeAttr('disabled','disabled');
                 $('#editModal').modal('hide');
                 TabelGlobalDaily(url);
             }
@@ -151,6 +153,7 @@ $(document).ready(function(){
         $("#idModalFollow").html(id);
     });
     $('#BtnSaveFollowModal').on('click', function(){
+        $(this).attr('disabled','disabled');
         let id = $('#idModalFollow').html();
         let row = $('#select_row').val();
         let date = $("row_date").val();
@@ -166,6 +169,7 @@ $(document).ready(function(){
                 "p" : "{{ $person }}"
             },
             success : function(x){
+                $('#BtnSaveFollowModal').removeAttr('disabled','disabled');
                 $("#select_row option").prop("selected", false).trigger( "change" );
                 $('#followModal').modal('hide');
                 TabelGlobalDaily(url);
@@ -173,6 +177,7 @@ $(document).ready(function(){
         });
     });
     $('#BtnSearchData').on('click', function(){
+        $('#BtnSaveFollowModal').removeAttr('disabled','disabled');
         let search_author = $('#search_author_contact').val();
         let url = "{{ $data_person }}?where="+search_author;
         TabelGlobalDaily(url);

@@ -117,7 +117,7 @@ $(document).ready(function(){
         $("#date").val(date);
         $("#global_editor").val(global_editor);
         $("#author_contact").val(author_contact);
-        $("#platform").val(platform);
+        $("#platform").val(platform).change();
         $("#username").val(username);
         $("#title").val(title);
         $("#book_status").val(book_status);
@@ -133,6 +133,7 @@ $(document).ready(function(){
         $("#global_evidence").val(global_evidence);
     });
     $('#BtnSaveEditModal').on('click', function(){
+        $(this).attr('disabled','disabled');
         let url_follow = "{{ $update_value }}";
         let id = $("#idModalEdit").html();
         let date = $("#date").val();
@@ -178,6 +179,7 @@ $(document).ready(function(){
                 "global_evidence" : global_evidence,
             },
             success : function(x){
+                $('#BtnSaveEditModal').removeAttr('disabled','disabled');
                 $('#editModal').modal('hide');
                 TabelGlobalDaily(url);
             }
@@ -189,9 +191,10 @@ $(document).ready(function(){
         $("#idModalFollow").html(id);
     });
     $('#BtnSaveFollowModal').on('click', function(){
+        $(this).attr('disabled','disabled');
         let id = $('#idModalFollow').html();
         let row = $('#select_row').val();
-        let date = $("row_date").val();
+        let date = $("#row_date").val();
         let url_follow = "{{ $update_follow }}";
         $.ajax({
             type: 'PATCH',
@@ -204,6 +207,7 @@ $(document).ready(function(){
                 "p" : "{{ $person }}"
             },
             success : function(x){
+                $('#BtnSaveFollowModal').removeAttr('disabled','disabled');
                 $("#select_row option").prop("selected", false).trigger( "change" );
                 $('#followModal').modal('hide');
                 TabelGlobalDaily(url);
@@ -297,10 +301,12 @@ $(document).ready(function(){
                             </div>
                         </div>
                         <div class="form-group form-float">
-                            <div class="form-line">
-                                <input type="text" class="form-control" id="platform" />
-                                <label class="form-label">Platform</label>
-                            </div>
+                            <select class="form-control show-tick" id="platform">
+                                <option value="">-- Select Platform --</option>
+                                @foreach ($selects['platform'] as $key => $value)
+                                    <option value="{{ $value->name }}">{{$value->name}}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="form-group form-float">
                             <div class="form-line">
@@ -346,7 +352,7 @@ $(document).ready(function(){
                         </div>
                         <div class="form-group form-float">
                             <div class="form-line">
-                                <input type="text" class="form-control" id="date_sent" />
+                                <input type="date" class="form-control" id="date_sent" />
                                 <label class="form-label">Date Sent</label>
                             </div>
                         </div>

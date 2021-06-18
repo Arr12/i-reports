@@ -17,11 +17,16 @@ use App\Models\ReportSpamMangatoonNovelList;
 use App\Models\ReportSpamNovelListFromRanking;
 use App\Models\ReportSpamWNUncoractedNovelList;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 use function Symfony\Component\VarDumper\Dumper\esc;
 
 class UpdateController extends Controller
 {
+    public  $page = false;
+    public function __construct(){
+        $this->page = new PageController;
+    }
     public function addValueReport(Request $request){
         $id = $request->input('id');
         $row = $request->input('row');
@@ -50,6 +55,8 @@ class UpdateController extends Controller
                             $value => $date
                         ];
                         $data->update($isi);
+                        Cache::forget('cache-ame');
+                        $this->page->DataAmeCached();
                         return ['data' => 200];
                     }
                 }
@@ -76,6 +83,8 @@ class UpdateController extends Controller
                             $value => $date
                         ];
                         $data->update($isi);
+                        Cache::forget('cache-anna');
+                        $this->page->DataAnnaCached();
                         return ['data' => 200];
                     }
                 }
@@ -102,6 +111,8 @@ class UpdateController extends Controller
                             $value => $date
                         ];
                         $data->update($isi);
+                        Cache::forget('cache-carol');
+                        $this->page->DataCarolCached();
                         return ['data' => 200];
                     }
                 }
@@ -128,6 +139,8 @@ class UpdateController extends Controller
                             $value => $date
                         ];
                         $data->update($isi);
+                        Cache::forget('cache-eric');
+                        $this->page->DataEricCached();
                         return ['data' => 200];
                     }
                 }
@@ -154,6 +167,8 @@ class UpdateController extends Controller
                             $value => $date
                         ];
                         $data->update($isi);
+                        Cache::forget('cache-icha');
+                        $this->page->DataIchaCached();
                         return ['data' => 200];
                     }
                 }
@@ -180,6 +195,8 @@ class UpdateController extends Controller
                             $value => $date
                         ];
                         $data->update($isi);
+                        Cache::forget('cache-lily');
+                        $this->page->DataLilyCached();
                         return ['data' => 200];
                     }
                 }
@@ -206,6 +223,8 @@ class UpdateController extends Controller
                             $value => $date
                         ];
                         $data->update($isi);
+                        Cache::forget('cache-maydewi');
+                        $this->page->DataMaydewiCached();
                         return ['data' => 200];
                     }
                 }
@@ -232,6 +251,8 @@ class UpdateController extends Controller
                             $value => $date
                         ];
                         $data->update($isi);
+                        Cache::forget('cache-rani');
+                        $this->page->DataRaniCached();
                         return ['data' => 200];
                     }
                 }
@@ -255,6 +276,8 @@ class UpdateController extends Controller
                             $value => $date
                         ];
                         $data->update($isi);
+                        Cache::forget('cache-ichanur');
+                        $this->page->DataIndoIchaNurCached();
                         return ['data' => 200];
                     }
                 }
@@ -275,6 +298,8 @@ class UpdateController extends Controller
                             $value => $date
                         ];
                         $data->update($isi);
+                        Cache::forget('cache-irel');
+                        $this->page->DataIndoIrelCached();
                         return ['data' => 200];
                     }
                 }
@@ -316,6 +341,8 @@ class UpdateController extends Controller
                             $value => $date
                         ];
                         $data->update($isi);
+                        Cache::forget('cache-non-exclusive');
+                        $this->page->DataNonExCached();
                         return ['data' => 200];
                     }
                 }
@@ -336,6 +363,8 @@ class UpdateController extends Controller
                             $value => $date
                         ];
                         $data->update($isi);
+                        Cache::forget('cache-mangatoon');
+                        $this->page->DataSpamMangatoonCached();
                         return ['data' => 200];
                     }
                 }
@@ -356,6 +385,8 @@ class UpdateController extends Controller
                             $value => $date
                         ];
                         $data->update($isi);
+                        Cache::forget('cache-wn_uncontracted');
+                        $this->page->DataUncontractedWNCached();
                         return ['data' => 200];
                     }
                 }
@@ -401,6 +432,8 @@ class UpdateController extends Controller
                 ];
                 try {
                     $data->update($isi);
+                    Cache::forget('cache-ame');
+                    $this->page->DataAmeCached();
                     return ['data' => 200];
                 } catch (\Throwable $th) {
                     return ['data' => null];
@@ -437,6 +470,8 @@ class UpdateController extends Controller
                 ];
                 try {
                     $data->update($isi);
+                    Cache::forget('cache-anna');
+                    $this->page->DataAnnaCached();
                     return ['data' => 200];
                 } catch (\Throwable $th) {
                     return ['data' => null];
@@ -473,6 +508,8 @@ class UpdateController extends Controller
                 ];
                 try {
                     $data->update($isi);
+                    Cache::forget('cache-carol');
+                    $this->page->DataCarolCached();
                     return ['data' => 200];
                 } catch (\Throwable $th) {
                     return ['data' => null];
@@ -509,6 +546,8 @@ class UpdateController extends Controller
                 ];
                 try {
                     $data->update($isi);
+                    Cache::forget('cache-eric');
+                    $this->page->DataEricCached();
                     return ['data' => 200];
                 } catch (\Throwable $th) {
                     return ['data' => null];
@@ -545,6 +584,8 @@ class UpdateController extends Controller
                 ];
                 try {
                     $data->update($isi);
+                    Cache::forget('cache-icha');
+                    $this->page->DataIchaCached();
                     return ['data' => 200];
                 } catch (\Throwable $th) {
                     return ['data' => null];
@@ -581,6 +622,8 @@ class UpdateController extends Controller
                 ];
                 try {
                     $data->update($isi);
+                    Cache::forget('cache-lily');
+                    $this->page->DataLilyCached();
                     return ['data' => 200];
                 } catch (\Throwable $th) {
                     return ['data' => null];
@@ -617,6 +660,8 @@ class UpdateController extends Controller
                 ];
                 try {
                     $data->update($isi);
+                    Cache::forget('cache-maydewi');
+                    $this->page->DataMaydewiCached();
                     return ['data' => 200];
                 } catch (\Throwable $th) {
                     return ['data' => null];
@@ -653,6 +698,8 @@ class UpdateController extends Controller
                 ];
                 try {
                     $data->update($isi);
+                    Cache::forget('cache-rani');
+                    $this->page->DataRaniCached();
                     return ['data' => 200];
                 } catch (\Throwable $th) {
                     return ['data' => null];
@@ -688,6 +735,8 @@ class UpdateController extends Controller
                 ];
                 try {
                     $data->update($isi);
+                    Cache::forget('cache-ichanur');
+                    $this->page->DataIndoIchaNurCached();
                     return ['data' => 200];
                 } catch (\Throwable $th) {
                     return ['data' => null];
@@ -708,6 +757,8 @@ class UpdateController extends Controller
                 ];
                 try {
                     $data->update($isi);
+                    Cache::forget('cache-irel');
+                    $this->page->DataIndoIrelCached();
                     return ['data' => 200];
                 } catch (\Throwable $th) {
                     return ['data' => null];
@@ -748,6 +799,8 @@ class UpdateController extends Controller
                 ];
                 try {
                     $data->update($isi);
+                    Cache::forget('cache-non-exclusive');
+                    $this->page->DataNonExCached();
                     return ['data' => 200];
                 } catch (\Throwable $th) {
                     return ['data' => null];
@@ -773,6 +826,8 @@ class UpdateController extends Controller
                 ];
                 try {
                     $data->update($isi);
+                    Cache::forget('cache-mangatoon');
+                    $this->page->DataSpamMangatoonCached();
                     return ['data' => 200];
                 } catch (\Throwable $th) {
                     return ['data' => null];
@@ -800,6 +855,8 @@ class UpdateController extends Controller
                 ];
                 try {
                     $data->update($isi);
+                    Cache::forget('cache-wn_uncontracted');
+                    $this->page->DataUncontractedWNCached();
                     return ['data' => 200];
                 } catch (\Throwable $th) {
                     return ['data' => null];

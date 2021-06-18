@@ -1,3 +1,6 @@
+@php
+    $role = auth()->user()->role_custom;
+@endphp
 <section>
     <!-- Left Sidebar -->
     <aside id="leftsidebar" class="sidebar">
@@ -40,72 +43,97 @@
                         <span>Home</span>
                     </a>
                 </li>
+                @if ($role == 'Officer Global Ame' || $role == 'Officer Global Anna' || $role == 'Officer Global Carol' || $role == 'Officer Global Eric' || $role == 'Officer Global Icha' || $role == 'Officer Global Lily' || $role == 'Offiecer Global Maydewi' || $role == 'Officer Global Rani' || $role == 'Supervisor' || $role == 'Administrator')
                 <li>
                     <a href="javascript:void(0);" class="menu-toggle">
                         <i class="material-icons">import_contacts</i>
                         <span>Lv.0 Daily Reports Global</span>
                     </a>
                     <ul class="ml-menu">
+                        @if($role == 'Officer Global Ame' || $role == 'Supervisor' || $role == 'Administrator')
                         <li>
                             <a href="{{route('daily-report-global.ames')}}">
                                 <span>Daily Report Ame</span>
                             </a>
                         </li>
+                        @endif
+                        @if ($role == 'Officer Global Anna' || $role == 'Supervisor' || $role == 'Administrator')
                         <li>
                             <a href="{{route('daily-report-global.annas')}}">
                                 <span>Daily Report Anna</span>
                             </a>
                         </li>
+                        @endif
+                        @if ($role == 'Officer Global Carol' || $role == 'Supervisor' || $role == 'Administrator')
                         <li>
                             <a href="{{route('daily-report-global.carols')}}">
                                 <span>Daily Report Carol</span>
                             </a>
                         </li>
+                        @endif
+                        @if ($role == 'Officer Global Eric' || $role == 'Supervisor' || $role == 'Administrator')
                         <li>
                             <a href="{{route('daily-report-global.erics')}}">
                                 <span>Daily Report Eric</span>
                             </a>
                         </li>
+                        @endif
+                        @if ($role == 'Officer Global Icha' || $role == 'Supervisor' || $role == 'Administrator')
                         <li>
                             <a href="{{route('daily-report-global.ichas')}}">
-                                <span>Daily Report Ichas</span>
+                                <span>Daily Report Icha</span>
                             </a>
                         </li>
+                        @endif
+                        @if ($role == 'Officer Global Lily' || $role == 'Supervisor' || $role == 'Administrator')
                         <li>
                             <a href="{{route('daily-report-global.lilies')}}">
                                 <span>Daily Report Lily</span>
                             </a>
                         </li>
+                        @endif
+                        @if ($role == 'Offiecer Global Maydewi' || $role == 'Supervisor' || $role == 'Administrator')
                         <li>
                             <a href="{{route('daily-report-global.maydewis')}}">
                                 <span>Daily Report Maydewi</span>
                             </a>
                         </li>
+                        @endif
+                        @if ($role == 'Officer Global Rani' || $role == 'Supervisor' || $role == 'Administrator')
                         <li>
                             <a href="{{route('daily-report-global.ranis')}}">
                                 <span>Daily Report Rani</span>
                             </a>
                         </li>
+                        @endif
                     </ul>
                 </li>
+                @endif
+                @if ($role == 'Officer Indo Irel' || $role == 'Officer Indo Ichanur' || $role == 'Supervisor' || $role == 'Administrator')
                 <li>
                     <a href="javascript:void(0);" class="menu-toggle">
                         <i class="material-icons">import_contacts</i>
                         <span>Lv.0 Daily Reports Indo</span>
                     </a>
                     <ul class="ml-menu">
+                        @if ($role == 'Officer Indo Ichanur' || $role == 'Supervisor' || $role == 'Administrator')
                         <li>
                             <a href="{{route('daily-report-indo.icha-nurs')}}">
                                 <span>Daily Report Indo Icha Nurs</span>
                             </a>
                         </li>
+                        @endif
+                        @if ($role == 'Officer Indo Irel' || $role == 'Supervisor' || $role == 'Administrator')
                         <li>
                             <a href="{{route('daily-report-indo.irels')}}">
                                 <span>Daily Report Indo Irels</span>
                             </a>
                         </li>
+                        @endif
                     </ul>
                 </li>
+                @endif
+                @if ($role == 'Administrator' || $role == 'Supervisor')
                 <li>
                     <a href="{{route('daily-report-marker.marker')}}">
                         <i class="material-icons">import_contacts</i>
@@ -142,12 +170,16 @@
                         </li>
                     </ul>
                 </li>
+                @endif
+                @if ($role == 'Officer Global Ame' || $role == 'Officer Global Anna' || $role == 'Officer Global Carol' || $role == 'Officer Global Eric' || $role == 'Officer Global Icha' || $role == 'Officer Global Lily' || $role == 'Offiecer Global Maydewi' || $role == 'Officer Global Rani' || $role == 'Officer Indo Ichanur' || $role == 'Officer Indo Irel' || $role == 'Supervisor' || $role == 'Administrator')
                 <li>
                     <a href="{{route('non-exclusive-report.non-exclusive')}}">
                         <i class="material-icons">import_contacts</i>
                         <span>Non Exclusive Report</span>
                     </a>
                 </li>
+                @endif
+                @if ($role == 'Supervisor' || $role == 'Administrator')
                 <li>
                     <a href="javascript:void(0);" class="menu-toggle">
                         <i class="material-icons">import_contacts</i>
@@ -190,6 +222,7 @@
                         <span>Report to Sunny</span>
                     </a>
                 </li>
+                @endif
             </ul>
         </div>
         <!-- #Menu -->

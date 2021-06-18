@@ -109,6 +109,7 @@ $(document).ready(function(){
         $("#note").val($(this).attr('data-note'));
     });
     $('#BtnSaveEditModal').on('click', function(){
+        $(this).attr('disabled','disabled');
         let url_follow = "{{ $update_value }}";
         let id = $("#idModalEdit").html();
         $.ajax({
@@ -132,6 +133,7 @@ $(document).ready(function(){
                 "note" : $("#note").val(),
             },
             success : function(x){
+                $('#BtnSaveEditModal').removeAttr('disabled','disabled');
                 $('#editModal').modal('hide');
                 TabelGlobalDaily(url);
             }

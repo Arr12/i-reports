@@ -132,6 +132,7 @@ $(document).ready(function(){
         $("#comment_from_wave").val(comment_from_wave);
     });
     $('#BtnSaveEditModal').on('click', function(){
+        $(this).attr('disabled','disabled');
         let url_follow = "{{ $update_value }}";
         let id = $("#idModalEdit").html();
         let date = $("#date").val();
@@ -172,6 +173,7 @@ $(document).ready(function(){
                 "comment_from_wave" : comment_from_wave
             },
             success : function(x){
+                $('#BtnSaveEditModal').removeAttr('disabled','disabled');
                 $('#editModal').modal('hide');
                 TabelGlobalDaily(url);
             }
@@ -183,6 +185,7 @@ $(document).ready(function(){
         $("#idModalFollow").html(id);
     });
     $('#BtnSaveFollowModal').on('click', function(){
+        $(this).attr('disabled','disabled');
         let id = $('#idModalFollow').html();
         let row = $('#select_row').val();
         let date = $("row_date").val();
@@ -198,6 +201,7 @@ $(document).ready(function(){
                 "p" : "{{ $person }}"
             },
             success : function(x){
+                $('#BtnSaveFollowModal').removeAttr('disabled','disabled');
                 $("#select_row option").prop("selected", false).trigger( "change" );
                 $('#followModal').modal('hide');
                 TabelGlobalDaily(url);

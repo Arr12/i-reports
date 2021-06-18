@@ -12,6 +12,9 @@ use App\Models\DailyReportIndoIrel;
 use App\Models\DailyReportLily;
 use App\Models\DailyReportMaydewi;
 use App\Models\DailyReportRani;
+use App\Models\m_inquiries;
+use App\Models\m_media;
+use App\Models\m_platform;
 use App\Models\NonExclusiveReport;
 use App\Models\ReportSpamMangatoonNovelList;
 use App\Models\ReportSpamNovelListFromRanking;
@@ -23,7 +26,7 @@ use Illuminate\Support\Str;
 
 class PageController extends Controller
 {
-    private $data_show = 4000;
+    private $data_show = 10000;
     public $personGlobal = [
         'Ame',
         'Anna',
@@ -141,6 +144,27 @@ class PageController extends Controller
         }
         return $date;
     }
+    public function CachedDataSelects(){
+        $cached = Cache::get('data-selects', false);
+        if(!$cached){
+            $s = 60 * 60 * 24;
+            $cached = Cache::remember('data-selects', $s, function(){
+                $platform = m_platform::orderBy('name','ASC')->get();
+                $media = m_media::orderBy('name','ASC')->get();
+                $inquiries = m_inquiries::orderBy('name','ASC')->get();
+                $arr = [
+                    'platform' => $platform,
+                    'media' => $media,
+                    'inquiries' => $inquiries
+                ];
+                return $arr;
+            });
+            $selects = $cached;
+        }else{
+            $selects = $cached;
+        }
+        return $selects;
+    }
     public function index(){
         return view('admin.pages.home');
     }
@@ -148,34 +172,64 @@ class PageController extends Controller
         return view('admin.pages.daily-report.marker.daily-report-complete-marker');
     }
     public function DailyReportAmes(){
-        return view('admin.pages.daily-report.global.daily-report-ames');
+        $selects = $this->CachedDataSelects();
+        return view('admin.pages.daily-report.global.daily-report-ames', [
+            'selects' => $selects,
+        ]);
     }
     public function DailyReportAnnas(){
-        return view('admin.pages.daily-report.global.daily-report-anna');
+        $selects = $this->CachedDataSelects();
+        return view('admin.pages.daily-report.global.daily-report-anna', [
+            'selects' => $selects,
+        ]);
     }
     public function DailyReportCarols(){
-        return view('admin.pages.daily-report.global.daily-report-carol');
+        $selects = $this->CachedDataSelects();
+        return view('admin.pages.daily-report.global.daily-report-carol', [
+            'selects' => $selects,
+        ]);
     }
     public function DailyReportErics(){
-        return view('admin.pages.daily-report.global.daily-report-eric');
+        $selects = $this->CachedDataSelects();
+        return view('admin.pages.daily-report.global.daily-report-eric', [
+            'selects' => $selects,
+        ]);
     }
     public function DailyReportIchas(){
-        return view('admin.pages.daily-report.global.daily-report-icha');
+        $selects = $this->CachedDataSelects();
+        return view('admin.pages.daily-report.global.daily-report-icha', [
+            'selects' => $selects,
+        ]);
     }
     public function DailyReportLilies(){
-        return view('admin.pages.daily-report.global.daily-report-lily');
+        $selects = $this->CachedDataSelects();
+        return view('admin.pages.daily-report.global.daily-report-lily', [
+            'selects' => $selects,
+        ]);
     }
     public function DailyReportMayDewis(){
-        return view('admin.pages.daily-report.global.daily-report-maydewi');
+        $selects = $this->CachedDataSelects();
+        return view('admin.pages.daily-report.global.daily-report-maydewi', [
+            'selects' => $selects,
+        ]);
     }
     public function DailyReportRanis(){
-        return view('admin.pages.daily-report.global.daily-report-rani');
+        $selects = $this->CachedDataSelects();
+        return view('admin.pages.daily-report.global.daily-report-rani', [
+            'selects' => $selects,
+        ]);
     }
     public function DailyReportIndoIchaNurs(){
-        return view('admin.pages.daily-report.indo.daily-report-indo-icha-nur');
+        $selects = $this->CachedDataSelects();
+        return view('admin.pages.daily-report.indo.daily-report-indo-icha-nur', [
+            'selects' => $selects,
+        ]);
     }
     public function DailyReportIndoIrels(){
-        return view('admin.pages.daily-report.indo.daily-report-indo-irel');
+        $selects = $this->CachedDataSelects();
+        return view('admin.pages.daily-report.indo.daily-report-indo-irel', [
+            'selects' => $selects,
+        ]);
     }
     public function SpamMangatoonNovelList(){
         return view('admin.pages.spam.mangatoon');
@@ -190,7 +244,10 @@ class PageController extends Controller
         return view('admin.pages.spam.novel-list-from-ranking');
     }
     public function NonExclusiveReport(){
-        return view('admin.pages.non-exclusive-report.non-exclusive');
+        $selects = $this->CachedDataSelects();
+        return view('admin.pages.non-exclusive-report.non-exclusive', [
+            'selects' => $selects,
+        ]);
     }
     public function ReportToSunny(){
         return view('admin.pages.report-to-sunny.report-to-sunny');
@@ -215,7 +272,7 @@ class PageController extends Controller
     }
 
     /* ---------------------------------
-    / DATA GLOBAL & NON EXCLUSIVE
+    / DATA GLOBAL & NON EXCLUSIVE WITH DATE
     -------------------------------- */
     public function DataAme($startdate, $enddate){
         $d['daily'] = DailyReportAme::whereBetween('date', [$startdate,$enddate])
@@ -437,9 +494,111 @@ class PageController extends Controller
             ->get();
         return $dn;
     }
+    /* ---------------------------------
+    / DATA GLOBAL & NON EXCLUSIVE NON DATE
+    -------------------------------- */
+    public function DataAmeCached(){
+        $keyNonEx = "cache-ame";
+        $cached = Cache::get($keyNonEx, false);
+        if(!$cached){
+            $query = DailyReportAme::orderBy('id', 'DESC')->limit($this->data_show)->get();
+            Cache::put($keyNonEx, $query);
+        } else {
+            $query = $cached;
+        }
+        return $query;
+    }
+    public function DataAnnaCached(){
+        $keyNonEx = "cache-anna";
+        $cached = Cache::get($keyNonEx, false);
+        if(!$cached){
+            $query = DailyReportAnna::orderBy('id', 'DESC')->limit($this->data_show)->get();
+            Cache::put($keyNonEx, $query);
+        } else {
+            $query = $cached;
+        }
+        return $query;
+    }
+    public function DataCarolCached(){
+        $keyNonEx = "cache-carol";
+        $cached = Cache::get($keyNonEx, false);
+        if(!$cached){
+            $query = DailyReportCarol::orderBy('id', 'DESC')->limit($this->data_show)->get();
+            Cache::put($keyNonEx, $query);
+        } else {
+            $query = $cached;
+        }
+        return $query;
+    }
+    public function DataEricCached(){
+        $keyNonEx = "cache-eric";
+        $cached = Cache::get($keyNonEx, false);
+        if(!$cached){
+            $query = DailyReportEric::orderBy('id', 'DESC')->limit($this->data_show)->get();
+            Cache::put($keyNonEx, $query);
+        } else {
+            $query = $cached;
+        }
+        return $query;
+    }
+    public function DataIchaCached(){
+        $keyNonEx = "cache-icha";
+        $cached = Cache::get($keyNonEx, false);
+        if(!$cached){
+            $query = DailyReportIcha::orderBy('id', 'DESC')->limit($this->data_show)->get();
+            Cache::put($keyNonEx, $query);
+        } else {
+            $query = $cached;
+        }
+        return $query;
+    }
+    public function DataLilyCached(){
+        $keyNonEx = "cache-lily";
+        $cached = Cache::get($keyNonEx, false);
+        if(!$cached){
+            $query = DailyReportLily::orderBy('id', 'DESC')->limit($this->data_show)->get();
+            Cache::put($keyNonEx, $query);
+        } else {
+            $query = $cached;
+        }
+        return $query;
+    }
+    public function DataMaydewiCached(){
+        $keyNonEx = "cache-maydewi";
+        $cached = Cache::get($keyNonEx, false);
+        if(!$cached){
+            $query = DailyReportMaydewi::orderBy('id', 'DESC')->limit($this->data_show)->get();
+            Cache::put($keyNonEx, $query);
+        } else {
+            $query = $cached;
+        }
+        return $query;
+    }
+    public function DataRaniCached(){
+        $keyNonEx = "cache-rani";
+        $cached = Cache::get($keyNonEx, false);
+        if(!$cached){
+            $query = DailyReportRani::orderBy('id', 'DESC')->limit($this->data_show)->get();
+            Cache::put($keyNonEx, $query);
+        } else {
+            $query = $cached;
+        }
+        return $query;
+    }
+    public function DataNonExCached(){
+        $keyNonEx = "cache-non-exclusive";
+        $cached = Cache::get($keyNonEx, false);
+        if(!$cached){
+            $query = NonExclusiveReport::orderBy('id', 'DESC')->limit($this->data_show)->get();
+            Cache::put($keyNonEx, $query);
+        } else {
+            $query = $cached;
+        }
+        return $query;
+    }
 
     /* ----------------------------------
-    / DATA INDO
+    / DATA INDO WITH DATE
     --------------------------------- */
     public function DataIndoIchaNur($startdate, $enddate){
         $d['daily'] = DailyReportIndoIchaNur::whereBetween('date', [$startdate,$enddate])
@@ -471,9 +630,34 @@ class PageController extends Controller
         $d['date_solved'] = DailyReportIndoIrel::select('date_solved')->whereBetween('date_solved', [$startdate,$enddate])->get();
         return $d;
     }
-
     /* ----------------------------------
-    / DATA SPAM
+    / DATA INDO NON DATE
+    --------------------------------- */
+    public function DataIndoIchaNurCached(){
+        $keyNonEx = "cache-ichanur";
+        $cached = Cache::get($keyNonEx, false);
+        if(!$cached){
+            $query = DailyReportIndoIchaNur::orderBy('id', 'DESC')->limit($this->data_show)->get();
+            Cache::put($keyNonEx, $query);
+        } else {
+            $query = $cached;
+        }
+        return $query;
+    }
+    public function DataIndoIrelCached(){
+        $keyNonEx = "cache-irel";
+        $cached = Cache::get($keyNonEx, false);
+        if(!$cached){
+            $query = DailyReportIndoIrel::orderBy('id', 'DESC')->limit($this->data_show)->get();
+            Cache::put($keyNonEx, $query);
+        } else {
+            $query = $cached;
+        }
+        return $query;
+    }
+
+    /* -------------------------------
+    / DATA SPAM WITH DATE
     --------------------------------- */
     public function DataSpamMangatoon($startdate,$enddate){
         $d['daily'] = ReportSpamMangatoonNovelList::whereBetween('date', [$startdate,$enddate])
@@ -492,6 +676,31 @@ class PageController extends Controller
         ->orderBy('id','DESC')
         ->get();
         return $d;
+    }
+    /* -------------------------------
+    / DATA SPAM NON DATE
+    --------------------------------- */
+    public function DataSpamMangatoonCached(){
+        $keyNonEx = "cache-mangatoon";
+        $cached = Cache::get($keyNonEx, false);
+        if(!$cached){
+            $query = ReportSpamMangatoonNovelList::orderBy('id', 'DESC')->limit($this->data_show)->get();
+            Cache::put($keyNonEx, $query);
+        } else {
+            $query = $cached;
+        }
+        return $query;
+    }
+    public function DataUncontractedWNCached(){
+        $keyNonEx = "cache-wn_uncontracted";
+        $cached = Cache::get($keyNonEx, false);
+        if(!$cached){
+            $query = ReportSpamWNUncoractedNovelList::orderBy('id', 'DESC')->limit($this->data_show)->get();
+            Cache::put($keyNonEx, $query);
+        } else {
+            $query = $cached;
+        }
+        return $query;
     }
 
     /*---------------------------------------
@@ -540,7 +749,18 @@ class PageController extends Controller
         foreach ($title as $key => $value) {
             array_push($data_array['columns'], ["title" => $value]);
         }
-        $query = DailyReportIndoIchaNur::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        $key = 'marker-indo';
+        $cached = Cache::get($key, false);
+        if(!$cached){
+            $s = 60 * 60 * 24;
+            $cached = Cache::remember($key, $s,function(){
+                $query = DailyReportIndoIchaNur::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                return $query;
+            });
+            $query = $cached;
+        }else{
+            $query = $cached;
+        }
         $no = 1;
         foreach($query as $key => $data){
             array_push($data_array['data'], [
@@ -614,7 +834,18 @@ class PageController extends Controller
         foreach($persons as $key => $person){
             switch ($person) {
                 case 'Ame':
-                    $query = DailyReportAme::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                    $key = 'marker-global-ame';
+                    $cached = Cache::get($key, false);
+                    if(!$cached){
+                        $s = 60 * 60 * 24;
+                        $cached = Cache::remember($key, $s,function(){
+                            $query = DailyReportAme::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                            return $query;
+                        });
+                        $query = $cached;
+                    }else{
+                        $query = $cached;
+                    }
                     foreach($query as $key => $data){
                         array_push($data_array['data'], [
                             $no++,
@@ -647,7 +878,18 @@ class PageController extends Controller
                     }
                     break;
                 case 'Anna':
-                    $query = DailyReportAnna::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                    $key = 'marker-global-anna';
+                    $cached = Cache::get($key, false);
+                    if(!$cached){
+                        $s = 60 * 60 * 24;
+                        $cached = Cache::remember($key, $s,function(){
+                            $query = DailyReportAnna::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                            return $query;
+                        });
+                        $query = $cached;
+                    }else{
+                        $query = $cached;
+                    }
                     foreach($query as $key => $data){
                         array_push($data_array['data'], [
                             $no++,
@@ -680,7 +922,18 @@ class PageController extends Controller
                     }
                     break;
                 case 'Carol' :
-                    $query = DailyReportCarol::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                    $key = 'marker-global-carol';
+                    $cached = Cache::get($key, false);
+                    if(!$cached){
+                        $s = 60 * 60 * 24;
+                        $cached = Cache::remember($key, $s,function(){
+                            $query = DailyReportCarol::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                            return $query;
+                        });
+                        $query = $cached;
+                    }else{
+                        $query = $cached;
+                    }
                     foreach($query as $key => $data){
                         array_push($data_array['data'], [
                             $no++,
@@ -713,7 +966,18 @@ class PageController extends Controller
                     }
                     break;
                 case 'Eric' :
-                    $query = DailyReportEric::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                    $key = 'marker-global-eric';
+                    $cached = Cache::get($key, false);
+                    if(!$cached){
+                        $s = 60 * 60 * 24;
+                        $cached = Cache::remember($key, $s,function(){
+                            $query = DailyReportEric::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                            return $query;
+                        });
+                        $query = $cached;
+                    }else{
+                        $query = $cached;
+                    }
                     foreach($query as $key => $data){
                         array_push($data_array['data'], [
                             $no++,
@@ -746,7 +1010,18 @@ class PageController extends Controller
                     }
                     break;
                 case 'Icha' :
-                    $query = DailyReportIcha::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                    $key = 'marker-global-icha';
+                    $cached = Cache::get($key, false);
+                    if(!$cached){
+                        $s = 60 * 60 * 24;
+                        $cached = Cache::remember($key, $s,function(){
+                            $query = DailyReportIcha::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                            return $query;
+                        });
+                        $query = $cached;
+                    }else{
+                        $query = $cached;
+                    }
                     foreach($query as $key => $data){
                         array_push($data_array['data'], [
                             $no++,
@@ -779,7 +1054,18 @@ class PageController extends Controller
                     }
                     break;
                 case 'Lily' :
-                    $query = DailyReportLily::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                    $key = 'marker-global-lily';
+                    $cached = Cache::get($key, false);
+                    if(!$cached){
+                        $s = 60 * 60 * 24;
+                        $cached = Cache::remember($key, $s,function(){
+                            $query = DailyReportLily::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                            return $query;
+                        });
+                        $query = $cached;
+                    }else{
+                        $query = $cached;
+                    }
                     foreach($query as $key => $data){
                         array_push($data_array['data'], [
                             $no++,
@@ -812,7 +1098,18 @@ class PageController extends Controller
                     }
                     break;
                 case 'Maydewi' :
-                    $query = DailyReportMaydewi::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                    $key = 'marker-global-maydewi';
+                    $cached = Cache::get($key, false);
+                    if(!$cached){
+                        $s = 60 * 60 * 24;
+                        $cached = Cache::remember($key, $s,function(){
+                            $query = DailyReportMaydewi::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                            return $query;
+                        });
+                        $query = $cached;
+                    }else{
+                        $query = $cached;
+                    }
                     foreach($query as $key => $data){
                         array_push($data_array['data'], [
                             $no++,
@@ -845,7 +1142,18 @@ class PageController extends Controller
                     }
                     break;
                 case 'Rani' :
-                    $query = DailyReportRani::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                    $key = 'marker-global-rani';
+                    $cached = Cache::get($key, false);
+                    if(!$cached){
+                        $s = 60 * 60 * 24;
+                        $cached = Cache::remember($key, $s,function(){
+                            $query = DailyReportRani::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                            return $query;
+                        });
+                        $query = $cached;
+                    }else{
+                        $query = $cached;
+                    }
                     foreach($query as $key => $data){
                         array_push($data_array['data'], [
                             $no++,
@@ -901,7 +1209,7 @@ class PageController extends Controller
             $query = DailyReportAme::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
         }
         else{
-            $query = DailyReportAme::orderBy('id', 'DESC')->limit($this->data_show)->get();
+            $query = $this->DataAmeCached();
         }
         /* --------------
         / HEAD DATA
@@ -988,7 +1296,7 @@ class PageController extends Controller
             $query = DailyReportAnna::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
         }
         else{
-            $query = DailyReportAnna::orderBy('id', 'DESC')->limit($this->data_show)->get();
+            $query = $this->DataAnnaCached();
         }
         /* --------------
         / HEAD DATA
@@ -1075,7 +1383,7 @@ class PageController extends Controller
             $query = DailyReportCarol::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
         }
         else{
-            $query = DailyReportCarol::orderBy('id', 'DESC')->limit($this->data_show)->get();
+            $query = $this->DataCarolCached();
         }
         /* --------------
         / HEAD DATA
@@ -1162,7 +1470,7 @@ class PageController extends Controller
             $query = DailyReportEric::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
         }
         else{
-            $query = DailyReportEric::orderBy('id', 'DESC')->limit($this->data_show)->get();
+            $query = $this->DataEricCached();
         }
         /* --------------
         / HEAD DATA
@@ -1249,7 +1557,7 @@ class PageController extends Controller
             $query = DailyReportIcha::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
         }
         else{
-            $query = DailyReportIcha::orderBy('id', 'DESC')->limit($this->data_show)->get();
+            $query = $this->DataIchaCached();
         }
         /* --------------
         / HEAD DATA
@@ -1336,7 +1644,7 @@ class PageController extends Controller
             $query = DailyReportLily::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
         }
         else{
-            $query = DailyReportLily::orderBy('id', 'DESC')->limit($this->data_show)->get();
+            $query = $this->DataLilyCached();
         }
         /* --------------
         / HEAD DATA
@@ -1423,7 +1731,7 @@ class PageController extends Controller
             $query = DailyReportMaydewi::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
         }
         else{
-            $query = DailyReportMaydewi::orderBy('id', 'DESC')->limit($this->data_show)->get();
+            $query = $this->DataMaydewiCached();
         }
         /* --------------
         / HEAD DATA
@@ -1510,7 +1818,7 @@ class PageController extends Controller
             $query = DailyReportRani::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
         }
         else{
-            $query = DailyReportRani::orderBy('id', 'DESC')->limit($this->data_show)->get();
+            $query = $this->DataRaniCached();
         }
         /* --------------
         / HEAD DATA
@@ -1597,7 +1905,7 @@ class PageController extends Controller
             $query = DailyReportIndoIchaNur::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
         }
         else{
-            $query = DailyReportIndoIchaNur::orderBy('id', 'DESC')->limit($this->data_show)->get();
+            $query = $this->DataIndoIchaNurCached();
         }
         /* --------------
         / HEAD DATA
@@ -1671,7 +1979,7 @@ class PageController extends Controller
         if(request()->input('where') && request()->input('where') != ''){
             $query = DailyReportIndoIrel::where('author_contact','ilike', '%'.request()->input('where').'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
         }else{
-            $query = DailyReportIndoIrel::orderBy('id', 'DESC')->limit($this->data_show)->get();
+            $query = $this->DataIndoIrelCached();
         }
         /* --------------
         / HEAD DATA
@@ -2024,7 +2332,7 @@ class PageController extends Controller
         if(request()->input('where') && request()->input('where') != ''){
             $query = ReportSpamMangatoonNovelList::where('author_name','ilike','%'.request()->input('where').'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
         }else{
-            $query = ReportSpamMangatoonNovelList::orderBy('id', 'DESC')->limit($this->data_show)->get();
+            $query = $this->DataSpamMangatoonCached();
         }
         /* --------------
         / HEAD DATA
@@ -2162,7 +2470,7 @@ class PageController extends Controller
         if(request()->input('where') && request()->input('where') != ''){
             $query = ReportSpamWNUncoractedNovelList::where('author_name','ilike',"%".request()->input('where')."%")->orderBy('id', 'DESC')->limit($this->data_show)->get();
         }else{
-            $query = ReportSpamWNUncoractedNovelList::orderBy('id', 'DESC')->limit($this->data_show)->get();
+            $query = $this->DataUncontractedWNCached();
         }
         /* --------------
         / HEAD DATA
@@ -2276,10 +2584,11 @@ class PageController extends Controller
     | NON EXCLUSIVE REPORT
     -----------------------------------------*/
     public function getNonExclusiveReport(){
-        if(request()->input('where') && request()->input('where') != ''){
-            $query = NonExclusiveReport::where('author_contact','ilike', '%'.request()->input('where').'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        $where = request()->input('where');
+        if($where && $where != ''){
+            $query = NonExclusiveReport::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
         }else{
-            $query = NonExclusiveReport::orderBy('id', 'DESC')->limit($this->data_show)->get();
+            $query = $this->DataNonExCached();
         }
         /* --------------
         / HEAD DATA
