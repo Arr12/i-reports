@@ -92,7 +92,7 @@
                             </a>
                         </li>
                         @endif
-                        @if ($role == 'Offiecer Global Maydewi' || $role == 'Supervisor' || $role == 'Administrator')
+                        @if ($role == 'Officer Global Maydewi' || $role == 'Supervisor' || $role == 'Administrator')
                         <li>
                             <a href="{{route('daily-report-global.maydewis')}}">
                                 <span>Daily Report Maydewi</span>
@@ -171,7 +171,7 @@
                     </ul>
                 </li>
                 @endif
-                @if ($role == 'Officer Global Ame' || $role == 'Officer Global Anna' || $role == 'Officer Global Carol' || $role == 'Officer Global Eric' || $role == 'Officer Global Icha' || $role == 'Officer Global Lily' || $role == 'Offiecer Global Maydewi' || $role == 'Officer Global Rani' || $role == 'Officer Indo Ichanur' || $role == 'Officer Indo Irel' || $role == 'Supervisor' || $role == 'Administrator')
+                @if ($role == 'Officer Global Ame' || $role == 'Officer Global Anna' || $role == 'Officer Global Carol' || $role == 'Officer Global Eric' || $role == 'Officer Global Icha' || $role == 'Officer Global Lily' || $role == 'Officer Global Maydewi' || $role == 'Officer Global Rani' || $role == 'Supervisor' || $role == 'Administrator')
                 <li>
                     <a href="{{route('non-exclusive-report.non-exclusive')}}">
                         <i class="material-icons">import_contacts</i>
