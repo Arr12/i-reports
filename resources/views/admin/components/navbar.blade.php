@@ -43,7 +43,7 @@
                         <span>Home</span>
                     </a>
                 </li>
-                @if ($role == 'Officer Global Ame' || $role == 'Officer Global Anna' || $role == 'Officer Global Carol' || $role == 'Officer Global Eric' || $role == 'Officer Global Icha' || $role == 'Officer Global Lily' || $role == 'Offiecer Global Maydewi' || $role == 'Officer Global Rani' || $role == 'Supervisor' || $role == 'Administrator')
+                @if ($role == 'Officer Global Ame' || $role == 'Officer Global Anna' || $role == 'Officer Global Carol' || $role == 'Officer Global Eric' || $role == 'Officer Global Icha' || $role == 'Officer Global Lily' || $role == 'Officer Global Maydewi' || $role == 'Officer Global Rani' || $role == 'Supervisor' || $role == 'Administrator')
                 <li>
                     <a href="javascript:void(0);" class="menu-toggle">
                         <i class="material-icons">import_contacts</i>
