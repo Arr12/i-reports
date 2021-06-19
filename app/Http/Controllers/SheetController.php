@@ -1863,7 +1863,7 @@ class SheetController extends Controller
             $d_ame['non_ex']->whereNotNull('sent_e_contract')->count(),
             $d_ame['non_ex']->whereNotNull('rec_e_contract')->count(),
             $d_ame['non_ex']->whereNotNull('email_sent')->count(),
-            $d_ame['daily']->whereNotNull('sent_royalty')->count()
+            $d_ame['sent_royalty']->whereNotNull('sent_royalty')->count()
         ];
         array_push($values, $v_ame);
         $v_anna = [
@@ -1875,7 +1875,7 @@ class SheetController extends Controller
             $d_anna['non_ex']->whereNotNull('sent_e_contract')->count(),
             $d_anna['non_ex']->whereNotNull('rec_e_contract')->count(),
             $d_anna['non_ex']->whereNotNull('email_sent')->count(),
-            $d_anna['daily']->whereNotNull('sent_royalty')->count()
+            $d_anna['sent_royalty']->whereNotNull('sent_royalty')->count()
         ];
         array_push($values, $v_anna);
         $v_carol = [
@@ -1887,7 +1887,7 @@ class SheetController extends Controller
             $d_carol['non_ex']->whereNotNull('sent_e_contract')->count(),
             $d_carol['non_ex']->whereNotNull('rec_e_contract')->count(),
             $d_carol['non_ex']->whereNotNull('email_sent')->count(),
-            $d_carol['daily']->whereNotNull('sent_royalty')->count()
+            $d_carol['sent_royalty']->whereNotNull('sent_royalty')->count()
         ];
         array_push($values, $v_carol);
         $v_eric = [
@@ -1899,7 +1899,7 @@ class SheetController extends Controller
             $d_eric['non_ex']->whereNotNull('sent_e_contract')->count(),
             $d_eric['non_ex']->whereNotNull('rec_e_contract')->count(),
             $d_eric['non_ex']->whereNotNull('email_sent')->count(),
-            $d_eric['daily']->whereNotNull('sent_royalty')->count()
+            $d_eric['sent_royalty']->whereNotNull('sent_royalty')->count()
         ];
         array_push($values, $v_eric);
         $v_icha = [
@@ -1911,7 +1911,7 @@ class SheetController extends Controller
             $d_icha['non_ex']->whereNotNull('sent_e_contract')->count(),
             $d_icha['non_ex']->whereNotNull('rec_e_contract')->count(),
             $d_icha['non_ex']->whereNotNull('email_sent')->count(),
-            $d_icha['daily']->whereNotNull('sent_royalty')->count()
+            $d_icha['sent_royalty']->whereNotNull('sent_royalty')->count()
         ];
         array_push($values, $v_icha);
         $v_lily = [
@@ -1923,7 +1923,7 @@ class SheetController extends Controller
             $d_lily['non_ex']->whereNotNull('sent_e_contract')->count(),
             $d_lily['non_ex']->whereNotNull('rec_e_contract')->count(),
             $d_lily['non_ex']->whereNotNull('email_sent')->count(),
-            $d_lily['daily']->whereNotNull('sent_royalty')->count()
+            $d_lily['sent_royalty']->whereNotNull('sent_royalty')->count()
         ];
         array_push($values, $v_lily);
         $v_maydewi = [
@@ -1935,7 +1935,7 @@ class SheetController extends Controller
             $d_maydewi['non_ex']->whereNotNull('sent_e_contract')->count(),
             $d_maydewi['non_ex']->whereNotNull('rec_e_contract')->count(),
             $d_maydewi['non_ex']->whereNotNull('email_sent')->count(),
-            $d_maydewi['daily']->whereNotNull('sent_royalty')->count()
+            $d_maydewi['sent_royalty']->whereNotNull('sent_royalty')->count()
         ];
         array_push($values, $v_maydewi);
         $v_rani = [
@@ -1947,7 +1947,7 @@ class SheetController extends Controller
             $d_rani['non_ex']->whereNotNull('sent_e_contract')->count(),
             $d_rani['non_ex']->whereNotNull('rec_e_contract')->count(),
             $d_rani['non_ex']->whereNotNull('email_sent')->count(),
-            $d_rani['daily']->whereNotNull('sent_royalty')->count()
+            $d_rani['sent_royalty']->whereNotNull('sent_royalty')->count()
         ];
         array_push($values, $v_rani);
 
