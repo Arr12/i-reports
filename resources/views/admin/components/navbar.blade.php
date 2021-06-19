@@ -25,7 +25,7 @@
                             <!-- Authentication -->
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit"><i class="material-icons">input</i>Sign Out</button>
+                                <button class="sign-out" type="submit"><i class="material-icons">input</i>Sign Out</button>
                             </form>
                         </li>
                     </ul>

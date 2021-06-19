@@ -101,7 +101,7 @@ $(document).ready(function(){
                 <ul class="header-dropdown m-r--5">
                     <li class="dropdown">
                         <button id='setDataDaily' class="btn waves-effect btn-success" role="button" aria-haspopup="true" aria-expanded="false">
-                            <i style="color:#fff;" class="material-icons">save</i> Export Monthly Report Lv 2
+                            <i style="color:#fff;" class="material-icons">save</i> Export {{date('F')}} Report
                         </button>
                     </li>
                 </ul>

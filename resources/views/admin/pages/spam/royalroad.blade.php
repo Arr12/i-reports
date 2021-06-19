@@ -41,14 +41,20 @@ let TabelGlobalDaily = function(url){
             let table = $('#TabelGlobalDaily').DataTable({
                 dom: 'Bfrtip',
                 responsive: true,
-                buttons: ['copy', 'excel'],
+                buttons: ['copy'],
                 destroy: true,
                 searching: true,
                 order: [[0,'desc']]
             });
             $('a.toggle-vis').on( 'click', function (e) {
                 e.preventDefault();
-
+                if($(this).hasClass('btn-warning')){
+                    $(this).addClass('btn-primary');
+                    $(this).removeClass('btn-warning');
+                }else{
+                    $(this).addClass('btn-warning');
+                    $(this).removeClass('btn-primary');
+                }
                 // Get the column API object
                 let column = table.column( $(this).attr('data-column') );
 

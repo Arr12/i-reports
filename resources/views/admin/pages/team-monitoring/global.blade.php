@@ -43,14 +43,20 @@ let Tabel = function(url){
             let table = $('#Tabel').DataTable({
                 dom: 'Bfrtip',
                 responsive: true,
-                buttons: ['copy', 'excel'],
+                buttons: ['copy'],
                 destroy: true,
                 searching: true,
                 // order: [[0,'desc']]
             });
             $('a.toggle-vis').on( 'click', function (e) {
                 e.preventDefault();
-
+                if($(this).hasClass('btn-warning')){
+                    $(this).addClass('btn-primary');
+                    $(this).removeClass('btn-warning');
+                }else{
+                    $(this).addClass('btn-warning');
+                    $(this).removeClass('btn-primary');
+                }
                 // Get the column API object
                 let column = table.column( $(this).attr('data-column') );
 
@@ -100,13 +106,13 @@ $(document).ready(function(){
                 <ul class="header-dropdown m-r--5">
                     <li class="dropdown">
                         <button id='setDataDaily' class="btn waves-effect btn-success" role="button" aria-haspopup="true" aria-expanded="false">
-                            <i style="color:#fff;" class="material-icons">save</i> Export
+                            <i style="color:#fff;" class="material-icons">save</i> Generate File Lv. 1
                         </button>
                     </li>
                 </ul>
             </div>
             <div class="body">
-                <div class="row clearfix">
+                <div class="row clearfix custom-row">
                     <div id="alert"></div>
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <select class="form-control show-tick" id="SPerson" name="person">

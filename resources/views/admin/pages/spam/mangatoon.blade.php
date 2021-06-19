@@ -50,14 +50,20 @@ let TabelGlobalDaily = function(url){
             let table = $('#TabelGlobalDaily').DataTable({
                 dom: 'Bfrtip',
                 responsive: true,
-                buttons: ['copy', 'excel'],
+                buttons: ['copy'],
                 destroy: true,
                 searching: true,
                 order: [[0,'desc']]
             });
             $('a.toggle-vis').on( 'click', function (e) {
                 e.preventDefault();
-
+                if($(this).hasClass('btn-warning')){
+                    $(this).addClass('btn-primary');
+                    $(this).removeClass('btn-warning');
+                }else{
+                    $(this).addClass('btn-warning');
+                    $(this).removeClass('btn-primary');
+                }
                 // Get the column API object
                 let column = table.column( $(this).attr('data-column') );
 
@@ -243,7 +249,7 @@ $(document).ready(function(){
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <strong>Oh snap!</strong> Can't get data, check your internet connection or contact the creator!.
                 </div>
-                <div class="row">
+                <div class="row custom-row">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <div class="form-group">
                             <div class="form-line">

@@ -39,8 +39,11 @@ class SpamMangatoon extends Command
     public function handle()
     {
         $result = new SheetController();
-        $result->getSpamMangatoonNovelList();
-
-        $this->info('Spam Mangatoon has been updated successfully');
+        $x = $result->getSpamMangatoonNovelList();
+        if($x){
+            $this->info('Spam Mangatoon has been updated successfully');
+        }else{
+            $this->info('Failed to get All Spam Mangatoon');
+        }
     }
 }

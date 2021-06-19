@@ -26,7 +26,7 @@ use Illuminate\Support\Str;
 
 class PageController extends Controller
 {
-    private $data_show = 10000;
+    private $data_show = 7000;
     public $personGlobal = [
         'Ame',
         'Anna',

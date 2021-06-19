@@ -81,11 +81,11 @@ class SheetController extends Controller
         curl_close($curl);
         return $response;
     }
-    public function CreateNewSpreadsheet($title){
+    public function CreateNewSpreadsheet($title,$folder_id){
         $curl = curl_init();
         $title = str_replace(" ", "%20", $title);
         curl_setopt_array($curl, array(
-        CURLOPT_URL => "http://45.76.182.41:8000/create-spreadsheet/1XQ1pLnuAUjCgAGkShZ9eI5CrDVWD2oDU/$title",
+        CURLOPT_URL => "http://45.76.182.41:8000/create-spreadsheet/$folder_id/$title",
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => '',
         CURLOPT_MAXREDIRS => 10,
@@ -1523,6 +1523,7 @@ class SheetController extends Controller
             Cache::forget('cache-wn_uncontracted');
             $this->page->DataUncontractedWNCached();
         }
+        return true;
     }
     public function getSpamNovelListFromRanking(){
         $sId = "1c7ib7eh9KvT-GhAAFAgSUPyKlnzxK_cGvFe8UhPSkJA";
@@ -1726,7 +1727,8 @@ class SheetController extends Controller
     public function setTeamMonitoringGlobal(){
         // $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
         $title = "Lv. 1 Global Monitoring - ".$this->month_name;
-        $create = $this->CreateNewSpreadsheet($title);
+        $folder_id = "1HnZsqHGzJVuhXC84wtW-cVjj1OnAUIzu";
+        $create = $this->CreateNewSpreadsheet($title, $folder_id);
         $data = json_decode($create);
         $spreadsheetId = $data->spreadsheet_id;
 
@@ -1968,8 +1970,10 @@ class SheetController extends Controller
     }
     public function setTeamMonitoringIndo(){
         // $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
+
         $title = "Lv. 1 Indo Monitoring - ".$this->month_name;
-        $create = $this->CreateNewSpreadsheet($title);
+        $folder_id = "1_HV9_g9bXz2zi1efjstfF5LMF93ePWIH";
+        $create = $this->CreateNewSpreadsheet($title, $folder_id);
         $data = json_decode($create);
         $spreadsheetId = $data->spreadsheet_id;
         $page = $this->page;
@@ -2106,10 +2110,17 @@ class SheetController extends Controller
         // $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
         // REAL
         $spreadsheetId = "16xGw6KdeUzxASEnsXuIKIPawD5Dx6lSi52NohPp5u5s";
+
+        /** ---------------------
+        * DUPLICATE SPREADSHEET
+        ------------------------- */
+        $title = "Backup Weekly Lv. 2 Reports All Team Final - ".date('Y-m-d H:i:s');
+        $folder_id = "1yclgli3iOw_E36t4EOCgSs9Bc5VhsMkN";
+        $this->DuplicateSpreadsheet($spreadsheetId,$folder_id,$title);
+
         /*--------------------------
         | INSERT TO LEVEL 2 GLOBAL WEEKLY
         --------------------------------- */
-
         // TRIAL
         // $sheetId = 182102069;
 
@@ -2137,7 +2148,6 @@ class SheetController extends Controller
         $new_worksheet = "Indo Weekly Report";
         $level = "2";
         $values = $this->ReportWeeklyIndoFormat($page,$level);
-        // dd($values);
         $update_range = $new_worksheet."!A1:I1";
         $endindex = 5;
         $this->insertValuesIntoFirstRow($spreadsheetId,$values,$update_range,$endindex,$sheetId);
@@ -2156,6 +2166,16 @@ class SheetController extends Controller
         $spreadsheetId = "16xGw6KdeUzxASEnsXuIKIPawD5Dx6lSi52NohPp5u5s";
         $sheetId = 1190393942;
 
+        /** ---------------------
+        * DUPLICATE SPREADSHEET
+        ------------------------- */
+        $title = "Backup Monthly Lv. 2 Reports All Team Final - ".date('Y-m-d H:i:s');
+        $folder_id = "1xwJ_Meym3eVlsXC37c0aO-S3NDemv-tw";
+        $this->DuplicateSpreadsheet($spreadsheetId,$folder_id,$title);
+
+        /** ------------------------------
+        * SET INTO SPREADSHEET FIRST ROW
+        ---------------------------------- */
         $page = $this->page;
         $DateWeekly = $page->WeekFromDate(date('Y-m'));
 
@@ -2244,7 +2264,7 @@ class SheetController extends Controller
         }
         // dd($values);
         $update_range = $new_worksheet."!A1:I1";
-        $endindex = 20;
+        $endindex = 22;
         $this->insertValuesIntoFirstRow($spreadsheetId,$values,$update_range,$endindex,$sheetId);
     }
 }

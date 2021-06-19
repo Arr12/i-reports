@@ -8,7 +8,7 @@
             </a>
             <a href="javascript:void(0);" class="bars">
             </a>
-            <a class="navbar-brand" href="#">Global All Team Internal Reports</a>
+            <a class="navbar-brand" href="#">Internal Reports App</a>
         </div>
     </div>
 </nav>

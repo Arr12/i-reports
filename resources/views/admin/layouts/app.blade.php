@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <meta name="csrf-token" content="{!! csrf_token() !!}">
-    <title>Welcome To | Global All Team Internal Report</title>
+    <title>Welcome To | Internal Report</title>
     <!-- Favicon-->
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
@@ -78,12 +78,30 @@
     .desktop-toggle:hover{
         color: #fff;
     }
+    .dropdown-menu.pull-right{
+        border-radius: 10px;
+        padding: 10px 0;
+    }
+    button.sign-out {
+        border: 0;
+        padding: 5px 42px;
+        color: #000;
+    }
+    .btn{
+        border-radius: 30px !important;
+    }
     @media only screen and (min-width: 998px) {
+        .custom-row{
+            padding: 1rem 15rem;
+        }
         .navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand{
             margin-left:20px;
         }
     }
     @media only screen and (max-width: 998px) {
+        .custom-row{
+            padding: 0;
+        }
         .desktop-toggle{
             display:none;
         }
