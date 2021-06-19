@@ -1859,11 +1859,11 @@ class SheetController extends Controller
             $d_ame['daily']->whereNotNull('date')->count(),
             $d_ame['non_ex']->whereNotNull('first_touch')->count(),
             $d_ame['daily']->whereNotNull('fu_1')->count()+$d_ame['daily']->whereNotNull('fu_2')->count()+$d_ame['daily']->whereNotNull('fu_3')->count()+$d_ame['daily']->whereNotNull('fu_4')->count()+$d_ame['daily']->whereNotNull('fu_5')->count(),
-            $d_ame['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_ame['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_ame['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_ame['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_ame['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+            $d_ame['non_ex']->whereNotNull('fu_1')->count()+$d_ame['non_ex']->whereNotNull('fu_2')->count()+$d_ame['non_ex']->whereNotNull('fu_3')->count()+$d_ame['non_ex']->whereNotNull('fu_4')->count()+$d_ame['non_ex']->whereNotNull('fu_5')->count(),
             $d_ame['non_ex']->whereNotNull('sent_e_contract')->count(),
             $d_ame['non_ex']->whereNotNull('rec_e_contract')->count(),
             $d_ame['non_ex']->whereNotNull('email_sent')->count(),
-            $d_ame['non_ex']->whereNotNull('sent_royalty')->count()
+            $d_ame['daily']->whereNotNull('sent_royalty')->count()
         ];
         array_push($values, $v_ame);
         $v_anna = [
@@ -1871,11 +1871,11 @@ class SheetController extends Controller
             $d_anna['daily']->whereNotNull('date')->count(),
             $d_anna['non_ex']->whereNotNull('first_touch')->count(),
             $d_anna['daily']->whereNotNull('fu_1')->count()+$d_anna['daily']->whereNotNull('fu_2')->count()+$d_anna['daily']->whereNotNull('fu_3')->count()+$d_anna['daily']->whereNotNull('fu_4')->count()+$d_anna['daily']->whereNotNull('fu_5')->count(),
-            $d_anna['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_anna['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_anna['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_anna['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_anna['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+            $d_anna['non_ex']->whereNotNull('fu_1')->count()+$d_anna['non_ex']->whereNotNull('fu_2')->count()+$d_anna['non_ex']->whereNotNull('fu_3')->count()+$d_anna['non_ex']->whereNotNull('fu_4')->count()+$d_anna['non_ex']->whereNotNull('fu_5')->count(),
             $d_anna['non_ex']->whereNotNull('sent_e_contract')->count(),
             $d_anna['non_ex']->whereNotNull('rec_e_contract')->count(),
             $d_anna['non_ex']->whereNotNull('email_sent')->count(),
-            $d_anna['non_ex']->whereNotNull('sent_royalty')->count()
+            $d_anna['daily']->whereNotNull('sent_royalty')->count()
         ];
         array_push($values, $v_anna);
         $v_carol = [
@@ -1883,11 +1883,11 @@ class SheetController extends Controller
             $d_carol['daily']->whereNotNull('date')->count(),
             $d_carol['non_ex']->whereNotNull('first_touch')->count(),
             $d_carol['daily']->whereNotNull('fu_1')->count()+$d_carol['daily']->whereNotNull('fu_2')->count()+$d_carol['daily']->whereNotNull('fu_3')->count()+$d_carol['daily']->whereNotNull('fu_4')->count()+$d_carol['daily']->whereNotNull('fu_5')->count(),
-            $d_carol['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_carol['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_carol['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_carol['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_carol['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+            $d_carol['non_ex']->whereNotNull('fu_1')->count()+$d_carol['non_ex']->whereNotNull('fu_2')->count()+$d_carol['non_ex']->whereNotNull('fu_3')->count()+$d_carol['non_ex']->whereNotNull('fu_4')->count()+$d_carol['non_ex']->whereNotNull('fu_5')->count(),
             $d_carol['non_ex']->whereNotNull('sent_e_contract')->count(),
             $d_carol['non_ex']->whereNotNull('rec_e_contract')->count(),
             $d_carol['non_ex']->whereNotNull('email_sent')->count(),
-            $d_carol['non_ex']->whereNotNull('sent_royalty')->count()
+            $d_carol['daily']->whereNotNull('sent_royalty')->count()
         ];
         array_push($values, $v_carol);
         $v_eric = [
@@ -1895,11 +1895,11 @@ class SheetController extends Controller
             $d_eric['daily']->whereNotNull('date')->count(),
             $d_eric['non_ex']->whereNotNull('first_touch')->count(),
             $d_eric['daily']->whereNotNull('fu_1')->count()+$d_eric['daily']->whereNotNull('fu_2')->count()+$d_eric['daily']->whereNotNull('fu_3')->count()+$d_eric['daily']->whereNotNull('fu_4')->count()+$d_eric['daily']->whereNotNull('fu_5')->count(),
-            $d_eric['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_eric['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_eric['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_eric['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_eric['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+            $d_eric['non_ex']->whereNotNull('fu_1')->count()+$d_eric['non_ex']->whereNotNull('fu_2')->count()+$d_eric['non_ex']->whereNotNull('fu_3')->count()+$d_eric['non_ex']->whereNotNull('fu_4')->count()+$d_eric['non_ex']->whereNotNull('fu_5')->count(),
             $d_eric['non_ex']->whereNotNull('sent_e_contract')->count(),
             $d_eric['non_ex']->whereNotNull('rec_e_contract')->count(),
             $d_eric['non_ex']->whereNotNull('email_sent')->count(),
-            $d_eric['non_ex']->whereNotNull('sent_royalty')->count()
+            $d_eric['daily']->whereNotNull('sent_royalty')->count()
         ];
         array_push($values, $v_eric);
         $v_icha = [
@@ -1907,11 +1907,11 @@ class SheetController extends Controller
             $d_icha['daily']->whereNotNull('date')->count(),
             $d_icha['non_ex']->whereNotNull('first_touch')->count(),
             $d_icha['daily']->whereNotNull('fu_1')->count()+$d_icha['daily']->whereNotNull('fu_2')->count()+$d_icha['daily']->whereNotNull('fu_3')->count()+$d_icha['daily']->whereNotNull('fu_4')->count()+$d_icha['daily']->whereNotNull('fu_5')->count(),
-            $d_icha['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_icha['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_icha['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_icha['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_icha['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+            $d_icha['non_ex']->whereNotNull('fu_1')->count()+$d_icha['non_ex']->whereNotNull('fu_2')->count()+$d_icha['non_ex']->whereNotNull('fu_3')->count()+$d_icha['non_ex']->whereNotNull('fu_4')->count()+$d_icha['non_ex']->whereNotNull('fu_5')->count(),
             $d_icha['non_ex']->whereNotNull('sent_e_contract')->count(),
             $d_icha['non_ex']->whereNotNull('rec_e_contract')->count(),
             $d_icha['non_ex']->whereNotNull('email_sent')->count(),
-            $d_icha['non_ex']->whereNotNull('sent_royalty')->count()
+            $d_icha['daily']->whereNotNull('sent_royalty')->count()
         ];
         array_push($values, $v_icha);
         $v_lily = [
@@ -1919,11 +1919,11 @@ class SheetController extends Controller
             $d_lily['daily']->whereNotNull('date')->count(),
             $d_lily['non_ex']->whereNotNull('first_touch')->count(),
             $d_lily['daily']->whereNotNull('fu_1')->count()+$d_lily['daily']->whereNotNull('fu_2')->count()+$d_lily['daily']->whereNotNull('fu_3')->count()+$d_lily['daily']->whereNotNull('fu_4')->count()+$d_lily['daily']->whereNotNull('fu_5')->count(),
-            $d_lily['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_lily['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_lily['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_lily['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_lily['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+            $d_lily['non_ex']->whereNotNull('fu_1')->count()+$d_lily['non_ex']->whereNotNull('fu_2')->count()+$d_lily['non_ex']->whereNotNull('fu_3')->count()+$d_lily['non_ex']->whereNotNull('fu_4')->count()+$d_lily['non_ex']->whereNotNull('fu_5')->count(),
             $d_lily['non_ex']->whereNotNull('sent_e_contract')->count(),
             $d_lily['non_ex']->whereNotNull('rec_e_contract')->count(),
             $d_lily['non_ex']->whereNotNull('email_sent')->count(),
-            $d_lily['non_ex']->whereNotNull('sent_royalty')->count()
+            $d_lily['daily']->whereNotNull('sent_royalty')->count()
         ];
         array_push($values, $v_lily);
         $v_maydewi = [
@@ -1931,11 +1931,11 @@ class SheetController extends Controller
             $d_maydewi['daily']->whereNotNull('date')->count(),
             $d_maydewi['non_ex']->whereNotNull('first_touch')->count(),
             $d_maydewi['daily']->whereNotNull('fu_1')->count()+$d_maydewi['daily']->whereNotNull('fu_2')->count()+$d_maydewi['daily']->whereNotNull('fu_3')->count()+$d_maydewi['daily']->whereNotNull('fu_4')->count()+$d_maydewi['daily']->whereNotNull('fu_5')->count(),
-            $d_maydewi['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_maydewi['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_maydewi['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_maydewi['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_maydewi['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+            $d_maydewi['non_ex']->whereNotNull('fu_1')->count()+$d_maydewi['non_ex']->whereNotNull('fu_2')->count()+$d_maydewi['non_ex']->whereNotNull('fu_3')->count()+$d_maydewi['non_ex']->whereNotNull('fu_4')->count()+$d_maydewi['non_ex']->whereNotNull('fu_5')->count(),
             $d_maydewi['non_ex']->whereNotNull('sent_e_contract')->count(),
             $d_maydewi['non_ex']->whereNotNull('rec_e_contract')->count(),
             $d_maydewi['non_ex']->whereNotNull('email_sent')->count(),
-            $d_maydewi['non_ex']->whereNotNull('sent_royalty')->count()
+            $d_maydewi['daily']->whereNotNull('sent_royalty')->count()
         ];
         array_push($values, $v_maydewi);
         $v_rani = [
@@ -1943,11 +1943,11 @@ class SheetController extends Controller
             $d_rani['daily']->whereNotNull('date')->count(),
             $d_rani['non_ex']->whereNotNull('first_touch')->count(),
             $d_rani['daily']->whereNotNull('fu_1')->count()+$d_rani['daily']->whereNotNull('fu_2')->count()+$d_rani['daily']->whereNotNull('fu_3')->count()+$d_rani['daily']->whereNotNull('fu_4')->count()+$d_rani['daily']->whereNotNull('fu_5')->count(),
-            $d_rani['non_ex']->whereNotNull('fu_non_ex_1')->count()+$d_rani['non_ex']->whereNotNull('fu_non_ex_2')->count()+$d_rani['non_ex']->whereNotNull('fu_non_ex_3')->count()+$d_rani['non_ex']->whereNotNull('fu_non_ex_4')->count()+$d_rani['non_ex']->whereNotNull('fu_non_ex_5')->count(),
+            $d_rani['non_ex']->whereNotNull('fu_1')->count()+$d_rani['non_ex']->whereNotNull('fu_2')->count()+$d_rani['non_ex']->whereNotNull('fu_3')->count()+$d_rani['non_ex']->whereNotNull('fu_4')->count()+$d_rani['non_ex']->whereNotNull('fu_5')->count(),
             $d_rani['non_ex']->whereNotNull('sent_e_contract')->count(),
             $d_rani['non_ex']->whereNotNull('rec_e_contract')->count(),
             $d_rani['non_ex']->whereNotNull('email_sent')->count(),
-            $d_rani['non_ex']->whereNotNull('sent_royalty')->count()
+            $d_rani['daily']->whereNotNull('sent_royalty')->count()
         ];
         array_push($values, $v_rani);
 
