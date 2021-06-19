@@ -960,6 +960,8 @@ class SheetController extends Controller
                 ]);
             }
             DailyReportMaydewi::insert($savedData);
+            Cache::forget('cache-maydewi');
+            $this->page->DataMaydewiCached();
         }
         return true;
     }
@@ -1047,6 +1049,8 @@ class SheetController extends Controller
                 ]);
             }
             DailyReportRani::insert($savedData);
+            Cache::forget('cache-rani');
+            $this->page->DataRaniCached();
         }
         return true;
     }
@@ -1131,6 +1135,8 @@ class SheetController extends Controller
                 ]);
             }
             DailyReportIndoIchaNur::insert($savedData);
+            Cache::forget('cache-ichanur');
+            $this->page->DataIndoIchaNurCached();
         }
         return true;
     }
@@ -1208,6 +1214,8 @@ class SheetController extends Controller
                 ]);
             }
             DailyReportIndoIrel::insert($savedData);
+            Cache::forget('cache-irel');
+            $this->page->DataIndoIrelCached();
         }
         return true;
     }
@@ -1305,6 +1313,8 @@ class SheetController extends Controller
                 ]);
             }
             NonExclusiveReport::insert($savedData);
+            Cache::forget('cache-non-exclusive');
+            $this->page->DataNonExCached();
         }
         return true;
     }
@@ -1436,6 +1446,8 @@ class SheetController extends Controller
             }
             // dump($savedData);
             ReportSpamMangatoonNovelList::insert($savedData);
+            Cache::forget('cache-mangatoon');
+            $this->page->DataSpamMangatoonCached();
         }
         return true;
     }
@@ -1508,6 +1520,8 @@ class SheetController extends Controller
             }
             // dd($savedData);
             ReportSpamWNUncoractedNovelList::insert($savedData);
+            Cache::forget('cache-wn_uncontracted');
+            $this->page->DataUncontractedWNCached();
         }
     }
     public function getSpamNovelListFromRanking(){

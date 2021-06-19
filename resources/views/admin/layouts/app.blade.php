@@ -56,47 +56,37 @@
     .btn-primary .material-icons{
         color: #fff !important;
     }
-    /* section.content{
+    section.content{
         margin: 100px 15px 0 15px;
-    } */
-    .navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand{
-        margin-left:20px;
     }
-    .ls-closed .bars:before {
-        content: "\E5D2";
-        -moz-transform: scale(1);
-        -ms-transform: scale(1);
-        -o-transform: scale(1);
-        -webkit-transform: scale(1);
-        transform: scale(1);
+    .desktop-toggle-hide{
+        margin-left: -300px;
     }
-    .ls-closed .bars:after {
-        content: "\E5C4";
-        -moz-transform: scale(0);
-        -ms-transform: scale(0);
-        -o-transform: scale(0);
-        -webkit-transform: scale(0);
-        transform: scale(0);
-    }
-    .overlay-open .bars:before {
-        -moz-transform: scale(0);
-        -ms-transform: scale(0);
-        -o-transform: scale(0);
-        -webkit-transform: scale(0);
-        transform: scale(0);
-    }
-    .overlay-open .bars:after {
-        -moz-transform: scale(1);
-        -ms-transform: scale(1);
-        -o-transform: scale(1);
-        -webkit-transform: scale(1);
-        transform: scale(1);
-    }
-    .overlay-open .sidebar {
+    .desktop-toggle-show{
         margin-left: 0;
+    }
+    .sidebar {
         z-index: 99999999;
     }
+    .desktop-toggle{
+        position: absolute;
+        left: 20px;
+        top: 23px;
+        color: #fff;
+        cursor: pointer;
+    }
+    .desktop-toggle:hover{
+        color: #fff;
+    }
+    @media only screen and (min-width: 998px) {
+        .navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand{
+            margin-left:20px;
+        }
+    }
     @media only screen and (max-width: 998px) {
+        .desktop-toggle{
+            display:none;
+        }
         .ls-closed section.content{
             margin-left:0;
             margin-right:0;
@@ -155,12 +145,12 @@
     <script src="/plugins/morrisjs/morris.js"></script>
 
     {{-- Custom JS --}}
-<script src="/plugins/momentjs/moment.js"></script>
-<script src="/plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
-<script src="/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
-<script src="/plugins/bootstrap-select/js/bootstrap-select.js"></script>
-<script src="/plugins/autosize/autosize.js"></script>
-<script src="/js/pages/forms/basic-form-elements.js"></script>
+    <script src="/plugins/momentjs/moment.js"></script>
+    <script src="/plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
+    <script src="/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+    <script src="/plugins/bootstrap-select/js/bootstrap-select.js"></script>
+    <script src="/plugins/autosize/autosize.js"></script>
+    <script src="/js/pages/forms/basic-form-elements.js"></script>
 
     @stack('after-script')
 
@@ -179,6 +169,15 @@
             }
             return skeletonHTML;
         }
+        $(".desktop-toggle").on('click',function(){
+            if($(".sidebar").hasClass("desktop-toggle-show")){
+                $(".sidebar").addClass("desktop-toggle-hide");
+                $(".sidebar").removeClass("desktop-toggle-show");
+            }else{
+                $(".sidebar").addClass("desktop-toggle-show");
+                $(".sidebar").removeClass("desktop-toggle-hide");
+            }
+        });
     </script>
     <!-- Custom Js -->
     <script src="/js/admin.js"></script>

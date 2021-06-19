@@ -3,7 +3,7 @@
 @endphp
 <section>
     <!-- Left Sidebar -->
-    <aside id="leftsidebar" class="sidebar">
+    <aside id="leftsidebar" class="sidebar desktop-toggle-hide">
         <!-- User Info -->
         <div class="user-info">
             <div class="image">
