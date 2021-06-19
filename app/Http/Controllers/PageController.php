@@ -4098,7 +4098,7 @@ class PageController extends Controller
             $dIchaNur['fu_3']->whereNotNull('fu_3')->count()+
             $dIchaNur['fu_4']->whereNotNull('fu_4')->count()+
             $dIchaNur['fu_5']->whereNotNull('fu_5')->count(),
-            $dIchaNur['sent_royalty']->whereNotNull('sent_royalty')->count(),
+            $dIchaNur['data_sent']->whereNotNull('data_sent')->count(),
             '0',
             '',
             '',
