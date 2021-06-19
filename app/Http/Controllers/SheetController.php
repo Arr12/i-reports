@@ -1757,49 +1757,48 @@ class SheetController extends Controller
         }
 
         $ame = $page->dataGlobalTeamMonitoringAme($date);
-        $anna = $page->dataGlobalTeamMonitoringAnna($date);
-        $Carol = $page->dataGlobalTeamMonitoringCarol($date);
-        $Eric = $page->dataGlobalTeamMonitoringEric($date);
-        $Icha = $page->dataGlobalTeamMonitoringIcha($date);
-        $Lily = $page->dataGlobalTeamMonitoringLily($date);
-        $Maydewi = $page->dataGlobalTeamMonitoringMaydewi($date);
-        $Rani = $page->dataGlobalTeamMonitoringRani($date);
-
         $v_ame = [];
         $v_ame = $this->dataSanitizerTeamMonitoring($v_ame,$this->n_ame,$this->head_global,$ame['data']);
         $update_range = $update_worksheet."!A:I";
         $this->updateTeamMonitoring($spreadsheetId,$v_ame,$update_range);
 
+        $anna = $page->dataGlobalTeamMonitoringAnna($date);
         $v_anna = [];
         $v_anna = $this->dataSanitizerTeamMonitoring($v_anna,$this->n_anna,$this->head_global,$anna['data']);
         $update_range = $update_worksheet."!J:R";
         $this->updateTeamMonitoring($spreadsheetId,$v_anna,$update_range);
 
+        $Carol = $page->dataGlobalTeamMonitoringCarol($date);
         $v_Carol = [];
         $v_Carol = $this->dataSanitizerTeamMonitoring($v_Carol,$this->n_Carol,$this->head_global,$Carol['data']);
         $update_range = $update_worksheet."!S:AA";
         $this->updateTeamMonitoring($spreadsheetId,$v_Carol,$update_range);
 
+        $Eric = $page->dataGlobalTeamMonitoringEric($date);
         $v_Eric = [];
         $v_Eric = $this->dataSanitizerTeamMonitoring($v_Eric,$this->n_Eric,$this->head_global,$Eric['data']);
         $update_range = $update_worksheet."!AB:AJ";
         $this->updateTeamMonitoring($spreadsheetId,$v_Eric,$update_range);
 
+        $Icha = $page->dataGlobalTeamMonitoringIcha($date);
         $v_Icha = [];
         $v_Icha = $this->dataSanitizerTeamMonitoring($v_Icha,$this->n_Icha,$this->head_global,$Icha['data']);
         $update_range = $update_worksheet."!AK:AS";
         $this->updateTeamMonitoring($spreadsheetId,$v_Icha,$update_range);
 
+        $Lily = $page->dataGlobalTeamMonitoringLily($date);
         $v_Lily = [];
         $v_Lily = $this->dataSanitizerTeamMonitoring($v_Lily,$this->n_Lily,$this->head_global,$Lily['data']);
         $update_range = $update_worksheet."!AT:BB";
         $this->updateTeamMonitoring($spreadsheetId,$v_Lily,$update_range);
 
+        $Maydewi = $page->dataGlobalTeamMonitoringMaydewi($date);
         $v_Maydewi = [];
         $v_Maydewi = $this->dataSanitizerTeamMonitoring($v_Maydewi,$this->n_Maydewi,$this->head_global,$Maydewi['data']);
         $update_range = $update_worksheet."!BC:BK";
         $this->updateTeamMonitoring($spreadsheetId,$v_Maydewi,$update_range);
 
+        $Rani = $page->dataGlobalTeamMonitoringRani($date);
         $v_Rani = [];
         $v_Rani = $this->dataSanitizerTeamMonitoring($v_Rani,$this->n_Rani,$this->head_global,$Rani['data']);
         $update_range = $update_worksheet."!BL:BT";

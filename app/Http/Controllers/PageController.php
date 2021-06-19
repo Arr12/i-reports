@@ -3551,6 +3551,9 @@ class PageController extends Controller
             "Non Exclusive",
             "Royalty"
         ];
+        foreach ($title as $key => $value) {
+            array_push($data_array['columns'], ["title" => $value]);
+        }
         $xdate = explode(",", $date);
         $d = $this->DataRani($xdate[0], $xdate[1]);
         // dd($d);
