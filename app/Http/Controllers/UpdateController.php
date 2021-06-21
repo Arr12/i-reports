@@ -49,6 +49,7 @@ class UpdateController extends Controller
                         $kolom = [];
                         break;
                 }
+                $data_inputed = 0;
                 foreach ($kolom as $key => $value) {
                     if (!$data[$value]) {
                         $isi = [
@@ -58,6 +59,25 @@ class UpdateController extends Controller
                         Cache::forget('cache-ame');
                         $this->page->DataAmeCached();
                         return ['data' => 200];
+                    }
+                    else{
+                        $data_inputed++;
+                    }
+                }
+                if($data_inputed == 5){
+                    foreach ($kolom as $key => $value) {
+                        $last_fu = Cache::get('number-fu-ame-'.$id, 1);
+                        if($value == 'fu_'.$last_fu){
+                            $isi = [
+                                $value => $date
+                            ];
+                            $data->update($isi);
+                            Cache::forget('number-fu-ame-'.$id);
+                            Cache::put('number-fu-ame-'.$id, $last_fu==5?$last_fu=1:$last_fu+1);
+                            Cache::forget('cache-ame');
+                            $this->page->DataAmeCached();
+                            return ['data' => 200];
+                        }
                     }
                 }
                 break;
@@ -77,6 +97,7 @@ class UpdateController extends Controller
                         $kolom = [];
                         break;
                 }
+                $data_inputed = 0;
                 foreach ($kolom as $key => $value) {
                     if (!$data[$value]) {
                         $isi = [
@@ -86,6 +107,24 @@ class UpdateController extends Controller
                         Cache::forget('cache-anna');
                         $this->page->DataAnnaCached();
                         return ['data' => 200];
+                    }else{
+                        $data_inputed++;
+                    }
+                }
+                if($data_inputed == 5){
+                    foreach ($kolom as $key => $value) {
+                        $last_fu = Cache::get('number-fu-anna-'.$id, 1);
+                        if($value == 'fu_'.$last_fu){
+                            $isi = [
+                                $value => $date
+                            ];
+                            $data->update($isi);
+                            Cache::forget('number-fu-anna-'.$id);
+                            Cache::put('number-fu-anna-'.$id, $last_fu==5?$last_fu=1:$last_fu+1);
+                            Cache::forget('cache-anna');
+                            $this->page->DataAnnaCached();
+                            return ['data' => 200];
+                        }
                     }
                 }
                 break;
@@ -105,6 +144,7 @@ class UpdateController extends Controller
                         $kolom = [];
                         break;
                 }
+                $data_inputed = 0;
                 foreach ($kolom as $key => $value) {
                     if (!$data[$value]) {
                         $isi = [
@@ -114,6 +154,24 @@ class UpdateController extends Controller
                         Cache::forget('cache-carol');
                         $this->page->DataCarolCached();
                         return ['data' => 200];
+                    }else{
+                        $data_inputed++;
+                    }
+                }
+                if($data_inputed == 5){
+                    foreach ($kolom as $key => $value) {
+                        $last_fu = Cache::get('number-fu-carol-'.$id, 1);
+                        if($value == 'fu_'.$last_fu){
+                            $isi = [
+                                $value => $date
+                            ];
+                            $data->update($isi);
+                            Cache::forget('number-fu-carol-'.$id);
+                            Cache::put('number-fu-carol-'.$id, $last_fu==5?$last_fu=1:$last_fu+1);
+                            Cache::forget('cache-carol');
+                            $this->page->DataCarolCached();
+                            return ['data' => 200];
+                        }
                     }
                 }
                 break;
@@ -133,6 +191,7 @@ class UpdateController extends Controller
                         $kolom = [];
                         break;
                 }
+                $data_inputed = 0;
                 foreach ($kolom as $key => $value) {
                     if (!$data[$value]) {
                         $isi = [
@@ -142,6 +201,24 @@ class UpdateController extends Controller
                         Cache::forget('cache-eric');
                         $this->page->DataEricCached();
                         return ['data' => 200];
+                    } else {
+                        $data_inputed++;
+                    }
+                }
+                if($data_inputed == 5){
+                    foreach ($kolom as $key => $value) {
+                        $last_fu = Cache::get('number-fu-eric-'.$id, 1);
+                        if($value == 'fu_'.$last_fu){
+                            $isi = [
+                                $value => $date
+                            ];
+                            $data->update($isi);
+                            Cache::forget('number-fu-eric-'.$id);
+                            Cache::put('number-fu-eric-'.$id, $last_fu==5?$last_fu=1:$last_fu+1);
+                            Cache::forget('cache-eric');
+                            $this->page->DataEricCached();
+                            return ['data' => 200];
+                        }
                     }
                 }
                 break;
@@ -161,6 +238,7 @@ class UpdateController extends Controller
                         $kolom = [];
                         break;
                 }
+                $data_inputed = 0;
                 foreach ($kolom as $key => $value) {
                     if (!$data[$value]) {
                         $isi = [
@@ -170,6 +248,24 @@ class UpdateController extends Controller
                         Cache::forget('cache-icha');
                         $this->page->DataIchaCached();
                         return ['data' => 200];
+                    } else {
+                        $data_inputed++;
+                    }
+                }
+                if($data_inputed == 5){
+                    foreach ($kolom as $key => $value) {
+                        $last_fu = Cache::get('number-fu-icha-'.$id, 1);
+                        if($value == 'fu_'.$last_fu){
+                            $isi = [
+                                $value => $date
+                            ];
+                            $data->update($isi);
+                            Cache::forget('number-fu-icha-'.$id);
+                            Cache::put('number-fu-icha-'.$id, $last_fu==5?$last_fu=1:$last_fu+1);
+                            Cache::forget('cache-icha');
+                            $this->page->DataIchaCached();
+                            return ['data' => 200];
+                        }
                     }
                 }
                 break;
@@ -189,6 +285,7 @@ class UpdateController extends Controller
                         $kolom = [];
                         break;
                 }
+                $data_inputed = 0;
                 foreach ($kolom as $key => $value) {
                     if (!$data[$value]) {
                         $isi = [
@@ -198,6 +295,24 @@ class UpdateController extends Controller
                         Cache::forget('cache-lily');
                         $this->page->DataLilyCached();
                         return ['data' => 200];
+                    } else {
+                        $data_inputed++;
+                    }
+                }
+                if($data_inputed == 5){
+                    foreach ($kolom as $key => $value) {
+                        $last_fu = Cache::get('number-fu-lily-'.$id, 1);
+                        if($value == 'fu_'.$last_fu){
+                            $isi = [
+                                $value => $date
+                            ];
+                            $data->update($isi);
+                            Cache::forget('number-fu-lily-'.$id);
+                            Cache::put('number-fu-lily-'.$id, $last_fu==5?$last_fu=1:$last_fu+1);
+                            Cache::forget('cache-lily');
+                            $this->page->DataLilyCached();
+                            return ['data' => 200];
+                        }
                     }
                 }
                 break;
@@ -217,6 +332,7 @@ class UpdateController extends Controller
                         $kolom = [];
                         break;
                 }
+                $data_inputed = 0;
                 foreach ($kolom as $key => $value) {
                     if (!$data[$value]) {
                         $isi = [
@@ -226,6 +342,24 @@ class UpdateController extends Controller
                         Cache::forget('cache-maydewi');
                         $this->page->DataMaydewiCached();
                         return ['data' => 200];
+                    } else {
+                        $data_inputed++;
+                    }
+                }
+                if($data_inputed == 5){
+                    foreach ($kolom as $key => $value) {
+                        $last_fu = Cache::get('number-fu-ame-'.$id, 1);
+                        if($value == 'fu_'.$last_fu){
+                            $isi = [
+                                $value => $date
+                            ];
+                            $data->update($isi);
+                            Cache::forget('number-fu-ame-'.$id);
+                            Cache::put('number-fu-ame-'.$id, $last_fu==5?$last_fu=1:$last_fu+1);
+                            Cache::forget('cache-ame');
+                            $this->page->DataAmeCached();
+                            return ['data' => 200];
+                        }
                     }
                 }
                 break;
@@ -245,6 +379,7 @@ class UpdateController extends Controller
                         $kolom = [];
                         break;
                 }
+                $data_inputed = 0;
                 foreach ($kolom as $key => $value) {
                     if (!$data[$value]) {
                         $isi = [
@@ -254,6 +389,24 @@ class UpdateController extends Controller
                         Cache::forget('cache-rani');
                         $this->page->DataRaniCached();
                         return ['data' => 200];
+                    } else {
+                        $data_inputed++;
+                    }
+                }
+                if($data_inputed == 5){
+                    foreach ($kolom as $key => $value) {
+                        $last_fu = Cache::get('number-fu-rani-'.$id, 1);
+                        if($value == 'fu_'.$last_fu){
+                            $isi = [
+                                $value => $date
+                            ];
+                            $data->update($isi);
+                            Cache::forget('number-fu-rani-'.$id);
+                            Cache::put('number-fu-rani-'.$id, $last_fu==5?$last_fu=1:$last_fu+1);
+                            Cache::forget('cache-rani');
+                            $this->page->DataRaniCached();
+                            return ['data' => 200];
+                        }
                     }
                 }
                 break;
@@ -270,6 +423,7 @@ class UpdateController extends Controller
                         $kolom = [];
                         break;
                 }
+                $data_inputed = 0;
                 foreach ($kolom as $key => $value) {
                     if (!$data[$value]) {
                         $isi = [
@@ -279,6 +433,24 @@ class UpdateController extends Controller
                         Cache::forget('cache-ichanur');
                         $this->page->DataIndoIchaNurCached();
                         return ['data' => 200];
+                    } else {
+                        $data_inputed++;
+                    }
+                }
+                if($data_inputed == 5){
+                    foreach ($kolom as $key => $value) {
+                        $last_fu = Cache::get('number-fu-ichanur-'.$id, 1);
+                        if($value == 'fu_'.$last_fu){
+                            $isi = [
+                                $value => $date
+                            ];
+                            $data->update($isi);
+                            Cache::forget('number-fu-ichanur-'.$id);
+                            Cache::put('number-fu-ichanur-'.$id, $last_fu==5?$last_fu=1:$last_fu+1);
+                            Cache::forget('cache-ichanur');
+                            $this->page->DataIndoIchaNurCached();
+                            return ['data' => 200];
+                        }
                     }
                 }
                 break;
@@ -292,6 +464,7 @@ class UpdateController extends Controller
                         $kolom = [];
                         break;
                 }
+                $data_inputed = 0;
                 foreach ($kolom as $key => $value) {
                     if (!$data[$value]) {
                         $isi = [
@@ -301,6 +474,24 @@ class UpdateController extends Controller
                         Cache::forget('cache-irel');
                         $this->page->DataIndoIrelCached();
                         return ['data' => 200];
+                    } else {
+                        $data_inputed++;
+                    }
+                }
+                if($data_inputed == 10){
+                    foreach ($kolom as $key => $value) {
+                        $last_fu = Cache::get('number-fu-irel-'.$id, 1);
+                        if($value == 'fu_'.$last_fu){
+                            $isi = [
+                                $value => $date
+                            ];
+                            $data->update($isi);
+                            Cache::forget('number-fu-irel-'.$id);
+                            Cache::put('number-fu-irel-'.$id, $last_fu==5?$last_fu=1:$last_fu+1);
+                            Cache::forget('cache-irel');
+                            $this->page->DataIndoIrelCached();
+                            return ['data' => 200];
+                        }
                     }
                 }
                 break;
@@ -335,6 +526,7 @@ class UpdateController extends Controller
                         $kolom = [];
                         break;
                 }
+                $data_inputed = 0;
                 foreach ($kolom as $key => $value) {
                     if (!$data[$value]) {
                         $isi = [
@@ -344,6 +536,24 @@ class UpdateController extends Controller
                         Cache::forget('cache-non-exclusive');
                         $this->page->DataNonExCached();
                         return ['data' => 200];
+                    } else {
+                        $data_inputed++;
+                    }
+                }
+                if($data_inputed == 5){
+                    foreach ($kolom as $key => $value) {
+                        $last_fu = Cache::get('number-fu-non-exclusive-'.$id, 1);
+                        if($value == 'fu_'.$last_fu){
+                            $isi = [
+                                $value => $date
+                            ];
+                            $data->update($isi);
+                            Cache::forget('number-fu-non-exclusive-'.$id);
+                            Cache::put('number-fu-non-exclusive-'.$id, $last_fu==5?$last_fu=1:$last_fu+1);
+                            Cache::forget('cache-non-exclusive');
+                            $this->page->DataNonExCached();
+                            return ['data' => 200];
+                        }
                     }
                 }
                 break;

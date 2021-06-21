@@ -166,7 +166,24 @@ class PageController extends Controller
         return $selects;
     }
     public function index(){
-        return view('admin.pages.home');
+        $arr = [];
+        $result = array_merge($this->personGlobal, $this->personIndo);
+        $arr['person'] = $result;
+        $arr['data'] = [
+            DailyReportAme::select('date')->where('created_at','>=',"NOW()")->count(),
+            DailyReportAnna::select('date')->where('created_at','>=',"NOW()")->count(),
+            DailyReportCarol::select('date')->where('created_at','>=',"NOW()")->count(),
+            DailyReportEric::select('date')->where('created_at','>=',"NOW()")->count(),
+            DailyReportIcha::select('date')->where('created_at','>=',"NOW()")->count(),
+            DailyReportLily::select('date')->where('created_at','>=',"NOW()")->count(),
+            DailyReportMaydewi::select('date')->where('created_at','>=',"NOW()")->count(),
+            DailyReportRani::select('date')->where('created_at','>=',"NOW()")->count(),
+            DailyReportIndoIchaNur::select('date')->where('created_at','>=',"NOW()")->count(),
+            DailyReportIndoIrel::select('date')->where('created_at','>=',"NOW()")->count(),
+        ];
+        return view('admin.pages.home', [
+            'datas' => $arr
+        ]);
     }
     public function DailyReportMarker(){
         return view('admin.pages.daily-report.marker.daily-report-complete-marker');
