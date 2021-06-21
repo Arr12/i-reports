@@ -207,7 +207,7 @@ $(document).ready(function(){
                 </h2>
                 <ul class="header-dropdown m-r--5">
                     <li class="dropdown">
-                        <button id='getDataDaily' class="btn btn-primary" data-href="{{ $get_person_data }}?d={{$person}}" role="button" aria-haspopup="true" aria-expanded="false">
+                        <button id='getDataDaily' class="btn btn-primary" data-href="{{ $get_person_data }}?d=indo-{{$person}}" role="button" aria-haspopup="true" aria-expanded="false">
                             <i class="material-icons">file_download</i> Import
                         </button>
                     </li>
