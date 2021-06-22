@@ -77,7 +77,7 @@ let TabelIndo = function(url){
             let arr = [];
             for(let i=0;i<json.columns.length;i++){
                 let title = json.columns[i].title;
-                arr.push("<a class='btn btn-primary waves-effect toggle-vis' data-column-indo='"+i+"'>"+title+"</a>");
+                arr.push("<a class='btn btn-primary waves-effect toggle-vis2' data-column-indo='"+i+"'>"+title+"</a>");
             }
             let combine = arr.join();
             let fix = combine.replace(/,/g, '');
@@ -90,9 +90,15 @@ let TabelIndo = function(url){
                 searching: true,
                 // order: [[0,'desc']]
             });
-            $('a.toggle-vis').on( 'click', function (e) {
+            $('a.toggle-vis2').on( 'click', function (e) {
                 e.preventDefault();
-
+                if($(this).hasClass('btn-warning')){
+                    $(this).addClass('btn-primary');
+                    $(this).removeClass('btn-warning');
+                }else{
+                    $(this).addClass('btn-warning');
+                    $(this).removeClass('btn-primary');
+                }
                 // Get the column API object
                 let column = table.column( $(this).attr('data-column-indo') );
 
@@ -107,6 +113,11 @@ $(document).ready(function(){
     Tabel(url_dx);
     let url_dx2 = "{{route('daily-report-marker.marker.data')}}?d=indo";
     TabelIndo(url_dx2);
+});
+$('#BtnSearchData').on('click',function(){
+    let person = $('#select_person').val();
+    let url_dx = "{{route('daily-report-marker.marker.data')}}?d=global&p="+person;
+    Tabel(url_dx);
 });
 </script>
 @endpush
@@ -140,6 +151,21 @@ $(document).ready(function(){
                 </h2>
             </div>
             <div class="body">
+                <div class="row custom-row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <div class="form-line">
+                                <select class="form-control show-tick" id="select_person">
+                                    <option value="">Select Person Global</option>
+                                    @foreach ($personGlobal as $key => $data)
+                                        <option value="{{ $data }}">{{ $data }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <button type="button" id="BtnSearchData" class="btn btn-block btn-primary waves-effect"><i class="material-icons">search</i> Search Author Contact</button>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <p>Hide column:</p>

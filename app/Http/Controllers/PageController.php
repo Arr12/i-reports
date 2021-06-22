@@ -186,7 +186,10 @@ class PageController extends Controller
         ]);
     }
     public function DailyReportMarker(){
-        return view('admin.pages.daily-report.marker.daily-report-complete-marker');
+        return view('admin.pages.daily-report.marker.daily-report-complete-marker',[
+            'personGlobal' => $this->personGlobal,
+            'personIndo' => $this->personIndo
+        ]);
     }
     public function DailyReportAmes(){
         $selects = $this->CachedDataSelects();
@@ -727,7 +730,8 @@ class PageController extends Controller
         if($request->input('d') == 'indo'){
             $x = $this->ReportMarkerIndo();
         } else {
-            $x = $this->ReportMarkerGlobal();
+            $person = $request->input('p') ?: false;
+            $x = $this->ReportMarkerGlobal($person);
         }
         return $x;
     }
@@ -809,7 +813,7 @@ class PageController extends Controller
         }
         return $data_array;
     }
-    public function ReportMarkerGlobal(){
+    public function ReportMarkerGlobal($p){
         /* --------------
         / HEAD DATA
         --------------- */
@@ -846,7 +850,11 @@ class PageController extends Controller
         foreach ($title as $key => $value) {
             array_push($data_array['columns'], ["title" => $value]);
         }
-        $persons = $this->personGlobal;
+        if(!$p || $p == ''){
+            $persons = $this->personGlobal;
+        } else {
+            $persons = [$p];
+        }
         $no = 1;
         foreach($persons as $key => $person){
             switch ($person) {
