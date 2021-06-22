@@ -297,15 +297,15 @@ $(document).ready(function(){
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="form-group form-float">
+                            <label>Date</label>
                             <div class="form-line">
                                 <input type="date" class="form-control" id="date" />
-                                <label class="form-label">Date</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label class="form-label">Status</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="status" />
-                                <label class="form-label">Status</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
@@ -317,9 +317,9 @@ $(document).ready(function(){
                             </select>
                         </div>
                         <div class="form-group form-float">
+                            <label>Author Contact</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="author_contact" />
-                                <label class="form-label">Author Contact</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
@@ -341,63 +341,63 @@ $(document).ready(function(){
                             </select>
                         </div>
                         <div class="form-group form-float">
+                            <label>Username</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="platform_user" />
-                                <label class="form-label">Username</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Title</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="platform_title" />
-                                <label class="form-label">Title</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Webnovel Username</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="username" />
-                                <label class="form-label">Webnovel Username</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>CBID/BOOK ID</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="cbid" />
-                                <label class="form-label">CBID/BOOK ID</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Book Title</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="title" />
-                                <label class="form-label">Book Title</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Genre</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="genre" />
-                                <label class="form-label">Genre</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Plot</label>
                             <div class="form-line">
                                 <textarea id="plot" rows="4" class="form-control no-resize"></textarea>
-                                <label class="form-label">Plot</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>4K + ?</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="k4" />
-                                <label class="form-label">4K + ?</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Maintain Account</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="maintain_account" />
-                                <label class="form-label">Maintain Account</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Old/New Book</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="old_new_book" />
-                                <label class="form-label">Old/New Book</label>
                             </div>
                         </div>
                     </div>
@@ -444,9 +444,9 @@ $(document).ready(function(){
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Date</label>
                             <div class="form-line">
                                 <input type="date" class="form-control" id="row_date" value="{{date('Y-m-d')}}" />
-                                <label class="form-label">Date</label>
                             </div>
                         </div>
                     </div>

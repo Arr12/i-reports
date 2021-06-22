@@ -283,87 +283,87 @@ $(document).ready(function(){
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="form-group form-float">
+                            <label>Date</label>
                             <div class="form-line">
                                 <input type="date" class="form-control" id="date" />
-                                <label class="form-label">Date</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Reasons</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="reasons" />
-                                <label class="form-label">Reasons</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Book Name</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="book_name" />
-                                <label class="form-label">Book Name</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Author Name</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="author_name" />
-                                <label class="form-label">Author Name</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Views</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="views" />
-                                <label class="form-label">Views</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Likes</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="likes" />
-                                <label class="form-label">Likes</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Ratings</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="ratings" />
-                                <label class="form-label">Ratings</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Update Status</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="update_status" />
-                                <label class="form-label">Update Status</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Tags</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="tags" />
-                                <label class="form-label">Tags</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Episodes</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="episodes" />
-                                <label class="form-label">Episodes</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Link</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="link" />
-                                <label class="form-label">Link</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Screenshot from Wave</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="screenshot_from_wave" />
-                                <label class="form-label">Screenshot from Wave</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Author Feedback</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="author_feedback" />
-                                <label class="form-label">Author Feedback</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Comment from Wave</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="comment_from_wave" />
-                                <label class="form-label">Comment from Wave</label>
                             </div>
                         </div>
                     </div>
@@ -406,9 +406,9 @@ $(document).ready(function(){
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Date</label>
                             <div class="form-line">
                                 <input type="date" class="form-control" id="row_date" value="{{date('Y-m-d')}}" />
-                                <label class="form-label">Date</label>
                             </div>
                         </div>
                     </div>

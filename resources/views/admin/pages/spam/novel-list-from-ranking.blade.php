@@ -247,9 +247,9 @@ $(document).ready(function(){
                     <div class="col-sm-12">
                         @foreach ($array_input["id"] as $key => $value)
                             <div class="form-group form-float">
+                                <label>{{$array_input['label'][$key]}}</label>
                                 <div class="form-line">
                                     <input type="text" class="form-control" id="{{$value}}" />
-                                    <label class="form-label">{{$array_input['label'][$key]}}</label>
                                 </div>
                             </div>
                         @endforeach

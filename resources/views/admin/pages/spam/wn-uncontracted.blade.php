@@ -293,13 +293,13 @@ $(document).ready(function(){
                     <div class="col-sm-12">
                         @foreach ($array_input["id"] as $key => $value)
                         <div class="form-group form-float">
+                            <label>{{$array_input['label'][$key]}}</label>
                             <div class="form-line">
                                     @if($value == 'date')
                                     <input type="date" class="form-control" id="{{$value}}" />
                                     @else
                                     <input type="text" class="form-control" id="{{$value}}" />
                                     @endif
-                                    <label class="form-label">{{$array_input['label'][$key]}}</label>
                                 </div>
                             </div>
                         @endforeach
@@ -343,9 +343,9 @@ $(document).ready(function(){
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Date</label>
                             <div class="form-line">
                                 <input type="date" class="form-control" id="row_date" value="{{date('Y-m-d')}}" />
-                                <label class="form-label">Date</label>
                             </div>
                         </div>
                     </div>

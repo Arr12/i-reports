@@ -289,21 +289,21 @@ $(document).ready(function(){
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="form-group form-float">
+                            <label>Date</label>
                             <div class="form-line">
                                 <input type="date" class="form-control" id="date" />
-                                <label class="form-label">Date</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Global Editor</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="global_editor" />
-                                <label class="form-label">Global Editor</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Author Contact</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="author_contact" />
-                                <label class="form-label">Author Contact</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
@@ -315,81 +315,81 @@ $(document).ready(function(){
                             </select>
                         </div>
                         <div class="form-group form-float">
+                            <label>Username</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="username" />
-                                <label class="form-label">Username</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Title</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="title" />
-                                <label class="form-label">Title</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Book Status</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="book_status" />
-                                <label class="form-label">Book Status</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Latest Update</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="latest_update" />
-                                <label class="form-label">Latest Update</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Book ID</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="book_id" />
-                                <label class="form-label">Book ID</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Sent E Contract</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="sent_e_contract" />
-                                <label class="form-label">Sent E Contract</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Officer</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="officer" />
-                                <label class="form-label">Officer</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Date Sent</label>
                             <div class="form-line">
                                 <input type="date" class="form-control" id="date_sent" />
-                                <label class="form-label">Date Sent</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>AND Notes</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="and_notes" />
-                                <label class="form-label">AND Notes</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Global Editor Notes</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="global_editor_notes" />
-                                <label class="form-label">Global Editor Notes</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>PDF Evidence</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="pdf_evidence" />
-                                <label class="form-label">PDF Evidence</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>AND Evidence</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="and_evidence" />
-                                <label class="form-label">AND Evidence</label>
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Global Evidence</label>
                             <div class="form-line">
                                 <input type="text" class="form-control" id="global_evidence" />
-                                <label class="form-label">Global Evidence</label>
                             </div>
                         </div>
                     </div>
@@ -446,9 +446,9 @@ $(document).ready(function(){
                             </div>
                         </div>
                         <div class="form-group form-float">
+                            <label>Date</label>
                             <div class="form-line">
                                 <input type="date" class="form-control" id="row_date" value="{{date('Y-m-d')}}" />
-                                <label class="form-label">Date</label>
                             </div>
                         </div>
                     </div>
