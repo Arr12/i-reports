@@ -106,6 +106,25 @@ $(document).ready(function(){
     $('#FormTabelAll').html(createSkeleton(1));
     let url_dx = "{{route('report-to-sunny.report-to-sunny.data')}}?c=all";
     TabelAll(url_dx);
+    $(document).on('click', '#setDataDaily', function(){
+        $(this).attr('disabled','disabled');
+        var url = "{{route('api.setAllTeam.sunny')}}";
+        $.ajax({
+            url: url,
+            success:function(json) {
+                $('#setDataDaily').removeAttr('disabled','disabled');
+                $("#alert").html(
+                `<div class="alert alert-success alert-dismissible" role="alert" id="alert_success">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>Success!</strong> Data has been updated!
+                </div>`
+                );
+            },
+            error:function(){
+                $('#setDataDaily').removeAttr('disabled','disabled');
+            }
+        });
+    });
     $(document).on('change','#SMonth',function(){
         $.ajax({
             url:"{{route('all-report.date-weekly-friday')}}?m="+$(this).val(),
@@ -136,6 +155,13 @@ $(document).ready(function(){
         <div class="card">
             <div class="header">
                 <h2>Report To Sunny All Data</h2>
+                <ul class="header-dropdown m-r--5">
+                    <li class="dropdown">
+                        <button id='setDataDaily' class="btn waves-effect btn-success" role="button" aria-haspopup="true" aria-expanded="false">
+                            <i style="color:#fff;" class="material-icons">save</i> Export This Week Sunny Report
+                        </button>
+                    </li>
+                </ul>
             </div>
             <div class="body">
                 <div class="row">

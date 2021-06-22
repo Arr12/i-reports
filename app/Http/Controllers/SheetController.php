@@ -343,9 +343,9 @@ class SheetController extends Controller
             Artisan::call('daily:wn-uncontracted');
         }
         else{
-            $p = 400;
+            return ResponseFormatter::error(null, "Data Not Found", 404);
         }
-        return isset($p) ? $p : 200;
+        return ResponseFormatter::success(null, "Success", 200);
     }
     public function getDailyReportAme(){
         $sId = "1Aoc2wVeZoP1sc7eSJybIHzxY2IPVDWhLMlLQzUwUVAo";
@@ -2342,5 +2342,117 @@ class SheetController extends Controller
         $update_range = $new_worksheet."!A1:I1";
         $endindex = 22;
         $this->insertValuesIntoFirstRow($spreadsheetId,$values,$update_range,$endindex,$sheetId);
+    }
+    public function setReportToSunny(){
+        // TRIAL
+        $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
+        $sheetId = 436026540;
+
+        // REAL
+        // $spreadsheetId = "16xGw6KdeUzxASEnsXuIKIPawD5Dx6lSi52NohPp5u5s";
+        // $sheetId = 414906089;
+
+        /** ---------------------
+        * DUPLICATE SPREADSHEET
+        ------------------------- */
+        // $title = "Backup Report to Sunny Lv. 2 Reports All Team Final - ".date('Y-m-d H:i:s');
+        // $folder_id = "15xOZ7nTmmG2zJBOWpWZIYWziCwE0hVyJ";
+        // $this->DuplicateSpreadsheet($spreadsheetId,$folder_id,$title);
+
+        /** ------------------------------
+        * SET INTO SPREADSHEET FIRST ROW
+        ---------------------------------- */
+        $update_range = "Report to Sunny!B1";
+        $Date = date('Y-m-d');
+        $values = [];
+        $DateWeekly = $this->page->WeekFromDateFriday(date('Y-m'));
+        $DateWeekly['startdate'] = array_reverse($DateWeekly['startdate']);
+        $DateWeekly['enddate'] = array_reverse($DateWeekly['enddate']);
+        $DateWeekly['c_week'] = array_reverse($DateWeekly['c_week']);
+        foreach($DateWeekly['c_week'] as $key => $v_weekly){
+            $startdate = $DateWeekly['startdate'][$key];
+            $enddate = $DateWeekly['enddate'][$key];
+            $Date = date('Y-m-d');
+            $data_sunny_indo = [];
+            if($Date >= date('Y-m-d',strtotime($startdate)) && $Date <= date('Y-m-d',strtotime($enddate))){
+                $date = [$v_weekly,$startdate,$enddate];
+                $periode = date('d F', strtotime($startdate))." - ".date('d F', strtotime($enddate));
+                $arr_titles = ["date","date_feedback_received"];
+                foreach($arr_titles as $key1 => $arr_title){
+                    $query = ReportSpamMangatoonNovelList::select($arr_title)->whereBetween($arr_title,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                    $c_data = $query->whereNotNull($arr_title)->count();
+                    $data_sunny_mangatoon[$arr_title] = $c_data;
+                }
+                foreach($arr_titles as $key1 => $arr_title){
+                    $query = ReportSpamWNUncoractedNovelList::select($arr_title)->whereBetween($arr_title,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                    $c_data = $query->where($arr_title,'=',$arr_title)->whereNotNull($arr_title)->count();
+                    $data_sunny_wn[$arr_title] = $c_data;
+                }
+                $data_sunny = $this->page->WeeklyReportSunnyGlobal($date);
+                $arr_titles = ["Email", "Facebook", "Whatsapp", "Instagram", "Discord"];
+                foreach($arr_titles as $key1 => $arr_title){
+                    $query = DailyReportIndoIchaNur::select('contact_way')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                    $c_data = $query->where('contact_way','=',$arr_title)->whereNotNull('contact_way')->count();
+                    $data_sunny_indo[$arr_title] = $c_data;
+                }
+                break;
+            }
+        }
+        $date_wn = "";
+        $date_feedback_received_wn = "";
+        $date_mangatoon = "";
+        $date_feedback_received_mangatoon = "";
+        $email_sent = $data_sunny['data'][0][2];
+        $email_replied = $data_sunny['data'][0][2];
+        $fb_sent = $data_sunny['data'][1][2];
+        $fb_replied = $data_sunny['data'][1][2];
+        $ig_sent = $data_sunny['data'][3][2];
+        $ig_replied = $data_sunny['data'][3][2];
+        $wa_sent = $data_sunny['data'][2][2];
+        $wa_replied = $data_sunny['data'][2][2];
+        $discord_sent = $data_sunny['data'][4][2];
+        $discord_replied = $data_sunny['data'][4][2];
+        $twitter_sent = 0;
+        $twitter_replied = 0;
+        $email_sent_indo = $data_sunny_indo['Email'];
+        $email_replied_indo = $data_sunny_indo['Email'];
+        $fb_sent_indo = $data_sunny_indo['Facebook'];
+        $fb_replied_indo = $data_sunny_indo['Facebook'];
+        $ig_sent_indo = $data_sunny_indo['Instagram'];
+        $ig_replied_indo = $data_sunny_indo['Instagram'];
+        $wa_sent_indo = $data_sunny_indo['Whatsapp'];
+        $wa_replied_indo = $data_sunny_indo['Whatsapp'];
+        $discord_sent_indo = $data_sunny_indo['Discord'];
+        $discord_replied_indo = $data_sunny_indo['Discord'];
+        $twitter_sent_indo = "0";
+        $twitter_replied_indo = "0";
+        $values = [
+            [$periode],[0],[0],[0],[0],[0],[0],[$date_wn],[$date_feedback_received_wn],[$date_mangatoon],[$date_feedback_received_mangatoon],[0],[$email_sent],[$email_replied],[0],[$fb_sent],[$fb_replied],[0],[$ig_sent],[$ig_replied],[0],[$wa_sent],[$wa_replied],[$discord_sent],[$discord_replied],[$twitter_sent],[$twitter_replied],[0],[0],[0],[0],[''],[0],[$email_sent_indo],[$email_replied_indo],[0],[$fb_sent_indo],[$fb_replied_indo],[0],[$ig_sent_indo],[$ig_replied_indo],[0],[$wa_sent_indo],[$wa_replied_indo],[$discord_sent_indo],[$discord_replied_indo],[$twitter_sent_indo],[$twitter_replied_indo],[0],[0],[0],[0]
+        ];
+
+        $service = self::ApiSpreadsheet();
+        $request = new Google_Service_Sheets_BatchUpdateSpreadsheetRequest([
+            'requests' => [
+                'insertDimension' => [
+                    'range' => [
+                        "sheetId" => $sheetId,
+                        "startIndex" => 1,
+                        "endIndex" => 2,
+                        "dimension" => "COLUMNS"
+                    ],
+                    "inheritFromBefore" => false
+                ]
+            ]
+        ]);
+        $service->spreadsheets->batchUpdate($spreadsheetId, $request);
+
+        $body = new Google_Service_Sheets_ValueRange([
+            'values' => $values
+        ]);
+        $params = [
+            'valueInputOption' => 'RAW'
+        ];
+        $service->spreadsheets_values->append($spreadsheetId, $update_range, $body, $params);
+        return 200;
     }
 }

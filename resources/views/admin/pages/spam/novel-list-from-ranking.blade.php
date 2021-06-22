@@ -84,17 +84,13 @@ $(document).ready(function(){
             url: url_dx,
             success:function(json) {
                 $('#getDataDaily').removeAttr('disabled','disabled');
-                if(json == "200"){
-                    $("#alert_success").show();
-                    $("#alert_danger").hide();
-                }else if(json == "400"){
-                    $("#alert_success").hide();
-                    $("#alert_danger").show();
-                }else{
-                    $("#alert_success").show();
-                    $("#alert_danger").hide();
-                }
+                $("#alert_success").show();
+                $("#alert_danger").hide();
                 TabelGlobalDaily(url);
+            },
+            error:function(){
+                $("#alert_success").hide();
+                $("#alert_danger").show();
             }
         });
     });
