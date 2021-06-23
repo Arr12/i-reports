@@ -31,12 +31,28 @@ class SheetController extends Controller
     private static $limit = 1000;
     private static $time_reset_cache = false;
     public function FormatDateTime($str){
-        if($str){
-            $format = substr($str,6,4)."-".substr($str,3,2)."-".substr($str,0,2);
-            $date = $format ? date('Y-m-d', strtotime($format)) : null;
-        }else{
-            $date = null;
+        $formatter = explode('/',$str);
+        try {
+            if(strlen($formatter[1]) == 1){
+                $format = $formatter[0]."-".$formatter[1]."-".$formatter[2];
+                $date = $format ? date('Y-m-d', strtotime($format)) : null;
+            }else{
+                if($str){
+                    $format = substr($str,6,4)."-".substr($str,3,2)."-".substr($str,0,2);
+                    $date = $format ? date('Y-m-d', strtotime($format)) : null;
+                }else{
+                    $date = null;
+                }
+            }
+        } catch (\Throwable $th) {
+            if($str){
+                $format = substr($str,6,4)."-".substr($str,3,2)."-".substr($str,0,2);
+                $date = $format ? date('Y-m-d', strtotime($format)) : null;
+            }else{
+                $date = null;
+            }
         }
+
         return $date;
     }
     public function check($array, $value){
@@ -353,6 +369,7 @@ class SheetController extends Controller
         $sheets = "Daily Report";
         $alphaX = "A";
         $alphaY = "X";
+
         /** ---------------------
         * DUPLICATE SPREADSHEET
         ------------------------- */
@@ -1804,7 +1821,7 @@ class SheetController extends Controller
         $update_range = $update_worksheet."!BL:BT";
         $this->updateTeamMonitoring($spreadsheetId,$v_Rani,$update_range);
 
-        return 200;
+        return ResponseFormatter::success(null, "Success", 200);
     }
     public function ReportWeeklyGlobalFormat($page, $level){
         $Date = date('Y-m-d');
@@ -2076,7 +2093,7 @@ class SheetController extends Controller
         $values = $this->ReportWeeklyIndoFormat($page,$level);
         $this->updateTeamMonitoring($spreadsheetId,$values,$update_range);
 
-        return 200;
+        return ResponseFormatter::success(null, "Success", 200);
     }
     public function ReportWeeklyIndoFormat($page,$level){
         $values = [];
@@ -2228,7 +2245,7 @@ class SheetController extends Controller
         $endindex = 5;
         $this->insertValuesIntoFirstRow($spreadsheetId,$values,$update_range,$endindex,$sheetId);
 
-        return 200;
+        return ResponseFormatter::success(null, "Success", 200);
     }
     public function AllTeamReportMonthly(){
         Artisan::call('set:all-team-report-monthly');
@@ -2343,14 +2360,17 @@ class SheetController extends Controller
         $endindex = 22;
         $this->insertValuesIntoFirstRow($spreadsheetId,$values,$update_range,$endindex,$sheetId);
     }
+    public function ReportToSunny(){
+
+    }
     public function setReportToSunny(){
         // TRIAL
-        $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
-        $sheetId = 436026540;
+        // $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
+        // $sheetId = 436026540;
 
         // REAL
-        // $spreadsheetId = "16xGw6KdeUzxASEnsXuIKIPawD5Dx6lSi52NohPp5u5s";
-        // $sheetId = 414906089;
+        $spreadsheetId = "16xGw6KdeUzxASEnsXuIKIPawD5Dx6lSi52NohPp5u5s";
+        $sheetId = 414906089;
 
         /** ---------------------
         * DUPLICATE SPREADSHEET
@@ -2388,8 +2408,43 @@ class SheetController extends Controller
                     $c_data = $query->whereNotNull($arr_title)->count();
                     $data_sunny_wn[$arr_title] = $c_data;
                 }
-                $data_sunny = $this->page->WeeklyReportSunnyGlobal($date);
                 $arr_titles = ["Email", "Facebook", "Whatsapp", "Instagram", "Discord"];
+                foreach($arr_titles as $key1 => $arr_title){
+                    $counter_media = 0;
+                    foreach($this->page->personGlobal as $key => $person){
+                        switch($person){
+                            case "Ame" :
+                                $query = DailyReportAme::select('media')->where('status','=','New Author')->orWhere('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                                break;
+                            case "Anna" :
+                                $query = DailyReportAnna::select('media')->where('status','=','New Author')->orWhere('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                                break;
+                            case "Carol" :
+                                $query = DailyReportCarol::select('media')->where('status','=','New Author')->orWhere('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                                break;
+                            case "Eric" :
+                                $query = DailyReportEric::select('media')->where('status','=','New Author')->orWhere('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                                break;
+                            case "Icha" :
+                                $query = DailyReportIcha::select('media')->where('status','=','New Author')->orWhere('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                                break;
+                            case "Lily" :
+                                $query = DailyReportLily::select('media')->where('status','=','New Author')->orWhere('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                                break;
+                            case "Maydewi" :
+                                $query = DailyReportMaydewi::select('media')->where('status','=','New Author')->orWhere('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                                break;
+                            case "Rani" :
+                                $query = DailyReportRani::select('media')->where('status','=','New Author')->orWhere('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                                break;
+                            default :
+                                $query = [];
+                                break;
+                        }
+                        $counter_media += $query->where('media','=',$arr_title)->whereNotNull('media')->count();
+                    }
+                    $data_sunny[$arr_title] = $counter_media;
+                }
                 foreach($arr_titles as $key1 => $arr_title){
                     $query = DailyReportIndoIchaNur::select('contact_way')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
                     $c_data = $query->where('contact_way','=',$arr_title)->whereNotNull('contact_way')->count();
@@ -2402,16 +2457,16 @@ class SheetController extends Controller
         $date_feedback_received_wn = $data_sunny_wn['date_feedback_received'];
         $date_mangatoon = $data_sunny_wn['date'];
         $date_feedback_received_mangatoon = $data_sunny_mangatoon['date_feedback_received'];
-        $email_sent = $data_sunny['data'][0][2];
-        $email_replied = $data_sunny['data'][0][2];
-        $fb_sent = $data_sunny['data'][1][2];
-        $fb_replied = $data_sunny['data'][1][2];
-        $ig_sent = $data_sunny['data'][3][2];
-        $ig_replied = $data_sunny['data'][3][2];
-        $wa_sent = $data_sunny['data'][2][2];
-        $wa_replied = $data_sunny['data'][2][2];
-        $discord_sent = $data_sunny['data'][4][2];
-        $discord_replied = $data_sunny['data'][4][2];
+        $email_sent = $data_sunny['Email'];
+        $email_replied = $data_sunny['Email'];
+        $fb_sent = $data_sunny['Facebook'];
+        $fb_replied = $data_sunny['Facebook'];
+        $ig_sent = $data_sunny['Instagram'];
+        $ig_replied = $data_sunny['Instagram'];
+        $wa_sent = $data_sunny['Whatsapp'];
+        $wa_replied = $data_sunny['Whatsapp'];
+        $discord_sent = $data_sunny['Discord'];
+        $discord_replied = $data_sunny['Discord'];
         $twitter_sent = 0;
         $twitter_replied = 0;
         $email_sent_indo = $data_sunny_indo['Email'];
@@ -2453,6 +2508,6 @@ class SheetController extends Controller
             'valueInputOption' => 'RAW'
         ];
         $service->spreadsheets_values->append($spreadsheetId, $update_range, $body, $params);
-        return 200;
+        return ResponseFormatter::success(null, "Success", 200);
     }
 }

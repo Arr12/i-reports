@@ -181,6 +181,7 @@ $(document).ready(function(){
                 <h2>Report To Sunny Weekly</h2>
             </div>
             <div class="body">
+                <div id="alert"></div>
                 <div class="row clearfix">
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <select class="form-control show-tick" id="SReport" name="person">
