@@ -2361,7 +2361,7 @@ class SheetController extends Controller
         $this->insertValuesIntoFirstRow($spreadsheetId,$values,$update_range,$endindex,$sheetId);
     }
     public function ReportToSunny(){
-
+        Artisan::call('set:report-to-sunny');
     }
     public function setReportToSunny(){
         // TRIAL
@@ -2375,9 +2375,9 @@ class SheetController extends Controller
         /** ---------------------
         * DUPLICATE SPREADSHEET
         ------------------------- */
-        // $title = "Backup Report to Sunny Lv. 2 Reports All Team Final - ".date('Y-m-d H:i:s');
-        // $folder_id = "15xOZ7nTmmG2zJBOWpWZIYWziCwE0hVyJ";
-        // $this->DuplicateSpreadsheet($spreadsheetId,$folder_id,$title);
+        $title = "Backup Report to Sunny Lv. 2 Reports All Team Final - ".date('Y-m-d H:i:s');
+        $folder_id = "15xOZ7nTmmG2zJBOWpWZIYWziCwE0hVyJ";
+        $this->DuplicateSpreadsheet($spreadsheetId,$folder_id,$title);
 
         /** ------------------------------
         * SET INTO SPREADSHEET FIRST ROW

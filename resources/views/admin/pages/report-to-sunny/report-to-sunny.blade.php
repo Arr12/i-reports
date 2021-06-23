@@ -122,6 +122,12 @@ $(document).ready(function(){
             },
             error:function(){
                 $('#setDataDaily').removeAttr('disabled','disabled');
+                $("#alert").html(
+                `<div class="alert alert-success alert-dismissible" role="alert" id="alert_success">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>Snap!</strong> Connection Exceeded 60 second!
+                </div>`
+                );
             }
         });
     });
