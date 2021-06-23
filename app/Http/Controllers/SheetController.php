@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ProcessImport;
 use App\Models\DailyReportAme;
 use App\Models\DailyReportAnna;
 use App\Models\DailyReportCarol;
@@ -289,61 +290,7 @@ class SheetController extends Controller
         / GLOBAL
         --------------*/
         $daily = $request ?: request()->input('d');
-        if($daily == 'ame'){
-            Artisan::call('daily:ame');
-        }
-        else if($daily == 'anna'){
-            Artisan::call('daily:anna');
-        }
-        else if($daily == 'carol'){
-            Artisan::call('daily:carol');
-        }
-        else if($daily == 'eric'){
-            Artisan::call('daily:eric');
-        }
-        else if($daily == 'icha'){
-            Artisan::call('daily:icha');
-        }
-        else if($daily == 'lily'){
-            Artisan::call('daily:lily');
-        }
-        else if($daily == 'maydewi'){
-            Artisan::call('daily:maydewi');
-        }
-        else if($daily == 'rani'){
-            Artisan::call('daily:rani');
-        }
-        /*-----------
-        / INDO
-        --------------*/
-        else if($daily == 'indo-ichanur'){
-            Artisan::call('daily:icha-nur');
-        }
-        else if($daily == 'indo-irel'){
-            Artisan::call('daily:irel');
-        }
-        /*-----------
-        / SPAM
-        --------------*/
-        else if($daily == 'mangatoon'){
-            Artisan::call('daily:mangatoon');
-        }
-        else if($daily == 'royalroad'){
-            $this->getSpamRoyalRoadNovelList();
-        }
-        else if($daily == 'wn-uncontracted'){
-            Artisan::call('daily:wn-uncontracted');
-        }
-        else if($daily == 'novel-list-ranking'){
-            Artisan::call('daily:novel-list-ranking');
-        }
-        /*-----------
-        / EXCLUSIVE
-        --------------*/
-        else if($daily == 'non-exclusive'){
-            Artisan::call('daily:non-exclusive');
-        }
-        else if($daily == 'all'){
+        if($daily == 'all'){
             Artisan::call('daily:ame');
             Artisan::call('daily:anna');
             Artisan::call('daily:carol');
@@ -357,11 +304,12 @@ class SheetController extends Controller
             Artisan::call('daily:non-exclusive');
             Artisan::call('daily:mangatoon');
             Artisan::call('daily:wn-uncontracted');
+
+            return ResponseFormatter::success(null, "Success", 200);
         }
         else{
-            return ResponseFormatter::error(null, "Data Not Found", 404);
+            $this->dispatch(new ProcessImport($daily));
         }
-        return ResponseFormatter::success(null, "Success", 200);
     }
     public function getDailyReportAme(){
         $sId = "1Aoc2wVeZoP1sc7eSJybIHzxY2IPVDWhLMlLQzUwUVAo";
@@ -743,11 +691,10 @@ class SheetController extends Controller
         foreach($cached as $key => $keyDaily){
             $cachedDaily = Cache::get($keyDaily, []);
             $savedData = [];
-            $now = date('Y-m-d H:i:s');
             foreach ($cachedDaily as $key => $data) {
                 // dump($data);
                 if(!$data[0]){continue;}
-                $date = $this->FormatDateTime($data[0]);
+                $date = isset($data[0]) ? $this->FormatDateTime($data[0]) : null;
                 $status = isset($data[1]) ? $data[1] : null;
                 $media = isset($data[2]) ? $data[2] : null;
                 $author = isset($data[3]) ? $data[3] : null;
@@ -1392,6 +1339,8 @@ class SheetController extends Controller
                     'tags11' => $this->check($data,22),
                     'date_feedback_received' => $this->check($data,23),
                     'feedback_from_author' => $this->check($data,24),
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
                 ]);
             }
             ReportSpamRoyalRoadNovelList::insert($savedData);
@@ -1458,7 +1407,9 @@ class SheetController extends Controller
                     'screenshot_from_wave' => $screenshot_from_wave,
                     'date_feedback_received' => $date_feedback_received,
                     'author_feedback' => $author_feedback,
-                    'comment_from_wave' => $comment_from_wave
+                    'comment_from_wave' => $comment_from_wave,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
                 ]);
             }
             // dump($savedData);
@@ -1532,7 +1483,9 @@ class SheetController extends Controller
                     'FL_ML' => $FL_ML,
                     'date_feedback_received' => $date_feedback_received,
                     'feedback_from_author' => $feedback_from_author,
-                    'note' => $note
+                    'note' => $note,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
                 ]);
             }
             // dd($savedData);
@@ -1588,7 +1541,9 @@ class SheetController extends Controller
                     'status_ongoing' => $status_ongoing,
                     'FL_ML'  => $FL_ML,
                     'editor' => $editor,
-                    'note' => $note
+                    'note' => $note,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
                 ]);
             }
             ModelsReportSpamNovelListFromRanking::insert($savedData);

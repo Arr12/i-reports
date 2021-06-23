@@ -53,7 +53,7 @@ let TabelGlobalDaily = function(url){
                 buttons: ['copy'],
                 destroy: true,
                 searching: true,
-                order: [[0,'desc']]
+                order: [[2,'desc']]
             });
             $('a.toggle-vis').on( 'click', function (e) {
                 e.preventDefault();
