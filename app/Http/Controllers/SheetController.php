@@ -2385,7 +2385,7 @@ class SheetController extends Controller
                 }
                 foreach($arr_titles as $key1 => $arr_title){
                     $query = ReportSpamWNUncoractedNovelList::select($arr_title)->whereBetween($arr_title,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
-                    $c_data = $query->where($arr_title,'=',$arr_title)->whereNotNull($arr_title)->count();
+                    $c_data = $query->whereNotNull($arr_title)->count();
                     $data_sunny_wn[$arr_title] = $c_data;
                 }
                 $data_sunny = $this->page->WeeklyReportSunnyGlobal($date);
@@ -2398,10 +2398,10 @@ class SheetController extends Controller
                 break;
             }
         }
-        $date_wn = "";
-        $date_feedback_received_wn = "";
-        $date_mangatoon = "";
-        $date_feedback_received_mangatoon = "";
+        $date_wn = $data_sunny_wn['date'];
+        $date_feedback_received_wn = $data_sunny_wn['date_feedback_received'];
+        $date_mangatoon = $data_sunny_wn['date'];
+        $date_feedback_received_mangatoon = $data_sunny_mangatoon['date_feedback_received'];
         $email_sent = $data_sunny['data'][0][2];
         $email_replied = $data_sunny['data'][0][2];
         $fb_sent = $data_sunny['data'][1][2];

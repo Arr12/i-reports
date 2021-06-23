@@ -89,6 +89,7 @@ $(document).ready(function(){
                 TabelGlobalDaily(url);
             },
             error:function(){
+                $('#getDataDaily').removeAttr('disabled','disabled');
                 $("#alert_success").hide();
                 $("#alert_danger").show();
             }
