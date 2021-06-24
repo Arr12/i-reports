@@ -30,7 +30,7 @@ class Kernel extends ConsoleKernel
          * ACTIVATED DAILY UPDATE LV 0
          * EVERY 1 AM
          ------------------------------------- */
-        $schedule->command('daily:update')->dailyAt('01:00');
+        // $schedule->command('daily:update')->dailyAt('01:00');
 
         /** ---------------------------------------
          * ACTIVATED ROBOT SCHEDULAR LV 1

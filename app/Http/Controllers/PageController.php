@@ -2104,7 +2104,11 @@ class PageController extends Controller
 
             if($report == 'spam'){
                 $x = $this->WeeklyReportSunnySpam($date);
-            }else{
+            }
+            else if($report == 'indo'){
+                $x = $this->WeeklyReportSunnyIndo($date);
+            }
+            else{
                 $x = $this->WeeklyReportSunnyGlobal($date);
             }
         }
@@ -2300,6 +2304,37 @@ class PageController extends Controller
                 $counter_media += $query->where('media','=',$data)->whereNotNull('media')->count();
             }
             array_push($data_array['data'][$key1], $counter_media);
+        }
+        return $data_array;
+    }
+    public function WeeklyReportSunnyIndo($date){
+        /* --------------
+        / HEAD DATA
+        --------------- */
+        $data_array['columns'] = [];
+        $data_array['data'] = [];
+        $week = $date[0];
+        $startdate = $date[1];
+        $enddate = $date[2];
+
+        $title = [
+            "No.",
+            "Global",
+            "$week"
+        ];
+        foreach ($title as $key => $value) {
+            array_push($data_array['columns'], ["title" => $value]);
+        }
+        $arr_titles = ["Email", "Facebook", "Whatsapp", "Instagram", "Discord"];
+        $no = 1;
+        foreach($arr_titles as $key1 => $arr_title){
+            array_push($data_array['data'], [
+                $no++,
+                $arr_title,
+            ]);
+            $query = DailyReportIndoIchaNur::select('contact_way')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+            $c_data = $query->where('contact_way','=',$arr_title)->whereNotNull('contact_way')->count();
+            array_push($data_array['data'][$key1], $c_data);
         }
         return $data_array;
     }

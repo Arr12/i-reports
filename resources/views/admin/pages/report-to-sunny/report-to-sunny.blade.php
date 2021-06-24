@@ -193,6 +193,7 @@ $(document).ready(function(){
                         <select class="form-control show-tick" id="SReport" name="person">
                             <option value="">Select Reports</option>
                             <option value="global">Global</option>
+                            <option value="indo">Indo</option>
                             <option value="spam">Spam</option>
                         </select>
                     </div>
