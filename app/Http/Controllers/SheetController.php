@@ -2403,6 +2403,7 @@ class SheetController extends Controller
                                 break;
                             default :
                                 $query = [];
+                                $query2 = [];
                                 break;
                         }
                         $counter_new_author += $query->where('media','=',$arr_title)->whereNotNull('media')->count();
