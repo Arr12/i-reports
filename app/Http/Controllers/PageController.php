@@ -770,18 +770,7 @@ class PageController extends Controller
         foreach ($title as $key => $value) {
             array_push($data_array['columns'], ["title" => $value]);
         }
-        $key = 'marker-indo';
-        $cached = Cache::get($key, false);
-        if(!$cached){
-            $s = 60 * 60 * 24;
-            $cached = Cache::remember($key, $s,function(){
-                $query = DailyReportIndoIchaNur::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
-                return $query;
-            });
-            $query = $cached;
-        }else{
-            $query = $cached;
-        }
+        $query = DailyReportIndoIchaNur::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
         $no = 1;
         foreach($query as $key => $data){
             array_push($data_array['data'], [
