@@ -859,18 +859,7 @@ class PageController extends Controller
         foreach($persons as $key => $person){
             switch ($person) {
                 case 'Ame':
-                    $key = 'marker-global-ame';
-                    $cached = Cache::get($key, false);
-                    if(!$cached){
-                        $s = 60 * 60 * 24;
-                        $cached = Cache::remember($key, $s,function(){
-                            $query = DailyReportAme::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
-                            return $query;
-                        });
-                        $query = $cached;
-                    }else{
-                        $query = $cached;
-                    }
+                    $query = DailyReportAme::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
                     foreach($query as $key => $data){
                         array_push($data_array['data'], [
                             $no++,
@@ -947,18 +936,7 @@ class PageController extends Controller
                     }
                     break;
                 case 'Carol' :
-                    $key = 'marker-global-carol';
-                    $cached = Cache::get($key, false);
-                    if(!$cached){
-                        $s = 60 * 60 * 24;
-                        $cached = Cache::remember($key, $s,function(){
-                            $query = DailyReportCarol::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
-                            return $query;
-                        });
-                        $query = $cached;
-                    }else{
-                        $query = $cached;
-                    }
+                    $query = DailyReportCarol::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
                     foreach($query as $key => $data){
                         array_push($data_array['data'], [
                             $no++,
@@ -991,18 +969,7 @@ class PageController extends Controller
                     }
                     break;
                 case 'Eric' :
-                    $key = 'marker-global-eric';
-                    $cached = Cache::get($key, false);
-                    if(!$cached){
-                        $s = 60 * 60 * 24;
-                        $cached = Cache::remember($key, $s,function(){
-                            $query = DailyReportEric::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
-                            return $query;
-                        });
-                        $query = $cached;
-                    }else{
-                        $query = $cached;
-                    }
+                    $query = DailyReportEric::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
                     foreach($query as $key => $data){
                         array_push($data_array['data'], [
                             $no++,
@@ -1035,18 +1002,7 @@ class PageController extends Controller
                     }
                     break;
                 case 'Icha' :
-                    $key = 'marker-global-icha';
-                    $cached = Cache::get($key, false);
-                    if(!$cached){
-                        $s = 60 * 60 * 24;
-                        $cached = Cache::remember($key, $s,function(){
-                            $query = DailyReportIcha::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
-                            return $query;
-                        });
-                        $query = $cached;
-                    }else{
-                        $query = $cached;
-                    }
+                    $query = DailyReportIcha::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
                     foreach($query as $key => $data){
                         array_push($data_array['data'], [
                             $no++,
@@ -1079,18 +1035,7 @@ class PageController extends Controller
                     }
                     break;
                 case 'Lily' :
-                    $key = 'marker-global-lily';
-                    $cached = Cache::get($key, false);
-                    if(!$cached){
-                        $s = 60 * 60 * 24;
-                        $cached = Cache::remember($key, $s,function(){
-                            $query = DailyReportLily::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
-                            return $query;
-                        });
-                        $query = $cached;
-                    }else{
-                        $query = $cached;
-                    }
+                    $query = DailyReportLily::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
                     foreach($query as $key => $data){
                         array_push($data_array['data'], [
                             $no++,
@@ -1123,18 +1068,7 @@ class PageController extends Controller
                     }
                     break;
                 case 'Maydewi' :
-                    $key = 'marker-global-maydewi';
-                    $cached = Cache::get($key, false);
-                    if(!$cached){
-                        $s = 60 * 60 * 24;
-                        $cached = Cache::remember($key, $s,function(){
-                            $query = DailyReportMaydewi::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
-                            return $query;
-                        });
-                        $query = $cached;
-                    }else{
-                        $query = $cached;
-                    }
+                    $query = DailyReportMaydewi::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
                     foreach($query as $key => $data){
                         array_push($data_array['data'], [
                             $no++,
@@ -1167,18 +1101,7 @@ class PageController extends Controller
                     }
                     break;
                 case 'Rani' :
-                    $key = 'marker-global-rani';
-                    $cached = Cache::get($key, false);
-                    if(!$cached){
-                        $s = 60 * 60 * 24;
-                        $cached = Cache::remember($key, $s,function(){
-                            $query = DailyReportRani::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
-                            return $query;
-                        });
-                        $query = $cached;
-                    }else{
-                        $query = $cached;
-                    }
+                    $query = DailyReportRani::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
                     foreach($query as $key => $data){
                         array_push($data_array['data'], [
                             $no++,
