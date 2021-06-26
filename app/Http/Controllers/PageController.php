@@ -22,6 +22,7 @@ use App\Models\ReportSpamRoyalRoadNovelList;
 use App\Models\ReportSpamWNUncoractedNovelList;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class PageController extends Controller
@@ -2187,36 +2188,36 @@ class PageController extends Controller
             foreach($persons as $key => $person){
                 switch($person){
                     case "Ame" :
-                        $query = DailyReportAme::select('media')->where('status','=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
-                        $query2 = DailyReportAme::select('media')->where('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        $query = DailyReportAme::select('media')->where(DB::raw('TRIM(status)'),'=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        $query2 = DailyReportAme::select('media')->where(DB::raw('TRIM(status)'),'=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
                         break;
                     case "Anna" :
-                        $query = DailyReportAnna::select('media')->where('status','=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
-                        $query2 = DailyReportAnna::select('media')->where('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        $query = DailyReportAnna::select('media')->where(DB::raw('TRIM(status)'),'=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        $query2 = DailyReportAnna::select('media')->where(DB::raw('TRIM(status)'),'=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
                         break;
                     case "Carol" :
-                        $query = DailyReportCarol::select('media')->where('status','=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
-                        $query2 = DailyReportCarol::select('media')->where('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        $query = DailyReportCarol::select('media')->where(DB::raw('TRIM(status)'),'=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        $query2 = DailyReportCarol::select('media')->where(DB::raw('TRIM(status)'),'=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
                         break;
                     case "Eric" :
-                        $query = DailyReportEric::select('media')->where('status','=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
-                        $query2 = DailyReportEric::select('media')->where('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        $query = DailyReportEric::select('media')->where(DB::raw('TRIM(status)'),'=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        $query2 = DailyReportEric::select('media')->where(DB::raw('TRIM(status)'),'=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
                         break;
                     case "Icha" :
-                        $query = DailyReportIcha::select('media')->where('status','=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
-                        $query2 = DailyReportIcha::select('media')->where('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        $query = DailyReportIcha::select('media')->where(DB::raw('TRIM(status)'),'=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        $query2 = DailyReportIcha::select('media')->where(DB::raw('TRIM(status)'),'=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
                         break;
                     case "Lily" :
-                        $query = DailyReportLily::select('media')->where('status','=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
-                        $query2 = DailyReportLily::select('media')->where('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        $query = DailyReportLily::select('media')->where(DB::raw('TRIM(status)'),'=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        $query2 = DailyReportLily::select('media')->where(DB::raw('TRIM(status)'),'=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
                         break;
                     case "Maydewi" :
-                        $query = DailyReportMaydewi::select('media')->where('status','=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
-                        $query2 = DailyReportMaydewi::select('media')->where('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        $query = DailyReportMaydewi::select('media')->where(DB::raw('TRIM(status)'),'=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        $query2 = DailyReportMaydewi::select('media')->where(DB::raw('TRIM(status)'),'=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
                         break;
                     case "Rani" :
-                        $query = DailyReportRani::select('media')->where('status','=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
-                        $query2 = DailyReportRani::select('media')->where('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        $query = DailyReportRani::select('media')->where(DB::raw('TRIM(status)'),'=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        $query2 = DailyReportRani::select('media')->where(DB::raw('TRIM(status)'),'=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
                         break;
                     default :
                         $query = [];
