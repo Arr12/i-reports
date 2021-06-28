@@ -882,18 +882,7 @@ class PageController extends Controller
                     }
                     break;
                 case 'Anna':
-                    $key = 'marker-global-anna';
-                    $cached = Cache::get($key, false);
-                    if(!$cached){
-                        $s = 60 * 60 * 24;
-                        $cached = Cache::remember($key, $s,function(){
-                            $query = DailyReportAnna::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
-                            return $query;
-                        });
-                        $query = $cached;
-                    }else{
-                        $query = $cached;
-                    }
+                    $query = DailyReportAnna::where('marker', '=', '7')->orderBy('id', 'DESC')->limit($this->data_show)->get();
                     foreach($query as $key => $data){
                         array_push($data_array['data'], [
                             $no++,
