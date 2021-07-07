@@ -27,7 +27,7 @@ use Illuminate\Support\Str;
 
 class PageController extends Controller
 {
-    private $data_show = 7000;
+    private $data_show = 1000;
     public $personGlobal = [
         'Ame',
         'Anna',
@@ -62,64 +62,155 @@ class PageController extends Controller
     }
     public function WeekFromDate($date){
         // $textdt = date($date.'-01');
-        $textdt = date($date.'-01', strtotime('first Week'));
-        $textdt = date('Y-m-d', strtotime($textdt.'-1 days'));
+        $thisday = $date.'-d';
+        $textdt = date($thisday, strtotime('first Week'));
+        $textdt = date('Y-m-01', strtotime($textdt));
         // dd($textdt);
         $dt= strtotime( $textdt);
         $currdt=$dt;
+        $prevdt=date('Y-m-01', strtotime(date($thisday).'-1 month'));
+        $textprevdt = date($prevdt, strtotime('first Week'));
+        $textprevdt = date('Y-m-d', strtotime($textprevdt));
+        $prevdt=strtotime($textprevdt);
+        $currmonth=strtotime($textprevdt."+1 month");
         $nextmonth=strtotime($textdt."+1 month");
         $i=0;
         $date = [
             'c_week' => [],
             'startdate' => [],
+            'startdate_prev' => [],
             'daystart' => [],
             'enddate' => [],
+            'enddate_prev' => [],
             'dayend' => [],
         ];
+
+        $endarr[$i]=strtotime(date("Y-m-d",$prevdt));
+        do{
+            $weekday= date("w",$prevdt);
+            $endday=abs($weekday-7);
+            $startarr[$i]=$prevdt;
+            $endarr[$i]=strtotime(date("Y-m-d",$prevdt)."+$endday day");
+            $prevdt=strtotime(date("Y-m-d",$endarr[$i])."+1 day");
+            array_push($date["startdate_prev"], date("Y-m-d",$startarr[$i]));
+            array_push($date["enddate_prev"], date("Y-m-d",$endarr[$i]));
+            $i++;
+        }while($endarr[$i-1]<$currmonth);
+
+        $i=0;
+        $j=0;
+        $currdt = strtotime($date['startdate_prev'][count($date['startdate_prev'])-1]);
+        $endarr[$i]=strtotime(date("Y-m-d",$currdt));
         do{
             $weekday= date("w",$currdt);
             $endday=abs($weekday-7);
             $startarr[$i]=$currdt;
             $endarr[$i]=strtotime(date("Y-m-d",$currdt)."+$endday day");
+            // dump($endarr[$i]);
             $currdt=strtotime(date("Y-m-d",$endarr[$i])."+1 day");
-            array_push($date['c_week'],"Week ".($i+1));
-            array_push($date["startdate"], date("Y-m-d",$startarr[$i]));
-            array_push($date["daystart"], date("D",$startarr[$i]));
-            array_push($date["enddate"], date("Y-m-d",$endarr[$i]));
-            array_push($date["dayend"], date("D",$endarr[$i]));
+            if($i==0){
+                array_push($date['c_week'],"Week ".($j+1));
+                array_push($date["startdate"], $date['startdate_prev'][count($date['startdate_prev'])-1]);
+                array_push($date["daystart"], date("D",strtotime($date['startdate_prev'][count($date['startdate_prev'])-1])));
+                array_push($date["enddate"], $date['enddate_prev'][count($date['enddate_prev'])-1]);
+                array_push($date["dayend"], date("D",strtotime($date['enddate_prev'][count($date['enddate_prev'])-1])));
+                $j++;
+            }else{
+                array_push($date['c_week'],"Week ".($j+1));
+                array_push($date["startdate"], date("Y-m-d",$startarr[$i]));
+                array_push($date["daystart"], date("D",$startarr[$i]));
+                array_push($date["enddate"], date("Y-m-d",$endarr[$i]));
+                array_push($date["dayend"], date("D",$endarr[$i]));
+                $j++;
+            }
             $i++;
         }while($endarr[$i-1]<$nextmonth);
+        $tail = count($date['startdate'])-1;
+        unset($date['c_week'][$tail]);
+        unset($date['startdate'][$tail]);
+        unset($date['daystart'][$tail]);
+        unset($date['enddate'][$tail]);
+        unset($date['dayend'][$tail]);
+        $date['c_week']=array_values($date['c_week']);
+        $date['startdate']=array_values($date['startdate']);
+        $date['daystart']=array_values($date['daystart']);
+        $date['enddate']=array_values($date['enddate']);
+        $date['dayend']=array_values($date['dayend']);
         return $date;
     }
     public function WeekFromDateFriday($date){
-        // $textdt = date($date.'-01');
-        $textdt = date($date.'-01', strtotime('first Week'));
-        $textdt = date('Y-m-d', strtotime($textdt.'-3 days'));
+        $thisday = $date.'-d';
+        $textdt = date($thisday, strtotime('first Week'));
+        $textdt = date('Y-m-01', strtotime($textdt));
         // dd($textdt);
         $dt= strtotime( $textdt);
         $currdt=$dt;
+        $prevdt=date('Y-m-01', strtotime(date($thisday).'-1 month'));
+        $textprevdt = date($prevdt, strtotime('first Week'));
+        $textprevdt = date('Y-m-d', strtotime($textprevdt.'next saturday'));
+        $prevdt=strtotime($textprevdt);
+        $currmonth=strtotime($textprevdt."+1 month");
         $nextmonth=strtotime($textdt."+1 month");
         $i=0;
         $date = [
             'c_week' => [],
             'startdate' => [],
+            'startdate_prev' => [],
             'daystart' => [],
             'enddate' => [],
+            'enddate_prev' => [],
             'dayend' => [],
         ];
+
+        $endarr[$i]=strtotime(date("Y-m-d",$prevdt));
         do{
-            $weekday= date("w",$currdt);
+            $endday=6;
+            $startarr[$i]=$prevdt;
+            $endarr[$i]=strtotime(date("Y-m-d",$prevdt)."+$endday day");
+            $prevdt=strtotime(date("Y-m-d",$endarr[$i])."+1 day");
+            array_push($date["startdate_prev"], date("Y-m-d",$startarr[$i]));
+            array_push($date["enddate_prev"], date("Y-m-d",$endarr[$i]));
+            $i++;
+        }while($endarr[$i-1]<$currmonth);
+
+        $i=0;
+        $j=0;
+        $currdt = strtotime($date['startdate_prev'][count($date['startdate_prev'])-1]);
+        $endarr[$i]=strtotime(date("Y-m-d",$currdt));
+        do{
             $endday=6;
             $startarr[$i]=$currdt;
             $endarr[$i]=strtotime(date("Y-m-d",$currdt)."+$endday day");
+            // dump($endarr[$i]);
             $currdt=strtotime(date("Y-m-d",$endarr[$i])."+1 day");
-            array_push($date['c_week'],"Week ".($i+1));
-            array_push($date["startdate"], date("Y-m-d",$startarr[$i]));
-            array_push($date["daystart"], date("D",$startarr[$i]));
-            array_push($date["enddate"], date("Y-m-d",$endarr[$i]));
-            array_push($date["dayend"], date("D",$endarr[$i]));
+            if($i==0){
+                array_push($date['c_week'],"Week ".($j+1));
+                array_push($date["startdate"], $date['startdate_prev'][count($date['startdate_prev'])-1]);
+                array_push($date["daystart"], date("D",strtotime($date['startdate_prev'][count($date['startdate_prev'])-1])));
+                array_push($date["enddate"], $date['enddate_prev'][count($date['enddate_prev'])-1]);
+                array_push($date["dayend"], date("D",strtotime($date['enddate_prev'][count($date['enddate_prev'])-1])));
+                $j++;
+            }else{
+                array_push($date['c_week'],"Week ".($j+1));
+                array_push($date["startdate"], date("Y-m-d",$startarr[$i]));
+                array_push($date["daystart"], date("D",$startarr[$i]));
+                array_push($date["enddate"], date("Y-m-d",$endarr[$i]));
+                array_push($date["dayend"], date("D",$endarr[$i]));
+                $j++;
+            }
             $i++;
         }while($endarr[$i-1]<$nextmonth);
+        $tail = count($date['startdate'])-1;
+        unset($date['c_week'][$tail]);
+        unset($date['startdate'][$tail]);
+        unset($date['daystart'][$tail]);
+        unset($date['enddate'][$tail]);
+        unset($date['dayend'][$tail]);
+        $date['c_week']=array_values($date['c_week']);
+        $date['startdate']=array_values($date['startdate']);
+        $date['daystart']=array_values($date['daystart']);
+        $date['enddate']=array_values($date['enddate']);
+        $date['dayend']=array_values($date['dayend']);
         return $date;
     }
     public function GetDateWeekly($request = false){

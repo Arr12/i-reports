@@ -80,6 +80,29 @@ $(document).ready(function(){
             }
         });
     });
+    $(document).on('click', '#setDataDailyB', function(){
+        let a = $('#SDateA').val();
+        let b = $('#SDateB').val();
+        if(a != '' && b != ''){
+            $(this).attr('disabled','disabled');
+            let d = a+','+b;
+            var url = "{{route('api.setAllTeam.weekly-periode')}}?type=periode&d="+d;
+            $.ajax({
+                url: url,
+                success:function(json) {
+                    $('#setDataDailyB').removeAttr('disabled','disabled');
+                    $("#alert").html(
+                    `<div class="alert alert-success alert-dismissible" role="alert" id="alert_success">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <strong>Success!</strong> Data has been updated!
+                    </div>`
+                    );
+                }
+            });
+        }else{
+            $('#SDateA').focus();
+        }
+    });
     $(document).on('change','#SMonth',function(){
         $.ajax({
             url:"{{route('all-report.date-weekly')}}?m="+$(this).val(),
@@ -99,6 +122,30 @@ $(document).ready(function(){
             }
         });
     });
+    $(document).on('change','#InType',function(){
+        let val = $(this).val();
+        if(val == 'periode'){
+            $("#setDataDaily").hide();
+            $("#setDataDailyB").show();
+            $("#SDateForm").show();
+            $("#SMonthForm").hide();
+        }else{
+            $("#setDataDaily").show();
+            $("#setDataDailyB").hide();
+            $("#SDateForm").hide();
+            $("#SMonthForm").show();
+        }
+        $(document).on('click','#ShowData',function(){
+            if($("#SWeekForm").val()!=null&&$("#SReport").val()!=null){
+                $('#FormTabel').html(createSkeleton(1));
+                let a = $('#SReport').val();
+                let b = 'periode';
+                let c = 'Periode,'+$('#SDateA').val()+','+$('#SDateB').val();
+                let url_dx = "{{route('all-report.weekly.data')}}?r="+a+"&mon="+b+"&w="+c;
+                Tabel(url_dx);
+            }
+        });
+    });
 });
 </script>
 @endpush
@@ -115,6 +162,9 @@ $(document).ready(function(){
                         <button id='setDataDaily' class="btn waves-effect btn-success" role="button" aria-haspopup="true" aria-expanded="false">
                             <i style="color:#fff;" class="material-icons">save</i> Export This Week Report
                         </button>
+                        <button style="display:none;" id='setDataDailyB' class="btn waves-effect btn-primary" role="button" aria-haspopup="true" aria-expanded="false">
+                            <i class="material-icons">save</i> Export Periode Report
+                        </button>
                     </li>
                 </ul>
             </div>
@@ -129,9 +179,26 @@ $(document).ready(function(){
                         </select>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                        <input type="month" id="SMonth" class="form-control" />
+                        <select class="form-control show-tick" id="InType">
+                            <option value="">Select Input Type</option>
+                            <option value="month">Month</option>
+                            <option value="periode">Periode</option>
+                        </select>
                     </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="SWeekForm">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="SDateForm" style="display:none;">
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <input type="date" id="SDateA" class="form-control" />
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <input type="date" id="SDateB" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="SMonthForm" style="display:none;">
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <input type="month" id="SMonth" class="form-control" />
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" id="SWeekForm">
+                        </div>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <button class="btn btn-primary btn-block waves-effect" id="ShowData">

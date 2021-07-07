@@ -1715,10 +1715,11 @@ class SheetController extends Controller
         /* --------------------------
         | FUNCTION FORMAT REPORT WEEKLY
         -------------------------------- */
-        $date = $this->date_start.",".$this->date_end;
-        $update_range = $new_worksheet;
         $level = "1";
-        $values = $this->ReportWeeklyGlobalFormat($page,$level);
+        $update_range = $new_worksheet;
+        $type = 'month';
+        $date = $this->date_start.",".$this->date_end;
+        $values = $this->ReportWeeklyGlobalFormat($page, $type, $date, $level);
         $this->updateTeamMonitoring($spreadsheetId,$values,$update_range);
 
         try{
@@ -1778,24 +1779,32 @@ class SheetController extends Controller
 
         return ResponseFormatter::success(null, "Success", 200);
     }
-    public function ReportWeeklyGlobalFormat($page, $level){
-        $Date = date('Y-m-d');
+    public function ReportWeeklyGlobalFormat($page, $type, $date, $level){
         $values = [];
-        $DateWeekly = $page->WeekFromDate(date('Y-m'));
-        $DateWeekly['startdate'] = array_reverse($DateWeekly['startdate']);
-        $DateWeekly['enddate'] = array_reverse($DateWeekly['enddate']);
-        $DateWeekly['c_week'] = array_reverse($DateWeekly['c_week']);
-        foreach($DateWeekly['c_week'] as $key => $v_weekly){
-            $startdate = $DateWeekly['startdate'][$key];
-            $enddate = $DateWeekly['enddate'][$key];
-            if($level == '1'){
-                $values = $this->ReportWeeklyGlobalFormatSanitizer($values, $v_weekly, $startdate, $enddate);
-            }else{
-                if($Date >= date('Y-m-d',strtotime($startdate)) && $Date <= date('Y-m-d',strtotime($enddate))){
+        if($type == 'periode'){
+            $date = explode(",",$date);
+            $v_weekly = 'Periode';
+            $startdate = $date[0];
+            $enddate = $date[1];
+            $values = $this->ReportWeeklyGlobalFormatSanitizer($values, $v_weekly, $startdate, $enddate);
+        }else{
+            $Date = date('Y-m-d');
+            $DateWeekly = $page->WeekFromDate(date('Y-m'));
+            $DateWeekly['startdate'] = array_reverse($DateWeekly['startdate']);
+            $DateWeekly['enddate'] = array_reverse($DateWeekly['enddate']);
+            $DateWeekly['c_week'] = array_reverse($DateWeekly['c_week']);
+            foreach($DateWeekly['c_week'] as $key => $v_weekly){
+                $startdate = $DateWeekly['startdate'][$key];
+                $enddate = $DateWeekly['enddate'][$key];
+                if($level == '1'){
                     $values = $this->ReportWeeklyGlobalFormatSanitizer($values, $v_weekly, $startdate, $enddate);
+                }else{
+                    if($Date >= date('Y-m-d',strtotime($startdate)) && $Date <= date('Y-m-d',strtotime($enddate))){
+                        $values = $this->ReportWeeklyGlobalFormatSanitizer($values, $v_weekly, $startdate, $enddate);
+                    }
                 }
+                // dump($values);
             }
-            // dump($values);
         }
         return $values;
     }
@@ -1985,7 +1994,6 @@ class SheetController extends Controller
             $d_rani['sent_royalty']->whereNotNull('sent_royalty')->count()
         ];
         array_push($values, $v_rani);
-
         $x = ["Total"];
         foreach ($v_rani as $key => $value) {
             if($key == 0){continue;}
@@ -2045,26 +2053,35 @@ class SheetController extends Controller
         -----------------------------*/
         $update_range = $new_worksheet;
         $level = "1";
-        $values = $this->ReportWeeklyIndoFormat($page,$level);
+        $type = 'month';
+        $values = $this->ReportWeeklyIndoFormat($page, $type, $date, $level);
         $this->updateTeamMonitoring($spreadsheetId,$values,$update_range);
 
         return ResponseFormatter::success(null, "Success", 200);
     }
-    public function ReportWeeklyIndoFormat($page,$level){
+    public function ReportWeeklyIndoFormat($page, $type, $date, $level){
         $values = [];
-        $DateWeekly = $page->WeekFromDate(date('Y-m'));
-        $DateWeekly['startdate'] = array_reverse($DateWeekly['startdate']);
-        $DateWeekly['enddate'] = array_reverse($DateWeekly['enddate']);
-        $DateWeekly['c_week'] = array_reverse($DateWeekly['c_week']);
-        foreach($DateWeekly['c_week'] as $key => $v_weekly){
-            $startdate = $DateWeekly['startdate'][$key];
-            $enddate = $DateWeekly['enddate'][$key];
-            $Date = date('Y-m-d');
-            if($level == '1'){
-                $values = $this->ReportWeeklyIndoFormatSanitizer($values,$v_weekly,$startdate,$enddate);
-            }else{
-                if($Date >= date('Y-m-d',strtotime($startdate)) && $Date <= date('Y-m-d',strtotime($enddate))){
+        if($type == 'periode'){
+            $date = explode(",",$date);
+            $v_weekly = 'Periode';
+            $startdate = $date[0];
+            $enddate = $date[1];
+            $values = $this->ReportWeeklyIndoFormatSanitizer($values, $v_weekly, $startdate, $enddate);
+        }else{
+            $DateWeekly = $page->WeekFromDate(date('Y-m'));
+            $DateWeekly['startdate'] = array_reverse($DateWeekly['startdate']);
+            $DateWeekly['enddate'] = array_reverse($DateWeekly['enddate']);
+            $DateWeekly['c_week'] = array_reverse($DateWeekly['c_week']);
+            foreach($DateWeekly['c_week'] as $key => $v_weekly){
+                $startdate = $DateWeekly['startdate'][$key];
+                $enddate = $DateWeekly['enddate'][$key];
+                $Date = date('Y-m-d');
+                if($level == '1'){
                     $values = $this->ReportWeeklyIndoFormatSanitizer($values,$v_weekly,$startdate,$enddate);
+                }else{
+                    if($Date >= date('Y-m-d',strtotime($startdate)) && $Date <= date('Y-m-d',strtotime($enddate))){
+                        $values = $this->ReportWeeklyIndoFormatSanitizer($values,$v_weekly,$startdate,$enddate);
+                    }
                 }
             }
         }
@@ -2153,7 +2170,12 @@ class SheetController extends Controller
     public function AllTeamReportWeekly(){
         Artisan::call('set:all-team-report-weekly');
     }
-    public function setAllTeamReportWeekly(){
+    public function AllTeamReportWeeklyPeriode(){
+        $type = request()->input('type');
+        $date = request()->input('d');
+        $this->setAllTeamReportWeekly($type, $date);
+    }
+    public function setAllTeamReportWeekly($type, $date){
         // TRIAL
         // $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
         // REAL
@@ -2162,9 +2184,9 @@ class SheetController extends Controller
         /** ---------------------
         * DUPLICATE SPREADSHEET
         ------------------------- */
-        $title = "Backup Weekly Lv. 2 Reports All Team Final - ".date('Y-m-d H:i:s');
-        $folder_id = "1yclgli3iOw_E36t4EOCgSs9Bc5VhsMkN";
-        $this->DuplicateSpreadsheet($spreadsheetId,$folder_id,$title);
+        // $title = "Backup Weekly Lv. 2 Reports All Team Final - ".date('Y-m-d H:i:s');
+        // $folder_id = "1yclgli3iOw_E36t4EOCgSs9Bc5VhsMkN";
+        // $this->DuplicateSpreadsheet($spreadsheetId,$folder_id,$title);
 
         /*--------------------------
         | INSERT TO LEVEL 2 GLOBAL WEEKLY
@@ -2179,7 +2201,7 @@ class SheetController extends Controller
         $DateWeekly = $page->WeekFromDate(date('Y-m'));
         $new_worksheet = "Global Weekly Report";
         $level = "2";
-        $values = $this->ReportWeeklyGlobalFormat($page, $level);
+        $values = $this->ReportWeeklyGlobalFormat($page, $type, $date, $level);
         $update_range = $new_worksheet."!A1:I1";
         $endindex = 12;
         $this->insertValuesIntoFirstRow($spreadsheetId,$values,$update_range,$endindex,$sheetId);
@@ -2195,7 +2217,7 @@ class SheetController extends Controller
 
         $new_worksheet = "Indo Weekly Report";
         $level = "2";
-        $values = $this->ReportWeeklyIndoFormat($page,$level);
+        $values = $this->ReportWeeklyIndoFormat($page, $type, $date, $level);
         $update_range = $new_worksheet."!A1:I1";
         $endindex = 5;
         $this->insertValuesIntoFirstRow($spreadsheetId,$values,$update_range,$endindex,$sheetId);
@@ -2318,7 +2340,12 @@ class SheetController extends Controller
     public function ReportToSunny(){
         Artisan::call('set:report-to-sunny');
     }
-    public function setReportToSunny(){
+    public function ReportToSunnyPeriode(){
+        $date = request()->input('d');
+        $type = request()->input('type');
+        $this->setReportToSunny($type, $date);
+    }
+    public function setReportToSunny($type, $date){
         // TRIAL
         // $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
         // $sheetId = 436026540;
@@ -2340,111 +2367,54 @@ class SheetController extends Controller
         $update_range = "Report to Sunny!B1";
         $Date = date('Y-m-d');
         $values = [];
-        $DateWeekly = $this->page->WeekFromDateFriday(date('Y-m'));
-        $DateWeekly['startdate'] = array_reverse($DateWeekly['startdate']);
-        $DateWeekly['enddate'] = array_reverse($DateWeekly['enddate']);
-        $DateWeekly['c_week'] = array_reverse($DateWeekly['c_week']);
-        foreach($DateWeekly['c_week'] as $key => $v_weekly){
-            $startdate = $DateWeekly['startdate'][$key];
-            $enddate = $DateWeekly['enddate'][$key];
-            $Date = date('Y-m-d');
-            $data_sunny_indo = [];
-            if($Date >= date('Y-m-d',strtotime($startdate)) && $Date <= date('Y-m-d',strtotime($enddate))){
-                $date = [$v_weekly,$startdate,$enddate];
-                $periode = date('d F', strtotime($startdate))." - ".date('d F', strtotime($enddate));
-                $arr_titles = ["date","date_feedback_received"];
-                foreach($arr_titles as $key1 => $arr_title){
-                    $query = ReportSpamMangatoonNovelList::select($arr_title)->whereBetween($arr_title,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
-                    $c_data = $query->whereNotNull($arr_title)->count();
-                    $data_sunny_mangatoon[$arr_title] = $c_data;
+        if($type == 'periode'){
+            $date = explode(',',$date);
+            $startdate = $date[0];
+            $enddate = $date[1];
+            $periode = date('d F', strtotime($startdate))." - ".date('d F', strtotime($enddate));
+            $data_sunny = $this->ReportToSunnyDataSanitizer($startdate, $enddate);
+        }else{
+            $DateWeekly = $this->page->WeekFromDateFriday(date('Y-m'));
+            $DateWeekly['startdate'] = array_reverse($DateWeekly['startdate']);
+            $DateWeekly['enddate'] = array_reverse($DateWeekly['enddate']);
+            $DateWeekly['c_week'] = array_reverse($DateWeekly['c_week']);
+            foreach($DateWeekly['c_week'] as $key => $v_weekly){
+                $startdate = $DateWeekly['startdate'][$key];
+                $enddate = $DateWeekly['enddate'][$key];
+                $Date = date('Y-m-d');
+                if($Date >= date('Y-m-d',strtotime($startdate)) && $Date <= date('Y-m-d',strtotime($enddate))){
+                    $periode = date('d F', strtotime($startdate))." - ".date('d F', strtotime($enddate));
+                    $data_sunny = $this->ReportToSunnyDataSanitizer($startdate, $enddate);
+                    break;
                 }
-                foreach($arr_titles as $key1 => $arr_title){
-                    $query = ReportSpamWNUncoractedNovelList::select($arr_title)->whereBetween($arr_title,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
-                    $c_data = $query->whereNotNull($arr_title)->count();
-                    $data_sunny_wn[$arr_title] = $c_data;
-                }
-                $arr_titles = ["Email", "Facebook", "Whatsapp", "Instagram", "Discord"];
-                foreach($arr_titles as $key1 => $arr_title){
-                    $counter_new_author = 0;
-                    $counter_new_author_spam = 0;
-                    foreach($this->page->personGlobal as $key => $person){
-                        switch($person){
-                            case "Ame" :
-                                $query = DailyReportAme::select('media')->where('status','=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
-                                $query2 = DailyReportAme::select('media')->where('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
-                                break;
-                            case "Anna" :
-                                $query = DailyReportAnna::select('media')->where('status','=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
-                                $query2 = DailyReportAnna::select('media')->where('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
-                                break;
-                            case "Carol" :
-                                $query = DailyReportCarol::select('media')->where('status','=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
-                                $query2 = DailyReportCarol::select('media')->where('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
-                                break;
-                            case "Eric" :
-                                $query = DailyReportEric::select('media')->where('status','=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
-                                $query2 = DailyReportEric::select('media')->where('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
-                                break;
-                            case "Icha" :
-                                $query = DailyReportIcha::select('media')->where('status','=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
-                                $query2 = DailyReportIcha::select('media')->where('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
-                                break;
-                            case "Lily" :
-                                $query = DailyReportLily::select('media')->where('status','=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
-                                $query2 = DailyReportLily::select('media')->where('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
-                                break;
-                            case "Maydewi" :
-                                $query = DailyReportMaydewi::select('media')->where('status','=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
-                                $query2 = DailyReportMaydewi::select('media')->where('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
-                                break;
-                            case "Rani" :
-                                $query = DailyReportRani::select('media')->where('status','=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
-                                $query2 = DailyReportRani::select('media')->where('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
-                                break;
-                            default :
-                                $query = [];
-                                $query2 = [];
-                                break;
-                        }
-                        $counter_new_author += $query->where('media','=',$arr_title)->whereNotNull('media')->count();
-                        $counter_new_author_spam += $query2->where('media','=',$arr_title)->whereNotNull('media')->count();
-                    }
-                    $data_sunny[$arr_title] = $counter_new_author + $counter_new_author_spam;
-                }
-                foreach($arr_titles as $key1 => $arr_title){
-                    $query = DailyReportIndoIchaNur::select('contact_way')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
-                    $c_data = $query->where('contact_way','=',$arr_title)->whereNotNull('contact_way')->count();
-                    $data_sunny_indo[$arr_title] = $c_data;
-                }
-                break;
             }
         }
-        $date_wn = $data_sunny_wn['date'];
-        $date_feedback_received_wn = $data_sunny_wn['date_feedback_received'];
-        $date_mangatoon = $data_sunny_wn['date'];
-        $date_feedback_received_mangatoon = $data_sunny_mangatoon['date_feedback_received'];
-        $email_sent = $data_sunny['Email'];
-        $email_replied = $data_sunny['Email'];
-        $fb_sent = $data_sunny['Facebook'];
-        $fb_replied = $data_sunny['Facebook'];
-        $ig_sent = $data_sunny['Instagram'];
-        $ig_replied = $data_sunny['Instagram'];
-        $wa_sent = $data_sunny['Whatsapp'];
-        $wa_replied = $data_sunny['Whatsapp'];
-        $discord_sent = $data_sunny['Discord'];
-        $discord_replied = $data_sunny['Discord'];
+        $date_wn = $data_sunny['data_sunny_wn']['date'];
+        $date_feedback_received_wn = $data_sunny['data_sunny_wn']['date_feedback_received'];
+        $date_mangatoon = $data_sunny['data_sunny_wn']['date'];
+        $date_feedback_received_mangatoon = $data_sunny['data_sunny_mangatoon']['date_feedback_received'];
+        $email_sent = $data_sunny['data_sunny']['Email'];
+        $email_replied = $data_sunny['data_sunny']['Email'];
+        $fb_sent = $data_sunny['data_sunny']['Facebook'];
+        $fb_replied = $data_sunny['data_sunny']['Facebook'];
+        $ig_sent = $data_sunny['data_sunny']['Instagram'];
+        $ig_replied = $data_sunny['data_sunny']['Instagram'];
+        $wa_sent = $data_sunny['data_sunny']['Whatsapp'];
+        $wa_replied = $data_sunny['data_sunny']['Whatsapp'];
+        $discord_sent = $data_sunny['data_sunny']['Discord'];
+        $discord_replied = $data_sunny['data_sunny']['Discord'];
         $twitter_sent = 0;
         $twitter_replied = 0;
-        $email_sent_indo = $data_sunny_indo['Email'];
-        $email_replied_indo = $data_sunny_indo['Email'];
-        $fb_sent_indo = $data_sunny_indo['Facebook'];
-        $fb_replied_indo = $data_sunny_indo['Facebook'];
-        $ig_sent_indo = $data_sunny_indo['Instagram'];
-        $ig_replied_indo = $data_sunny_indo['Instagram'];
-        $wa_sent_indo = $data_sunny_indo['Whatsapp'];
-        $wa_replied_indo = $data_sunny_indo['Whatsapp'];
-        $discord_sent_indo = $data_sunny_indo['Discord'];
-        $discord_replied_indo = $data_sunny_indo['Discord'];
+        $email_sent_indo = $data_sunny['data_sunny_indo']['Email'];
+        $email_replied_indo = $data_sunny['data_sunny_indo']['Email'];
+        $fb_sent_indo = $data_sunny['data_sunny_indo']['Facebook'];
+        $fb_replied_indo = $data_sunny['data_sunny_indo']['Facebook'];
+        $ig_sent_indo = $data_sunny['data_sunny_indo']['Instagram'];
+        $ig_replied_indo = $data_sunny['data_sunny_indo']['Instagram'];
+        $wa_sent_indo = $data_sunny['data_sunny_indo']['Whatsapp'];
+        $wa_replied_indo = $data_sunny['data_sunny_indo']['Whatsapp'];
+        $discord_sent_indo = $data_sunny['data_sunny_indo']['Discord'];
+        $discord_replied_indo = $data_sunny['data_sunny_indo']['Discord'];
         $twitter_sent_indo = "0";
         $twitter_replied_indo = "0";
         $values = [
@@ -2475,5 +2445,78 @@ class SheetController extends Controller
         ];
         $service->spreadsheets_values->append($spreadsheetId, $update_range, $body, $params);
         return ResponseFormatter::success(null, "Success", 200);
+    }
+    public function ReportToSunnyDataSanitizer($startdate, $enddate){
+        $data_sunny_indo = [];
+        $arr_titles = ["date","date_feedback_received"];
+        foreach($arr_titles as $key1 => $arr_title){
+            $query = ReportSpamMangatoonNovelList::select($arr_title)->whereBetween($arr_title,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+            $c_data = $query->whereNotNull($arr_title)->count();
+            $data_sunny_mangatoon[$arr_title] = $c_data;
+        }
+        foreach($arr_titles as $key1 => $arr_title){
+            $query = ReportSpamWNUncoractedNovelList::select($arr_title)->whereBetween($arr_title,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+            $c_data = $query->whereNotNull($arr_title)->count();
+            $data_sunny_wn[$arr_title] = $c_data;
+        }
+        $arr_titles = ["Email", "Facebook", "Whatsapp", "Instagram", "Discord"];
+        foreach($arr_titles as $key1 => $arr_title){
+            $counter_new_author = 0;
+            $counter_new_author_spam = 0;
+            foreach($this->page->personGlobal as $key => $person){
+                switch($person){
+                    case "Ame" :
+                        $query = DailyReportAme::select('media')->where('status','=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        $query2 = DailyReportAme::select('media')->where('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        break;
+                    case "Anna" :
+                        $query = DailyReportAnna::select('media')->where('status','=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        $query2 = DailyReportAnna::select('media')->where('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        break;
+                    case "Carol" :
+                        $query = DailyReportCarol::select('media')->where('status','=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        $query2 = DailyReportCarol::select('media')->where('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        break;
+                    case "Eric" :
+                        $query = DailyReportEric::select('media')->where('status','=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        $query2 = DailyReportEric::select('media')->where('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        break;
+                    case "Icha" :
+                        $query = DailyReportIcha::select('media')->where('status','=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        $query2 = DailyReportIcha::select('media')->where('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        break;
+                    case "Lily" :
+                        $query = DailyReportLily::select('media')->where('status','=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        $query2 = DailyReportLily::select('media')->where('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        break;
+                    case "Maydewi" :
+                        $query = DailyReportMaydewi::select('media')->where('status','=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        $query2 = DailyReportMaydewi::select('media')->where('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        break;
+                    case "Rani" :
+                        $query = DailyReportRani::select('media')->where('status','=','New Author')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        $query2 = DailyReportRani::select('media')->where('status','=','New Author Spam')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                        break;
+                    default :
+                        $query = [];
+                        $query2 = [];
+                        break;
+                }
+                $counter_new_author += $query->where('media','=',$arr_title)->whereNotNull('media')->count();
+                $counter_new_author_spam += $query2->where('media','=',$arr_title)->whereNotNull('media')->count();
+            }
+            $data_sunny[$arr_title] = $counter_new_author + $counter_new_author_spam;
+        }
+        foreach($arr_titles as $key1 => $arr_title){
+            $query = DailyReportIndoIchaNur::select('contact_way')->whereBetween('date',[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+            $c_data = $query->where('contact_way','=',$arr_title)->whereNotNull('contact_way')->count();
+            $data_sunny_indo[$arr_title] = $c_data;
+        }
+        return [
+            'data_sunny_mangatoon' => $data_sunny_mangatoon,
+            'data_sunny_wn' => $data_sunny_wn,
+            'data_sunny' => $data_sunny,
+            'data_sunny_indo' => $data_sunny_indo
+        ];
     }
 }

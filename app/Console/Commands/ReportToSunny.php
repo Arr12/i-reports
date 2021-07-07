@@ -39,7 +39,10 @@ class ReportToSunny extends Command
     public function handle()
     {
         $result = new SheetController();
-        $result->setReportToSunny();
+
+        $date = 'month';
+        $type = 'month';
+        $result->setReportToSunny($type, $date);
 
         $this->info('Report to Sunny has been updated successfully');
     }

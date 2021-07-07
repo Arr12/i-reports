@@ -39,7 +39,9 @@ class AllTeamReportWeekly extends Command
     public function handle()
     {
         $result = new SheetController();
-        $result->setAllTeamReportWeekly();
+        $type = 'month';
+        $date = 'month';
+        $result->setAllTeamReportWeekly($type, $date);
 
         $this->info('Insert to first line of Lv 2 All Team Report Weekly successfully');
     }
