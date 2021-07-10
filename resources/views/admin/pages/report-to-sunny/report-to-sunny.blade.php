@@ -192,7 +192,7 @@ $(document).ready(function(){
                 let a = $('#SReport').val();
                 let b = 'periode';
                 let c = 'Periode,'+$('#SDateA').val()+','+$('#SDateB').val();
-                let url_dx = "{{route('all-report.weekly.data')}}?r="+a+"&mon="+b+"&w="+c;
+                let url_dx = "{{route('report-to-sunny.report-to-sunny.data')}}?r="+a+"&type="+b+"&w="+c;
                 Tabel(url_dx);
             }
         });
