@@ -2227,7 +2227,12 @@ class SheetController extends Controller
     public function AllTeamReportMonthly(){
         Artisan::call('set:all-team-report-monthly');
     }
-    public function setAllTeamReportMonthly(){
+    public function AllTeamReportMonthlyPeriode(){
+        $date = request()->input('d');
+        $type = request()->input('type');
+        $this->setAllTeamReportMonthly($type, $date);
+    }
+    public function setAllTeamReportMonthly($type, $date){
         // TRIAL
         // $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
         // $sheetId = 468929916;
@@ -2246,18 +2251,23 @@ class SheetController extends Controller
         /** ------------------------------
         * SET INTO SPREADSHEET FIRST ROW
         ---------------------------------- */
-        $page = $this->page;
-        $DateWeekly = $page->WeekFromDate(date('Y-m'));
+        if($type == 'periode'){
+            $month = explode(",",$date);
+            $date_start = $month[0];
+            $date_end = $month[1];
+            $head_a = [date('F Y',strtotime($date_start))];
+        }else{
+            $month = date('Y-m');
+            $date_start = date("Y-m-d", strtotime(date($month.'-01')));
+            $date_end = date("Y-m-d", strtotime($month.'last day of this month'));
+            $head_a = [date('F Y',strtotime($this->month))];
+        }
 
         $new_worksheet = "Monthly Report";
-        $date_start = date("Y-m-d", strtotime($DateWeekly['startdate'][0]));
-        $date_end = date("Y-m-d", strtotime(end($DateWeekly['enddate'])));
         $date = $date_start.",".$date_end;
         $date = explode(",",$date);
 
         $values = [];
-
-        $head_a = [date('F Y',strtotime($this->month))];
         array_push($values,$head_a);
         $head_ia = [
             "Indo Team",

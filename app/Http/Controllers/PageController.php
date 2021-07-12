@@ -4199,16 +4199,23 @@ class PageController extends Controller
     -----------------------------------------*/
     public function getMonthlyReport(Request $request){
         $report = $request->input('r');
-        $month = $request->input('mon');
         $type = $request->input('type');
         if($type != 'ready'){
-            $DateWeekly = $this->WeekFromDate($month);
+            if($type == 'periode'){
+                $month = $request->input('mon');
+                $date = explode(",",$month);
+                $date_start = $date[1];
+                $date_end = $date[2];
+            }else{
+                $month = $request->input('mon');
+                $date_start = date("Y-m-d", strtotime(date($month.'-01')));
+                $date_end = date("Y-m-d", strtotime($month.'last day of this month'));
+            }
         } else {
-            $DateWeekly = $this->WeekFromDate(date('Y-m'));
+            $month = date('Y-m');
+            $date_start = date("Y-m-d", strtotime(date($month.'-01')));
+            $date_end = date("Y-m-d", strtotime($month.'last day of this month'));
         }
-        $date_start = date("Y-m-d", strtotime($DateWeekly['startdate'][0]));
-        $date_end = date("Y-m-d", strtotime(end($DateWeekly['enddate'])));
-
         $date = $date_start.",".$date_end;
         $date = explode(",",$date);
         if($report == 'global'){
@@ -4225,6 +4232,10 @@ class PageController extends Controller
     public function MonthlyReportDataGlobal($date){
         $startdate = $date[0];
         $enddate = $date[1];
+        $data_array['date'] = [
+            $startdate,
+            $enddate
+        ];
         $data_array['columns'] = [];
         $data_array['data'] = [];
         // dd($date);
