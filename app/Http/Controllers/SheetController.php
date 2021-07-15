@@ -396,9 +396,9 @@ class SheetController extends Controller
             }
             // dd($savedData);
             DailyReportAme::insert($savedData);
-            Cache::forget('cache-ame');
-            $this->page->DataAmeCached();
         }
+        Cache::forget('cache-ame');
+        $this->page->DataAmeCached();
         return true;
     }
     public function getDailyReportAnna(){
@@ -484,9 +484,9 @@ class SheetController extends Controller
                 ]);
             }
             DailyReportAnna::insert($savedData);
-            Cache::forget('cache-anna');
-            $this->page->DataAnnaCached();
         }
+        Cache::forget('cache-anna');
+        $this->page->DataAnnaCached();
         return true;
     }
     public function getDailyReportCarol(){
@@ -572,9 +572,9 @@ class SheetController extends Controller
                 ]);
             }
             DailyReportCarol::insert($savedData);
-            Cache::forget('cache-carol');
-            $this->page->DataCarolCached();
         }
+        Cache::forget('cache-carol');
+        $this->page->DataCarolCached();
         return true;
     }
     public function getDailyReportEric(){
@@ -660,9 +660,9 @@ class SheetController extends Controller
                 ]);
             }
             DailyReportEric::insert($savedData);
-            Cache::forget('cache-eric');
-            $this->page->DataEricCached();
         }
+        Cache::forget('cache-eric');
+        $this->page->DataEricCached();
         return true;
     }
     public function getDailyReportIcha(){
@@ -748,9 +748,9 @@ class SheetController extends Controller
                 ]);
             }
             DailyReportIcha::insert($savedData);
-            Cache::forget('cache-icha');
-            $this->page->DataIchaCached();
         }
+        Cache::forget('cache-icha');
+        $this->page->DataIchaCached();
         return true;
     }
     public function getDailyReportLily(){
@@ -836,9 +836,9 @@ class SheetController extends Controller
                 ]);
             }
             DailyReportLily::insert($savedData);
-            Cache::forget('cache-lily');
-            $this->page->DataLilyCached();
         }
+        Cache::forget('cache-lily');
+        $this->page->DataLilyCached();
         return true;
     }
     public function getDailyReportMayDewi(){
@@ -924,9 +924,9 @@ class SheetController extends Controller
                 ]);
             }
             DailyReportMaydewi::insert($savedData);
-            Cache::forget('cache-maydewi');
-            $this->page->DataMaydewiCached();
         }
+        Cache::forget('cache-maydewi');
+        $this->page->DataMaydewiCached();
         return true;
     }
     public function getDailyReportRani(){
@@ -1013,9 +1013,9 @@ class SheetController extends Controller
                 ]);
             }
             DailyReportRani::insert($savedData);
-            Cache::forget('cache-rani');
-            $this->page->DataRaniCached();
         }
+        Cache::forget('cache-rani');
+        $this->page->DataRaniCached();
         return true;
     }
     public function getDailyReportIndoIchaNur(){
@@ -1099,9 +1099,9 @@ class SheetController extends Controller
                 ]);
             }
             DailyReportIndoIchaNur::insert($savedData);
-            Cache::forget('cache-ichanur');
-            $this->page->DataIndoIchaNurCached();
         }
+        Cache::forget('cache-ichanur');
+        $this->page->DataIndoIchaNurCached();
         return true;
     }
     public function getDailyReportIndoIrel(){
@@ -1178,9 +1178,9 @@ class SheetController extends Controller
                 ]);
             }
             DailyReportIndoIrel::insert($savedData);
-            Cache::forget('cache-irel');
-            $this->page->DataIndoIrelCached();
         }
+        Cache::forget('cache-irel');
+        $this->page->DataIndoIrelCached();
         return true;
     }
     public function getNonExReport(){
@@ -1277,9 +1277,9 @@ class SheetController extends Controller
                 ]);
             }
             NonExclusiveReport::insert($savedData);
-            Cache::forget('cache-non-exclusive');
-            $this->page->DataNonExCached();
         }
+        Cache::forget('cache-non-exclusive');
+        $this->page->DataNonExCached();
         return true;
     }
     public function getSpamRoyalRoadNovelList(){
@@ -1414,9 +1414,9 @@ class SheetController extends Controller
             }
             // dump($savedData);
             ReportSpamMangatoonNovelList::insert($savedData);
-            Cache::forget('cache-mangatoon');
-            $this->page->DataSpamMangatoonCached();
         }
+        Cache::forget('cache-mangatoon');
+        $this->page->DataSpamMangatoonCached();
         return true;
     }
     public function getSpamWNUncontractedNovelList(){
@@ -1490,9 +1490,9 @@ class SheetController extends Controller
             }
             // dd($savedData);
             ReportSpamWNUncoractedNovelList::insert($savedData);
-            Cache::forget('cache-wn_uncontracted');
-            $this->page->DataUncontractedWNCached();
         }
+        Cache::forget('cache-wn_uncontracted');
+        $this->page->DataUncontractedWNCached();
         return true;
     }
     public function getSpamNovelListFromRanking(){

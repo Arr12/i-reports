@@ -5,6 +5,38 @@
     $update_value = route('update-daily.edit-value');
     $update_follow = route('update-daily.add-value');
     $get_person_data = route('api.dailyReport.get');
+    $arr = [
+        "text" => [
+            "Date",
+            "First Touch",
+            "Sent E-Contract",
+            "Date Sent",
+            "Solved Date",
+            "Rec. E-Contract",
+            "Follow Up 1",
+            "Follow Up 2",
+            "Follow Up 3",
+            "Follow Up 4",
+            "Follow Up 5",
+            "Email Sent",
+            "Batch Date",
+        ],
+        "url" => [
+            "date",
+            "first_touch",
+            "sent_e_contract",
+            "date_sent",
+            "solved_date",
+            "rec_e_contract",
+            "fu_1",
+            "fu_2",
+            "fu_3",
+            "fu_4",
+            "fu_5",
+            "email_sent",
+            "batch_date",
+        ]
+    ];
 @endphp
 
 @push('before-style')
@@ -219,8 +251,21 @@ $(document).ready(function(){
     });
     $('#BtnSearchData').on('click', function(){
         let search_author = $('#search_author_contact').val();
-        let url = "{{ $data_person }}?where="+search_author;
-        TabelGlobalDaily(url);
+        let search_global_editor = $('#search_global_editor').val();
+        let kriteria = $("#select_kriteria").val();
+        let startdate = $("#SDateA").val();
+        let enddate = $("#SDateB").val();
+        let url_change = false;
+        url_change = "{{$data_person}}?where="+search_author+"&global_editor="+search_global_editor+"&kriteria="+kriteria+"&startdate="+startdate+"&enddate="+enddate;
+        TabelGlobalDaily(url_change);
+    });
+    $("#select_kriteria").on('change',function(){
+        let kriteria = $(this).val();
+        let input = false;
+        if(kriteria != ''){
+            input = "<div class='col-lg-12 col-md-12 col-sm-12 col-xs-12'><label>Periode :</label></div><div class='col-lg-6 col-md-6 col-sm-12 col-xs-12'><input type='date' id='SDateA' class='form-control' /></div><div class='col-lg-6 col-md-6 col-sm-12 col-xs-12'><input type='date' id='SDateB' class='form-control' /></div>";
+        }
+        $("#SDateForm").html(input);
     });
 });
 </script>
@@ -259,8 +304,24 @@ $(document).ready(function(){
                                 <input type="text" class="form-control" id="search_author_contact" placeholder="Input Author Contact for Advanced Search.." />
                             </div>
                         </div>
-                        <button type="button" id="BtnSearchData" class="btn btn-block btn-primary waves-effect"><i class="material-icons">search</i> Search Author Contact</button>
+                        <div class="form-group">
+                            <div class="form-line">
+                                <input type="text" class="form-control" id="search_global_editor" placeholder="Input Global Editor.." />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-line">
+                                <select class="form-control show-tick" id="select_kriteria">
+                                    <option value="">Select Kriteria</option>
+                                    @foreach ($arr['text'] as $key => $data)
+                                        <option value="{{$arr['url'][$key]}}">{{$data}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
                     </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="SDateForm"></div>
+                    <button type="button" id="BtnSearchData" class="btn btn-block btn-primary waves-effect"><i class="material-icons">search</i> Search</button>
                 </div>
                 <div class="row">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">

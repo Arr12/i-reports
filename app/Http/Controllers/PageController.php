@@ -1217,14 +1217,33 @@ class PageController extends Controller
     public function getDailyReportAmes(){
         $where = request()->input('where');
         $marker = request()->input('marker');
+        $kriteria = request()->input('kriteria');
+        $startdate = date('Y-m-d', strtotime(request()->input('startdate')));
+        $enddate = date('Y-m-d', strtotime(request()->input('enddate')));
         if(isset($marker) && $marker!=''){
-            $query = DailyReportAme::where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            if((isset($where) && $where != '') && (isset($marker) && $marker != '')){
+                if((isset($where) && $where != '') && (isset($marker) && $marker != '') && (isset($kriteria) && $kriteria != '')){
+                    $query = DailyReportAme::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                }else{
+                    $query = DailyReportAme::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                }
+            }
+            else if((isset($marker) && $marker != '') && (isset($kriteria) && $kriteria != '')){
+                $query = DailyReportAme::where('marker', '=', $marker)->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
+            else{
+                $query = DailyReportAme::where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
         }
         else if(isset($where) && $where != ''){
-            $query = DailyReportAme::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            if((isset($where) && $where != '') && (isset($kriteria) && $kriteria != '')){
+                $query = DailyReportAme::where('author_contact','ilike', '%'.$where.'%')->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }else{
+                $query = DailyReportAme::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
         }
-        else if((isset($where) && $where != '') && (isset($marker) && $marker != '')){
-            $query = DailyReportAme::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        else if(isset($kriteria) && $kriteria != ''){
+            $query = DailyReportAme::whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
         }
         else{
             $query = $this->DataAmeCached();
@@ -1304,14 +1323,33 @@ class PageController extends Controller
     public function getDailyReportAnnas(){
         $where = request()->input('where');
         $marker = request()->input('marker');
+        $kriteria = request()->input('kriteria');
+        $startdate = date('Y-m-d', strtotime(request()->input('startdate')));
+        $enddate = date('Y-m-d', strtotime(request()->input('enddate')));
         if(isset($marker) && $marker!=''){
-            $query = DailyReportAnna::where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            if((isset($where) && $where != '') && (isset($marker) && $marker != '')){
+                if((isset($where) && $where != '') && (isset($marker) && $marker != '') && (isset($kriteria) && $kriteria != '')){
+                    $query = DailyReportAnna::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                }else{
+                    $query = DailyReportAnna::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                }
+            }
+            else if((isset($marker) && $marker != '') && (isset($kriteria) && $kriteria != '')){
+                $query = DailyReportAnna::where('marker', '=', $marker)->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
+            else{
+                $query = DailyReportAnna::where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
         }
         else if(isset($where) && $where != ''){
-            $query = DailyReportAnna::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            if((isset($where) && $where != '') && (isset($kriteria) && $kriteria != '')){
+                $query = DailyReportAnna::where('author_contact','ilike', '%'.$where.'%')->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }else{
+                $query = DailyReportAnna::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
         }
-        else if((isset($where) && $where != '') && (isset($marker) && $marker != '')){
-            $query = DailyReportAnna::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        else if(isset($kriteria) && $kriteria != ''){
+            $query = DailyReportAnna::whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
         }
         else{
             $query = $this->DataAnnaCached();
@@ -1391,14 +1429,33 @@ class PageController extends Controller
     public function getDailyReportCarols(){
         $where = request()->input('where');
         $marker = request()->input('marker');
+        $kriteria = request()->input('kriteria');
+        $startdate = date('Y-m-d', strtotime(request()->input('startdate')));
+        $enddate = date('Y-m-d', strtotime(request()->input('enddate')));
         if(isset($marker) && $marker!=''){
-            $query = DailyReportCarol::where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            if((isset($where) && $where != '') && (isset($marker) && $marker != '')){
+                if((isset($where) && $where != '') && (isset($marker) && $marker != '') && (isset($kriteria) && $kriteria != '')){
+                    $query = DailyReportCarol::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                }else{
+                    $query = DailyReportCarol::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                }
+            }
+            else if((isset($marker) && $marker != '') && (isset($kriteria) && $kriteria != '')){
+                $query = DailyReportCarol::where('marker', '=', $marker)->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
+            else{
+                $query = DailyReportCarol::where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
         }
         else if(isset($where) && $where != ''){
-            $query = DailyReportCarol::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            if((isset($where) && $where != '') && (isset($kriteria) && $kriteria != '')){
+                $query = DailyReportCarol::where('author_contact','ilike', '%'.$where.'%')->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }else{
+                $query = DailyReportCarol::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
         }
-        else if((isset($where) && $where != '') && (isset($marker) && $marker != '')){
-            $query = DailyReportCarol::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        else if(isset($kriteria) && $kriteria != ''){
+            $query = DailyReportCarol::whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
         }
         else{
             $query = $this->DataCarolCached();
@@ -1478,14 +1535,33 @@ class PageController extends Controller
     public function getDailyReportErics(){
         $where = request()->input('where');
         $marker = request()->input('marker');
+        $kriteria = request()->input('kriteria');
+        $startdate = date('Y-m-d', strtotime(request()->input('startdate')));
+        $enddate = date('Y-m-d', strtotime(request()->input('enddate')));
         if(isset($marker) && $marker!=''){
-            $query = DailyReportEric::where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            if((isset($where) && $where != '') && (isset($marker) && $marker != '')){
+                if((isset($where) && $where != '') && (isset($marker) && $marker != '') && (isset($kriteria) && $kriteria != '')){
+                    $query = DailyReportEric::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                }else{
+                    $query = DailyReportEric::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                }
+            }
+            else if((isset($marker) && $marker != '') && (isset($kriteria) && $kriteria != '')){
+                $query = DailyReportEric::where('marker', '=', $marker)->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
+            else{
+                $query = DailyReportEric::where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
         }
         else if(isset($where) && $where != ''){
-            $query = DailyReportEric::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            if((isset($where) && $where != '') && (isset($kriteria) && $kriteria != '')){
+                $query = DailyReportEric::where('author_contact','ilike', '%'.$where.'%')->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }else{
+                $query = DailyReportEric::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
         }
-        else if((isset($where) && $where != '') && (isset($marker) && $marker != '')){
-            $query = DailyReportEric::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        else if(isset($kriteria) && $kriteria != ''){
+            $query = DailyReportEric::whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
         }
         else{
             $query = $this->DataEricCached();
@@ -1565,14 +1641,33 @@ class PageController extends Controller
     public function getDailyReportIchas(){
         $where = request()->input('where');
         $marker = request()->input('marker');
+        $kriteria = request()->input('kriteria');
+        $startdate = date('Y-m-d', strtotime(request()->input('startdate')));
+        $enddate = date('Y-m-d', strtotime(request()->input('enddate')));
         if(isset($marker) && $marker!=''){
-            $query = DailyReportIcha::where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            if((isset($where) && $where != '') && (isset($marker) && $marker != '')){
+                if((isset($where) && $where != '') && (isset($marker) && $marker != '') && (isset($kriteria) && $kriteria != '')){
+                    $query = DailyReportIcha::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                }else{
+                    $query = DailyReportIcha::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                }
+            }
+            else if((isset($marker) && $marker != '') && (isset($kriteria) && $kriteria != '')){
+                $query = DailyReportIcha::where('marker', '=', $marker)->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
+            else{
+                $query = DailyReportIcha::where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
         }
         else if(isset($where) && $where != ''){
-            $query = DailyReportIcha::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            if((isset($where) && $where != '') && (isset($kriteria) && $kriteria != '')){
+                $query = DailyReportIcha::where('author_contact','ilike', '%'.$where.'%')->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }else{
+                $query = DailyReportIcha::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
         }
-        else if((isset($where) && $where != '') && (isset($marker) && $marker != '')){
-            $query = DailyReportIcha::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        else if(isset($kriteria) && $kriteria != ''){
+            $query = DailyReportIcha::whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
         }
         else{
             $query = $this->DataIchaCached();
@@ -1652,14 +1747,33 @@ class PageController extends Controller
     public function getDailyReportLilies(){
         $where = request()->input('where');
         $marker = request()->input('marker');
+        $kriteria = request()->input('kriteria');
+        $startdate = date('Y-m-d', strtotime(request()->input('startdate')));
+        $enddate = date('Y-m-d', strtotime(request()->input('enddate')));
         if(isset($marker) && $marker!=''){
-            $query = DailyReportLily::where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            if((isset($where) && $where != '') && (isset($marker) && $marker != '')){
+                if((isset($where) && $where != '') && (isset($marker) && $marker != '') && (isset($kriteria) && $kriteria != '')){
+                    $query = DailyReportLily::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                }else{
+                    $query = DailyReportLily::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                }
+            }
+            else if((isset($marker) && $marker != '') && (isset($kriteria) && $kriteria != '')){
+                $query = DailyReportLily::where('marker', '=', $marker)->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
+            else{
+                $query = DailyReportLily::where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
         }
         else if(isset($where) && $where != ''){
-            $query = DailyReportLily::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            if((isset($where) && $where != '') && (isset($kriteria) && $kriteria != '')){
+                $query = DailyReportLily::where('author_contact','ilike', '%'.$where.'%')->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }else{
+                $query = DailyReportLily::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
         }
-        else if((isset($where) && $where != '') && (isset($marker) && $marker != '')){
-            $query = DailyReportLily::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        else if(isset($kriteria) && $kriteria != ''){
+            $query = DailyReportLily::whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
         }
         else{
             $query = $this->DataLilyCached();
@@ -1739,14 +1853,33 @@ class PageController extends Controller
     public function getDailyReportMayDewis(){
         $where = request()->input('where');
         $marker = request()->input('marker');
+        $kriteria = request()->input('kriteria');
+        $startdate = date('Y-m-d', strtotime(request()->input('startdate')));
+        $enddate = date('Y-m-d', strtotime(request()->input('enddate')));
         if(isset($marker) && $marker!=''){
-            $query = DailyReportMaydewi::where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            if((isset($where) && $where != '') && (isset($marker) && $marker != '')){
+                if((isset($where) && $where != '') && (isset($marker) && $marker != '') && (isset($kriteria) && $kriteria != '')){
+                    $query = DailyReportMaydewi::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                }else{
+                    $query = DailyReportMaydewi::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                }
+            }
+            else if((isset($marker) && $marker != '') && (isset($kriteria) && $kriteria != '')){
+                $query = DailyReportMaydewi::where('marker', '=', $marker)->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
+            else{
+                $query = DailyReportMaydewi::where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
         }
         else if(isset($where) && $where != ''){
-            $query = DailyReportMaydewi::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            if((isset($where) && $where != '') && (isset($kriteria) && $kriteria != '')){
+                $query = DailyReportMaydewi::where('author_contact','ilike', '%'.$where.'%')->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }else{
+                $query = DailyReportMaydewi::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
         }
-        else if((isset($where) && $where != '') && (isset($marker) && $marker != '')){
-            $query = DailyReportMaydewi::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        else if(isset($kriteria) && $kriteria != ''){
+            $query = DailyReportMaydewi::whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
         }
         else{
             $query = $this->DataMaydewiCached();
@@ -1826,14 +1959,33 @@ class PageController extends Controller
     public function getDailyReportRanis(){
         $where = request()->input('where');
         $marker = request()->input('marker');
+        $kriteria = request()->input('kriteria');
+        $startdate = date('Y-m-d', strtotime(request()->input('startdate')));
+        $enddate = date('Y-m-d', strtotime(request()->input('enddate')));
         if(isset($marker) && $marker!=''){
-            $query = DailyReportRani::where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            if((isset($where) && $where != '') && (isset($marker) && $marker != '')){
+                if((isset($where) && $where != '') && (isset($marker) && $marker != '') && (isset($kriteria) && $kriteria != '')){
+                    $query = DailyReportRani::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                }else{
+                    $query = DailyReportRani::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                }
+            }
+            else if((isset($marker) && $marker != '') && (isset($kriteria) && $kriteria != '')){
+                $query = DailyReportRani::where('marker', '=', $marker)->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
+            else{
+                $query = DailyReportRani::where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
         }
         else if(isset($where) && $where != ''){
-            $query = DailyReportRani::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            if((isset($where) && $where != '') && (isset($kriteria) && $kriteria != '')){
+                $query = DailyReportRani::where('author_contact','ilike', '%'.$where.'%')->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }else{
+                $query = DailyReportRani::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
         }
-        else if((isset($where) && $where != '') && (isset($marker) && $marker != '')){
-            $query = DailyReportRani::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        else if(isset($kriteria) && $kriteria != ''){
+            $query = DailyReportRani::whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
         }
         else{
             $query = $this->DataRaniCached();
@@ -1913,14 +2065,33 @@ class PageController extends Controller
     public function getDailyReportIndoIchaNurs(){
         $where = request()->input('where');
         $marker = request()->input('marker');
+        $kriteria = request()->input('kriteria');
+        $startdate = date('Y-m-d', strtotime(request()->input('startdate')));
+        $enddate = date('Y-m-d', strtotime(request()->input('enddate')));
         if(isset($marker) && $marker!=''){
-            $query = DailyReportIndoIchaNur::where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            if((isset($where) && $where != '') && (isset($marker) && $marker != '')){
+                if((isset($where) && $where != '') && (isset($marker) && $marker != '') && (isset($kriteria) && $kriteria != '')){
+                    $query = DailyReportIndoIchaNur::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+                }else{
+                    $query = DailyReportIndoIchaNur::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                }
+            }
+            else if((isset($marker) && $marker != '') && (isset($kriteria) && $kriteria != '')){
+                $query = DailyReportIndoIchaNur::where('marker', '=', $marker)->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
+            else{
+                $query = DailyReportIndoIchaNur::where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
         }
         else if(isset($where) && $where != ''){
-            $query = DailyReportIndoIchaNur::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            if((isset($where) && $where != '') && (isset($kriteria) && $kriteria != '')){
+                $query = DailyReportIndoIchaNur::where('author_contact','ilike', '%'.$where.'%')->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }else{
+                $query = DailyReportIndoIchaNur::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
         }
-        else if((isset($where) && $where != '') && (isset($marker) && $marker != '')){
-            $query = DailyReportIndoIchaNur::where('author_contact','ilike', '%'.$where.'%')->where('marker', '=', $marker)->orderBy('id', 'DESC')->limit($this->data_show)->get();
+        else if(isset($kriteria) && $kriteria != ''){
+            $query = DailyReportIndoIchaNur::whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
         }
         else{
             $query = $this->DataIndoIchaNurCached();
@@ -1994,10 +2165,22 @@ class PageController extends Controller
         return $data_array;
     }
     public function getDailyReportIndoIrels(){
-        if(request()->input('where') && request()->input('where') != ''){
-            $query = DailyReportIndoIrel::where('author_contact','ilike', '%'.request()->input('where').'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
-        }else{
-            $query = $this->DataIndoIrelCached();
+        $where = request()->input('where');
+        $kriteria = request()->input('kriteria');
+        $startdate = date('Y-m-d', strtotime(request()->input('startdate')));
+        $enddate = date('Y-m-d', strtotime(request()->input('enddate')));
+        if(isset($where) && $where != ''){
+            if((isset($where) && $where != '') && (isset($kriteria) && $kriteria != '')){
+                $query = DailyReportAme::where('author_contact','ilike', '%'.$where.'%')->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }else{
+                $query = DailyReportAme::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
+        }
+        else if(isset($kriteria) && $kriteria != ''){
+            $query = DailyReportAme::whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+        }
+        else{
+            $query = $this->DataAmeCached();
         }
         /* --------------
         / HEAD DATA
@@ -2649,9 +2832,35 @@ class PageController extends Controller
     -----------------------------------------*/
     public function getNonExclusiveReport(){
         $where = request()->input('where');
-        if($where && $where != ''){
-            $query = NonExclusiveReport::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
-        }else{
+        $global_editor = request()->input('global_editor');
+        $kriteria = request()->input('kriteria');
+        $startdate = date('Y-m-d', strtotime(request()->input('startdate')));
+        $enddate = date('Y-m-d', strtotime(request()->input('enddate')));
+        if(isset($where) && $where != ''){
+            if((isset($where) && $where != '') && (isset($kriteria) && $kriteria != '')){
+                $query = NonExclusiveReport::where('author_contact','ilike', '%'.$where.'%')->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'DESC')->get();
+            }
+            else if((isset($where) && $where != '') && (isset($global_editor) && $global_editor != '')){
+                $query = NonExclusiveReport::where('author_contact','ilike', '%'.$where.'%')->where('global_editor','ilike', '%'.$global_editor.'%')->orderBy('id', 'DESC')->get();
+            }
+            else if((isset($where) && $where != '') && (isset($kriteria) && $kriteria != '') && (isset($global_editor) && $global_editor != '')){
+                $query = NonExclusiveReport::where('author_contact','ilike', '%'.$where.'%')->where('global_editor','ilike', '%'.$global_editor.'%')->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'DESC')->get();
+            }
+            else{
+                $query = NonExclusiveReport::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
+        }
+        else if(isset($global_editor) && $global_editor != ''){
+            if((isset($global_editor) && $global_editor != '') && (isset($kriteria) && $kriteria != '')){
+                $query = NonExclusiveReport::where('global_editor','ilike', '%'.$global_editor.'%')->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'DESC')->get();
+            }else{
+                $query = NonExclusiveReport::where('global_editor','ilike', '%'.$global_editor.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+            }
+        }
+        else if(isset($kriteria) && $kriteria != ''){
+            $query = NonExclusiveReport::whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+        }
+        else{
             $query = $this->DataNonExCached();
         }
         /* --------------
