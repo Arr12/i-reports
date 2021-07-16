@@ -2171,16 +2171,16 @@ class PageController extends Controller
         $enddate = date('Y-m-d', strtotime(request()->input('enddate')));
         if(isset($where) && $where != ''){
             if((isset($where) && $where != '') && (isset($kriteria) && $kriteria != '')){
-                $query = DailyReportAme::where('author_contact','ilike', '%'.$where.'%')->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                $query = DailyReportIndoIrel::where('author_contact','ilike', '%'.$where.'%')->whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'DESC')->limit($this->data_show)->get();
             }else{
-                $query = DailyReportAme::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
+                $query = DailyReportIndoIrel::where('author_contact','ilike', '%'.$where.'%')->orderBy('id', 'DESC')->limit($this->data_show)->get();
             }
         }
         else if(isset($kriteria) && $kriteria != ''){
-            $query = DailyReportAme::whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
+            $query = DailyReportIndoIrel::whereBetween($kriteria,[$startdate,$enddate])->orderBy('id', 'ASC')->get();
         }
         else{
-            $query = $this->DataAmeCached();
+            $query = $this->DataIndoIrelCached();
         }
         /* --------------
         / HEAD DATA
