@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ProcessExport;
 use App\Jobs\ProcessImport;
 use App\Models\DailyReportAme;
 use App\Models\DailyReportAnna;
@@ -83,7 +84,7 @@ class SheetController extends Controller
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-        CURLOPT_URL => 'http://45.76.182.41:8000/create-folder/'.$title,
+        CURLOPT_URL => 'http://208.87.134.42:5110/create-folder/'.$title,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => '',
         CURLOPT_MAXREDIRS => 10,
@@ -102,7 +103,7 @@ class SheetController extends Controller
         $curl = curl_init();
         $title = str_replace(" ", "%20", $title);
         curl_setopt_array($curl, array(
-        CURLOPT_URL => "http://45.76.182.41:8000/create-spreadsheet/$folder_id/$title",
+        CURLOPT_URL => "http://208.87.134.42:5110/create-spreadsheet/$folder_id/$title",
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => '',
         CURLOPT_MAXREDIRS => 10,
@@ -121,7 +122,7 @@ class SheetController extends Controller
         $curl = curl_init();
         $title = str_replace(" ", "%20", $title);
         curl_setopt_array($curl, array(
-        CURLOPT_URL => "http://45.76.182.41:8000/duplicate-spreadsheet/$spreadsheetId_old/$folder_id/$title",
+        CURLOPT_URL => "http://208.87.134.42:5110/duplicate-spreadsheet/$spreadsheetId_old/$folder_id/$title",
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => '',
         CURLOPT_MAXREDIRS => 10,
@@ -1694,7 +1695,8 @@ class SheetController extends Controller
         return $x;
     }
     public function TeamMonitoringGlobal(){
-        Artisan::call('set:team-monitoring-global');
+        $daily = "team-monitoring-global";
+        $this->dispatch(new ProcessExport($daily));
     }
     public function setTeamMonitoringGlobal(){
         // $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
@@ -2009,7 +2011,8 @@ class SheetController extends Controller
         return $values;
     }
     public function TeamMonitoringIndo(){
-        Artisan::call('set:team-monitoring-indo');
+        $daily = "team-monitoring-indo";
+        $this->dispatch(new ProcessExport($daily));
     }
     public function setTeamMonitoringIndo(){
         // $spreadsheetId = "1jxec-kRkWE_38Mnz1H3FgwTvsazJora1dt_79AqO-cc";
@@ -2168,7 +2171,8 @@ class SheetController extends Controller
     | Lv 2 REPORT MONTHLY
     -----------------------------*/
     public function AllTeamReportWeekly(){
-        Artisan::call('set:all-team-report-weekly');
+        $daily = "all-team-report-weekly";
+        $this->dispatch(new ProcessExport($daily));
     }
     public function AllTeamReportWeeklyPeriode(){
         $type = request()->input('type');
@@ -2225,7 +2229,8 @@ class SheetController extends Controller
         return ResponseFormatter::success(null, "Success", 200);
     }
     public function AllTeamReportMonthly(){
-        Artisan::call('set:all-team-report-monthly');
+        $daily = "all-team-report-monthly";
+        $this->dispatch(new ProcessExport($daily));
     }
     public function AllTeamReportMonthlyPeriode(){
         $date = request()->input('d');
