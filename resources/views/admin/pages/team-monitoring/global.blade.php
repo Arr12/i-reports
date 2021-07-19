@@ -75,7 +75,6 @@ $(document).ready(function(){
         Tabel(url_dx);
     });
     $(document).on('click', '#setDataDaily', function(){
-        window.open('https://drive.google.com/drive/u/4/folders/1HnZsqHGzJVuhXC84wtW-cVjj1OnAUIzu','_blank');
         $(this).attr('disabled','disabled');
         var url = "{{route('api.setTeamMonitoringsetGlobal')}}";
         $.ajax({
@@ -88,6 +87,7 @@ $(document).ready(function(){
                     <strong>Success!</strong> Data has been updated!
                 </div>`
                 );
+                window.open('https://drive.google.com/drive/u/4/folders/1HnZsqHGzJVuhXC84wtW-cVjj1OnAUIzu','_blank');
             },
             error:function(){
                 $('#setDataDaily').removeAttr('disabled','disabled');
@@ -97,6 +97,7 @@ $(document).ready(function(){
                     <strong>Success!</strong> Data has been updated!
                 </div>`
                 );
+                window.open('https://drive.google.com/drive/u/4/folders/1HnZsqHGzJVuhXC84wtW-cVjj1OnAUIzu','_blank');
             }
         });
     });
