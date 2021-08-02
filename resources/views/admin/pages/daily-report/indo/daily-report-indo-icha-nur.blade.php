@@ -13,8 +13,7 @@
             "Follow Up 3",
             "Follow Up 4",
             "Follow Up 5",
-            "Data Sent Royalty",
-            "Data Sent Non Exclusive"
+            "Data Sent"
         ],
         "url" => [
             "date",
@@ -23,8 +22,7 @@
             "fu_3",
             "fu_4",
             "fu_5",
-            "sent_royalty",
-            "sent_non_exclusive"
+            "data_sent"
         ]
     ];
 @endphp
