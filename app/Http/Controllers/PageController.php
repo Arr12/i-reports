@@ -62,7 +62,7 @@ class PageController extends Controller
     }
     public function WeekFromDate($date){
         // $textdt = date($date.'-01');
-        $thisday = $date.'-d';
+        $thisday = $date.'-01';
         $textdt = date($thisday, strtotime('first Week'));
         $textdt = date('Y-m-01', strtotime($textdt));
         // dd($textdt);
@@ -139,7 +139,7 @@ class PageController extends Controller
         return $date;
     }
     public function WeekFromDateFriday($date){
-        $thisday = $date.'-d';
+        $thisday = $date.'-01';
         $textdt = date($thisday, strtotime('first Week'));
         $textdt = date('Y-m-01', strtotime($textdt));
         // dd($textdt);

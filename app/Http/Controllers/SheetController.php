@@ -2177,7 +2177,8 @@ class SheetController extends Controller
     public function AllTeamReportWeeklyPeriode(){
         $type = request()->input('type');
         $date = request()->input('d');
-        $this->setAllTeamReportWeekly($type, $date);
+        $daily = "all-team-report-weekly-periode?$type?$date";
+        $this->dispatch(new ProcessExport($daily));
     }
     public function setAllTeamReportWeekly($type, $date){
         // TRIAL
@@ -2235,7 +2236,8 @@ class SheetController extends Controller
     public function AllTeamReportMonthlyPeriode(){
         $date = request()->input('d');
         $type = request()->input('type');
-        $this->setAllTeamReportMonthly($type, $date);
+        $daily = "all-team-report-monthly-periode?$type?$date";
+        $this->dispatch(new ProcessExport($daily));
     }
     public function setAllTeamReportMonthly($type, $date){
         // TRIAL
